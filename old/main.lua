@@ -82,10 +82,18 @@ outf:close()
 --]==]
 -- [==[
 local levelchunk = levelformat.decode(assert(io.open("ns2_blah.level", "rb")))
-io.open("blah.txt", "w"):write(stringify(levelchunk))
+io.open("obj/blah.txt", "w"):write(stringify(levelchunk))
 --[==[local levelchunk = levelformat.decode(assert(io.open("empty.level", "rb")))
 io.open("cactus.txt", "w"):write(stringify(levelchunk))
 --]==]
 
-if arg[2] == "-k" then os.execute[[taskkill /IM editor.exe]] end
+local shouldKill = false
+
+for i = 1, #arg do
+    if arg[i] == "-k" then
+        shouldKill = true
+    end
+end
+
+if shouldKill then os.execute[[taskkill /IM editor.exe]] end
 os.execute[[openeditor.bat ns2_blah.level]]
