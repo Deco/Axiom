@@ -1,0 +1,1 @@
+C:\workspace\lua\ufo\luajit64 -e "package.path='./?.lua;'..package.path io.stdout:setvbuf('no')" main.lua %*
