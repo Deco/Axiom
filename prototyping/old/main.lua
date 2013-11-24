@@ -95,5 +95,5 @@ for i = 1, #arg do
     end
 end
 
-if shouldKill then os.execute[[taskkill /IM editor.exe]] end
+if shouldKill then os.execute[[taskkill /IM editor.exe]] os.execute[[taskkill /F /IM editor.exe]] end
 os.execute[[openeditor.bat obj/ns2_blah.level]]
