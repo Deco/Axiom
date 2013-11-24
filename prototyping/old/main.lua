@@ -81,7 +81,7 @@ outf:write(data)
 outf:close()
 --]==]
 -- [==[
-local levelchunk = levelformat.decode(assert(io.open("ns2_blah.level", "rb")))
+local levelchunk = levelformat.decode(assert(io.open("obj/ns2_blah.level", "rb")))
 io.open("obj/blah.txt", "w"):write(stringify(levelchunk))
 --[==[local levelchunk = levelformat.decode(assert(io.open("empty.level", "rb")))
 io.open("cactus.txt", "w"):write(stringify(levelchunk))
@@ -96,4 +96,4 @@ for i = 1, #arg do
 end
 
 if shouldKill then os.execute[[taskkill /IM editor.exe]] end
-os.execute[[openeditor.bat ns2_blah.level]]
+os.execute[[openeditor.bat obj/ns2_blah.level]]
