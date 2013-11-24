@@ -71,7 +71,7 @@ level:addObject({
     },
 })]]
 
-local outf = assert(io.open("ns2_blah.level", "wb"))
+local outf = assert(io.open("obj/ns2_blah.level", "wb"))
 
 local data = levelformat.encode(level:toChunk())
 
