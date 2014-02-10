@@ -19,6 +19,24 @@ do -- utils
     _G.xor = function(a, b)
         return (a and not b) or (b and not a)
     end
+    
+    do -- http://lua-users.org/wiki/BinaryInsert
+        local fcomp_default = function(a,b) return a < b end
+        table.bininsert = table.bininsert or function(t, value, fcomp, ...)
+            local fcomp = fcomp or fcomp_default
+            local iStart,iEnd,iMid,iState = 1, #t, 1, 0
+            while iStart <= iEnd do
+                iMid = math.floor((iStart+iEnd)/2)
+                if fcomp(value, t[iMid], ...) then
+                    iEnd, iState = iMid-1, 0
+                else
+                    iStart, iState = iMid+1, 1
+                end
+            end
+            table.insert(t, (iMid+iState), value)
+            return iMid+iState
+        end
+    end
 end
 
 function concept.__call(library, class)

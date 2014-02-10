@@ -143,6 +143,22 @@ do luametry.__coord2dConstantMethods = {}
             else error"wat" end
         end
         class.__mul = class.Mul
+        function class:Div(other)
+            if ffi.istype(ffiType, self) then
+                if ffi.istype(ffiType, other) then
+                    error("NYI!")
+                else
+                    return ffi.typeof(self)(self.x/other, self.y/other)
+                end
+            elseif ffi.istype(ffiType, other) then
+                if ffi.istype(ffiType, self) then
+                    error("NYI!")
+                else
+                    return ffi.typeof(other)(self/other.x, self/other.y)
+                end
+            else error"wat" end
+        end
+        class.__div = class.Div
     end
     
     function luametry.__coord2dConstantMethods.GetAxisNames()
@@ -254,6 +270,22 @@ do luametry.__coord3dConstantMethods = {}
             else error"wat" end
         end
         class.__mul = class.Mul
+        function class:Div(other)
+            if ffi.istype(ffiType, self) then
+                if ffi.istype(ffiType, other) then
+                    error("NYI!")
+                else
+                    return ffi.typeof(self)(self.x/other, self.y/other, self.z/other)
+                end
+            elseif ffi.istype(ffiType, other) then
+                if ffi.istype(ffiType, self) then
+                    error("NYI!")
+                else
+                    return ffi.typeof(other)(self/other.x, self/other.y, self/other.z)
+                end
+            else error"wat" end
+        end
+        class.__div = class.Div
     end
     
     function luametry.__coord3dConstantMethods.GetAxisNames()

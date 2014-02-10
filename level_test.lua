@@ -10,7 +10,75 @@ local V = luametry.Vec3cf
 local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 
 local level = (axiom.Level%{ space = space })()
+--[[
+do
+    local v1 = space:VertexOf(V(-1.0,  0.0,  0.0))
+    local v2 = space:VertexOf(V( 1.0,  0.0,  0.0))
+    local e1 = space:EdgeOf(v1, v2)
+    
+    local v3 = space:VertexOf(V( 0.5,  0.4,  1.0))
+    local v4 = space:VertexOf(V( 0.0,  0.4,  2.0))
+    local e2 = space:EdgeOf(v3, v4)
+    
+    local dontClamp = false
+    local dist, v5, v6, e1t, e2t = e1:GetShortestDistanceToEdge(e2, dontClamp)
+    print(dist, e1t, e2t)
+    local e3 = space:EdgeOf(v5, v6)
+    
+    level:AddEdge(e1)
+    level:AddEdge(e2)
+    level:AddEdge(e3)
+end
+]]
 
+do
+    local n1 = V(0, 1, 0)
+    local p1, p2, p3
+    local f1, f2, f3
+    do
+        local o = V(0, 0, 0)
+        local v1 = space:VertexOf(o+V(0, 0, 0))
+        local v2 = space:VertexOf(o+V(1, 0, 0))
+        local v3 = space:VertexOf(o+V(1, 0, 1))
+        local v4 = space:VertexOf(o+V(0, 0, 1))
+        local e1 = space:EdgeOf(v1, v2)
+        local e2 = space:EdgeOf(v2, v3)
+        local e3 = space:EdgeOf(v3, v4)
+        local e4 = space:EdgeOf(v4, v1)
+        p1 = space:PolygonOf(e1, e2, e3, e4)
+        f1 = space:FaceOf(p1, n1)
+    end
+    do
+        local o = V(0.5, 0, 0.5)
+        local v1 = space:VertexOf(o+V(0, 0, 0))
+        local v2 = space:VertexOf(o+V(1, 0, 0))
+        local v3 = space:VertexOf(o+V(1, 0, 1))
+        local v4 = space:VertexOf(o+V(0, 0, 1))
+        local e1 = space:EdgeOf(v1, v2)
+        local e2 = space:EdgeOf(v2, v3)
+        local e3 = space:EdgeOf(v3, v4)
+        local e4 = space:EdgeOf(v4, v1)
+        p2 = space:PolygonOf(e1, e2, e3, e4)
+        f2 = space:FaceOf(p2, n1)
+    end
+    
+    local edgeList = p1:GetIntersectionWith(p2)
+    local o = V(0, 0.15, 0)
+    for edgeI, edge in ipairs(edgeList) do
+        local edgeVA, edgeVB = edge:GetVertices()
+        level:AddEdge(space:EdgeOf(space:VertexOf(edgeVA.p+o), space:VertexOf(edgeVB.p+o)))
+        -- o = o+V(0, 0.01, 0)
+    end
+    
+    -- p3 = p1:GetIntersectionWith(p2)[1]
+    -- f3 = space:FaceOf(p3)
+    
+    level:AddFace(f1)
+    level:AddFace(f2)
+    -- level:AddFace(f3)
+end
+
+--[[
 for i = 1, 10 do
     for j = 1, 10 do
         local o = V(i*1.2, 0, j*1.2)
@@ -65,7 +133,7 @@ do
     
     level:AddFace(f1)
 end
-
+]]
 local outputfile = assert(io.open("obj/ns2_blah.level", "wb"))
 local data = axiom.levelformat.encode(level:GetChunk())
 outputfile:write(data)

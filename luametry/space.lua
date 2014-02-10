@@ -5,6 +5,8 @@ local concept = require"concept"
 local ffi = require"ffi"
 local lualgebra = require"lualgebra"
 
+-- TODO: (URGENT) Make luametry.Space detect common geometric objects (the library's logic depends on it!)
+
 -- A "space" is a collecton of geometric objects in simple Euclidean space
 -- A "vertex" is defined by a point
 -- An "edge" is defined by two distinct vertices
@@ -12,6 +14,8 @@ local lualgebra = require"lualgebra"
 -- A "face" is defined by a poloygon and a normal which is perpendicular to the plane of the polygon
 -- A "polyhedon"
 -- A "volume"
+
+-- Note: "coordinate", "point" and "position"/"pos" are used interchangably. A "vertex" should always be called "vertex" or "v".
 
 do luametry.Space = concept{
         coordinateType = luametry.Vec3cf,
@@ -74,6 +78,8 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         --space = luametry.Space(),
         
         --vertexMap = {},
+        --vertexA = nil, -- generated
+        --vertexB = nil, -- generated
     }
     function luametry.Edge.__declare(class)
         assert(class.space                , "Edge.space must be defined in specialisation")
@@ -96,15 +102,17 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
                 [a] = {},
                 [b] = {},
             }
+            obj.vertexA, obj.vertexB = a, b
         else
             error"expected two vertices"
         end
         return setmetatable(obj, class)
     end
-    function luametry.Edge:GetVertices()
-        local a, a_data = next(self.vertexMap, nil)
-        local b, b_data = next(self.vertexMap, a)
-        return a, b, a_data, b_data -- order is never guaranteed!
+    function luametry.Edge:GetVertices() -- not ordered, but garuanteed to return a consistent result each time
+        -- local a, a_data = next(self.vertexMap, nil)
+        -- local b, b_data = next(self.vertexMap, a)
+        -- return a, b, a_data, b_data
+        return self.vertexA, self.vertexB, self.vertexMap[self.vertexA], self.vertexMap[self.vertexB]
     end
     function luametry.Edge:VerifyEdgeCompatibility(otherEdge)
         assert(self.space == otherEdge.space, "Edges must share the same space")
@@ -116,8 +124,9 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local crossResult = v1a.p:GetCrossProduct(v1b.p)
         return crossResult:GetDotProduct(v2a.p):GetIsEqualToZero() and crossResult:GetDotProduct(v2b.p):GetIsEqualToZero()
     end
-    function luametry.Edge:GetShortestDistanceToEdge(otherEdge)
+    function luametry.Edge:GetShortestDistanceToEdge(otherEdge, dontClamp)
         -- http://paulbourke.net/geometry/pointlineplane/lineline.c
+        dontClamp = dontClamp or false
         self:VerifyEdgeCompatibility(otherEdge)
         local v1a, v1b = self:GetVertices()
         local v2a, v2b = otherEdge:GetVertices()
@@ -142,11 +151,15 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local numer = d1343 * d4321 - d1321 * d4343
         local mua = numer/denom
         local mub = (d1343 + d4321 * mua) / d4343
+        if not dontClamp then
+            mua = math.min(math.max(mua, 0), 1)
+            mub = math.min(math.max(mub, 0), 1)
+        end
         
         local v3a = self.space.vertexType(p1+mua*p21)
         local v3b = self.space.vertexType(p3+mub*p43)
         -- local resultEdge = self.space.edgeType(v3a, v3b)
-        return (v3b-v3a):GetMagnitude(), v3a, v3b, mua, mub
+        return (v3b.p-v3a.p):GetMagnitude(), v3a, v3b, mua, mub
     end
     function luametry.Edge:GetShortestDistanceToRay(rayOrigin, rayDir)
         -- http://www.gamedev.net/topic/589705-rayline-intersection-in-3d/#entry4742570
@@ -243,7 +256,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         obj:AssertNoDisjointLoops()
         return obj
     end
-    function luametry.Polygon:GetEdgeMap() -- not in order
+    function luametry.Polygon:GetEdgeMap() -- not ordered
         return self.edgeMap
     end
     function luametry.Polygon:GetEdgeLoopList() -- "Loop" is essentially a "List"
@@ -361,7 +374,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local intersectRayDir = rayDirection
         if not intersectRayDir then
             local normal, d, p1, p2  = self:CalculateOrthagonalDirection()
-            local intersectRayDir = (p2-p1):GetNormalized()
+            intersectRayDir = (p2-p1):GetNormalized()
         end
         local intersectionCount = 0
         for edge, edgeData in pairs(self.edgeMap) do
@@ -392,46 +405,71 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local doesIntersect, intersectionCount = self:GetIsPointInPolygon(hitPos)
         return doesIntersect, hitPos, rayT, normal, d, p1, p2, intersectionCount
     end
-    function luametry.Polygon:IsCoplanerWith(other)
-        local selfNormal, selfD = self.polygon:CalculateOrthagonalDirection()
-        local otherNormal, otherD = self.polygon:CalculateOrthagonalDirection()
+    function luametry.Polygon:GetIsCoplanerWith(other)
+        local selfNormal, selfD = self:CalculateOrthagonalDirection()
+        local otherNormal, otherD = self:CalculateOrthagonalDirection()
         return (
-                (selfNormal:GetIsEqualTo( calculatedNormal) and selfD:GetIsEqualTo( otherD))
-            or  (selfNormal:GetIsEqualTo(-calculatedNormal) and selfD:GetIsEqualTo(-otherD))
+                (selfNormal:GetIsEqualTo( otherNormal) and selfD:GetIsEqualTo( otherD))
+            or  (selfNormal:GetIsEqualTo(-otherNormal) and selfD:GetIsEqualTo(-otherD))
         )
     end
-    function luametry.Polygon:GetIntersectionWith(other)
-        assert(self:IsCoplanerWith(other), "Polygons must be coplanar")
-        local edgeIntersectionMap = {}
+    local function sortIntersectionPoint(va, vb, eva, evb)
+        local el = (evb.p-eva.p):GetMagnitude()
+        local vat = (va.p-eva.p):GetMagnitude()/el
+        local vbt = (vb.p-eva.p):GetMagnitude()/el
+        return vat < vbt
+    end
+    function luametry.Polygon:GetIntersectionWith(other) -- returns a list of geometric objects (polygons only atm)
+        assert(self:GetIsCoplanerWith(other), "Polygons must be coplanar")
+        local edgeCutVertexListMap = {}
+        local edgeFirstVertexMap = {} -- because we need a consistent order
+        local edgeSecondVertexMap = {} -- because we need a consistent order
+        local edgePairVertexMapMap = {}
         
         for selfEdge, selfEdgeData in pairs(self.edgeMap) do
             local selfEdgeVA, selfEdgeVB = selfEdge:GetVertices()
-            edgeIntersectionMap[selfEdge] = {}
+            edgeCutVertexListMap[selfEdge] = edgeCutVertexListMap[selfEdge] or {}
+            edgeFirstVertexMap [selfEdge] = selfEdgeVA
+            edgeSecondVertexMap[selfEdge] = selfEdgeVB
             
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
                 local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
-                local intersectionData = { doesIntersect = false }
-                edgeIntersectionMap[selfEdge][otherEdge] = intersectionData
+                edgeCutVertexListMap[otherEdge] = edgeCutVertexListMap[otherEdge] or {}
+                edgeFirstVertexMap [otherEdge] = otherEdgeVA
+                edgeSecondVertexMap[otherEdge] = otherEdgeVB
                 
-                intersectionData.dist, intersectionData.pos = selfEdge:GetShortestEdgeToEdge(otherEdge)
-                if shortestDistance:GetIsEqualToZero() then
-                    intersectionData.doesIntersect = true
-                    
-                    intersectionData.selfEdgeTowardAIsInOther = self:GetIsPointInPolygon(
-                        intersectionData.pos, ( selfEdgeVA.p-intersectionData.pos):GetNormalized(), { [otherEdge] = true },
-                    )
-                    intersectionData.selfEdgeTowardBIsInOther = self:GetIsPointInPolygon(
-                        intersectionData.pos, ( selfEdgeVB.p-intersectionData.pos):GetNormalized(), { [otherEdge] = true },
-                    )
-                    intersectionData.otherEdgeTowardAIsInSelf = other:GetIsPointInPolygon(
-                        intersectionData.pos, (otherEdgeVA.p-intersectionData.pos):GetNormalized(), { [ selfEdge] = true },
-                    )
-                    intersectionData.otherEdgeTowardBIsInSelf = other:GetIsPointInPolygon(
-                        intersectionData.pos, (otherEdgeVB.p-intersectionData.pos):GetNormalized(), { [ selfEdge] = true },
-                    )
+                local intersectionDist, intersectionVertex = selfEdge:GetShortestDistanceToEdge(otherEdge)
+                if intersectionDist and intersectionDist:GetIsEqualToZero() then
+                    --local intersectionVertex = self.space:VertexOf(intersectionPos)
+                    table.bininsert(edgeCutVertexListMap[ selfEdge], intersectionVertex, sortIntersectionPoint,  selfEdgeVA,  selfEdgeVB)
+                    table.bininsert(edgeCutVertexListMap[otherEdge], intersectionVertex, sortIntersectionPoint, otherEdgeVA, otherEdgeVB)
+                    print(intersectionVertex)
                 end
             end
         end
+        local newEdgeList = {}
+        for edge, cutVertexList in pairs(edgeCutVertexListMap) do
+            local edgeVA, edgeVB = edgeFirstVertexMap[edge], edgeSecondVertexMap[edge]
+            local currentVertex = edgeVA
+            for i = 1, #cutVertexList+1 do
+                local nextVertex = (i <= #cutVertexList and cutVertexList[i] or edgeVB)
+                local centrePoint = (currentVertex.p+nextVertex.p)/2
+                if (
+                        (self :GetEdgeMap()[edge] and other:GetIsPointInPolygon(centrePoint))
+                    or  (other:GetEdgeMap()[edge] and self :GetIsPointInPolygon(centrePoint))
+                ) then
+                    table.insert(newEdgeList, self.space:EdgeOf(currentVertex, nextVertex))
+                end
+                currentVertex = nextVertex
+            end
+        end
+        --
+        local edgeLoopGroupList = {} -- right... a list of groups of loops of edges (where groups are more-or-less lists)
+        local edgeLoopList = {}
+        
+        -- temp
+        return newEdgeList
+        -- return { self.space:PolygonOf( unpack(newEdgeList) ) }
     end
 end
 
