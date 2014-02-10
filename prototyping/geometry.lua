@@ -1,7 +1,7 @@
 
 local oo = require"oo"
 local Vec3 = require"Vec3"
---local csg = require"csg"
+local csg = require"csg_old"
 
 local geometry = {}
 

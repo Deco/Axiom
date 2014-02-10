@@ -57,6 +57,13 @@ local box = geometry.Volume.newRectangularPrism(
 )
 level:addVolume(box, mat)
 
+local box = geometry.Volume.newRectangularPrism(
+    Vec3(0.75, 0.5, 5.75),
+    Quaternion.newFromAngleAxis(math.pi*0.25, Vec3(0, 1, 0):unit()),
+    Vec3(0.5, 0.5, 0.5)
+)
+level:addVolume(box, mat)
+
 --[[
 level:addObject({
     classname = "marine", groupid = 0,

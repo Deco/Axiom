@@ -1,0 +1,1872 @@
+standard
+---- TRACE 1 start metatest.lua:7
+0013  GGET     9   1      ; "math"
+0014  TGETS    9   9   2  ; "sin"
+0015  GGET    10   1      ; "math"
+0016  TGETS   10  10   2  ; "sin"
+0017  MOV     11   8
+0018  CALL    10   2   2
+0000  . FUNCC               ; math.sin
+0019  SUBVV   10  10   0
+0020  CALL     9   2   2
+0000  . FUNCC               ; math.sin
+0021  MOV      0   9
+0022  FORL     5 => 0013
+---- TRACE 1 IR
+0001    int SLOAD  #6    CI
+0002    fun SLOAD  #0    R
+0003    tab FLOAD  0002  func.env
+0004    int FLOAD  0003  tab.hmask
+0005 >  int EQ     0004  +63 
+0006    p32 FLOAD  0003  tab.node
+0007 >  p32 HREFK  0006  "math" @54
+0008 >  tab HLOAD  0007
+0009    int FLOAD  0008  tab.hmask
+0010 >  int EQ     0009  +31 
+0011    p32 FLOAD  0008  tab.node
+0012 >  p32 HREFK  0011  "sin" @23
+0013 >  fun HLOAD  0012
+0014 >  fun EQ     0013  math.sin
+0015    num CONV   0001  num.int
+0016    num FPMATH 0015  sin
+0017 >  num SLOAD  #1    T
+0018    num SUB    0016  0017
+0019  + num FPMATH 0018  sin
+0020  + int ADD    0001  +1  
+0021 >  int LE     0020  +10 
+0022 ------ LOOP ------------
+0023    num CONV   0020  num.int
+0024    num FPMATH 0023  sin
+0025    num SUB    0024  0019
+0026  + num FPMATH 0025  sin
+0027  + int ADD    0020  +1  
+0028 >  int LE     0027  +10 
+0029    int PHI    0020  0027
+0030    num PHI    0019  0026
+---- TRACE 1 mcode 282
+0bcafed9  add rsp, -0x20
+0bcafedd  mov dword [0x4042e410], 0x1
+0bcafee8  cvttsd2si ebp, [rdx+0x28]
+0bcafeed  mov [rsp+0x20], ebp
+0bcafef1  mov r8d, [rdx-0x8]
+0bcafef5  mov esi, [r8+0x8]
+0bcafef9  cmp dword [rsi+0x1c], +0x3f
+0bcafefd  jnz 0x0bca0010	->0
+0bcaff03  mov ebx, [rsi+0x14]
+0bcaff06  mov rdi, 0xfffffffb40433cf8
+0bcaff10  cmp rdi, [rbx+0x518]
+0bcaff17  jnz 0x0bca0010	->0
+0bcaff1d  cmp dword [rbx+0x514], -0x0c
+0bcaff24  jnz 0x0bca0010	->0
+0bcaff2a  mov ecx, [rbx+0x510]
+0bcaff30  cmp dword [rcx+0x1c], +0x1f
+0bcaff34  jnz 0x0bca0010	->0
+0bcaff3a  mov eax, [rcx+0x14]
+0bcaff3d  mov rdi, 0xfffffffb40434268
+0bcaff47  cmp rdi, [rax+0x230]
+0bcaff4e  jnz 0x0bca0010	->0
+0bcaff54  cmp dword [rax+0x22c], -0x09
+0bcaff5b  jnz 0x0bca0010	->0
+0bcaff61  cmp dword [rax+0x228], 0x40434240
+0bcaff6b  jnz 0x0bca0010	->0
+0bcaff71  fild dword [rsp+0x20]
+0bcaff75  fsin
+0bcaff77  fstp qword [rsp]
+0bcaff7a  movsd xmm7, [rsp]
+0bcaff7f  cmp dword [rdx+0x4], 0xfffeffff
+0bcaff86  jnb 0x0bca0010	->0
+0bcaff8c  subsd xmm7, [rdx]
+0bcaff90  movsd [rsp+0x18], xmm7
+0bcaff96  fld qword [rsp+0x18]
+0bcaff9a  fsin
+0bcaff9c  fstp qword [rsp]
+0bcaff9f  movsd xmm7, [rsp]
+0bcaffa4  add ebp, +0x01
+0bcaffa7  cmp ebp, +0x0a
+0bcaffaa  jg 0x0bca0014	->1
+->LOOP:
+0bcaffb0  movaps xmm6, xmm7
+0bcaffb3  xorps xmm7, xmm7
+0bcaffb6  cvtsi2sd xmm7, ebp
+0bcaffba  movsd [rsp+0x10], xmm7
+0bcaffc0  fld qword [rsp+0x10]
+0bcaffc4  fsin
+0bcaffc6  fstp qword [rsp]
+0bcaffc9  movsd xmm7, [rsp]
+0bcaffce  subsd xmm7, xmm6
+0bcaffd2  movsd [rsp+0x8], xmm7
+0bcaffd8  fld qword [rsp+0x8]
+0bcaffdc  fsin
+0bcaffde  fstp qword [rsp]
+0bcaffe1  movsd xmm7, [rsp]
+0bcaffe6  add ebp, +0x01
+0bcaffe9  cmp ebp, +0x0a
+0bcaffec  jle 0x0bcaffb0	->LOOP
+0bcaffee  jmp 0x0bca001c	->3
+---- TRACE 1 stop -> loop
+
+---- TRACE 2 start 1/3 metatest.lua:6
+0023  FORL     1 => 0009
+0009  KSHORT   5   1
+0010  KSHORT   6  10
+0011  KSHORT   7   1
+0012  JFORI    5 => 0023
+---- TRACE 2 IR
+0001    num SLOAD  #1    PI
+0002    num SLOAD  #3    RI
+0003    num SLOAD  #2    I
+0004    num ADD    0003  +1  
+0005 >  num LE     0004  0002
+---- TRACE 2 mcode 96
+0bcafe76  mov dword [0x4042e410], 0x2
+0bcafe81  movsd xmm5, [0x40448b18]
+0bcafe8a  movsd xmm4, [0x40448b20]
+0bcafe93  movsd xmm3, [rdx+0x10]
+0bcafe98  movsd xmm6, [rdx+0x8]
+0bcafe9d  addsd xmm6, xmm5
+0bcafea1  ucomisd xmm3, xmm6
+0bcafea5  jb 0x0bca0014	->1
+0bcafeab  movsd [rdx+0x40], xmm5
+0bcafeb0  movsd [rdx+0x38], xmm5
+0bcafeb5  movsd [rdx+0x30], xmm4
+0bcafeba  movsd [rdx+0x28], xmm5
+0bcafebf  movsd [rdx+0x20], xmm6
+0bcafec4  movsd [rdx+0x8], xmm6
+0bcafec9  movsd [rdx], xmm7
+0bcafecd  add rsp, +0x20
+0bcafed1  jmp 0x0bcafed9
+---- TRACE 2 stop -> 1
+
+---- TRACE 3 start 2/1 metatest.lua:11
+0024  RET1     0   2
+0013  ADDVV    2   2   7
+0014  FORL     3 => 0011
+0011  MOV      7   1
+0012  CALL     7   2   1
+0000  . FUNCF   12          ; metatest.lua:4
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0024
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0023
+---- TRACE 3 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446ba4]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #4    I
+0007    num ADD    0006  +1  
+0008 >  num LE     0007  +500
+0009 >  fun SLOAD  #2    T
+0010 >  fun EQ     0009  metatest.lua:4
+0011    tab FLOAD  metatest.lua:4  func.env
+0012    int FLOAD  0011  tab.hmask
+0013 >  int EQ     0012  +63 
+0014    p32 FLOAD  0011  tab.node
+0015 >  p32 HREFK  0014  "m"  @49
+0016 >  str HLOAD  0015
+0017 >  num STRTO  0016
+0018 >  int CONV   0017  int.num
+0019 >  int LE     0018  +2147483646
+0020 >  int GE     0018  +1  
+---- TRACE 3 mcode 385
+0bcafcf2  mov dword [0x4042e410], 0x3
+0bcafcfd  cmp dword [rdx-0x4], 0x40446ba4
+0bcafd04  jnz 0x0bca0014	->1
+0bcafd0a  add edx, -0x40
+0bcafd0d  mov [0x4042e4b4], edx
+0bcafd14  cmp dword [rdx+0x14], 0xfffeffff
+0bcafd1b  jnb 0x0bca0018	->2
+0bcafd21  movaps xmm6, xmm7
+0bcafd24  movsd xmm7, [0x40448b28]
+0bcafd2d  addsd xmm6, [rdx+0x10]
+0bcafd32  movsd [rsp+0x18], xmm6
+0bcafd38  movsd xmm6, [rdx+0x18]
+0bcafd3d  addsd xmm6, [0x40448b18]
+0bcafd46  movsd [rsp+0x10], xmm6
+0bcafd4c  ucomisd xmm7, xmm6
+0bcafd50  jb 0x0bca001c	->3
+0bcafd56  cmp dword [rdx+0xc], -0x09
+0bcafd5a  jnz 0x0bca0020	->4
+0bcafd60  cmp dword [rdx+0x8], 0x40436ab0
+0bcafd67  jnz 0x0bca0020	->4
+0bcafd6d  mov ebp, [0x40436ab8]
+0bcafd74  cmp dword [rbp+0x1c], +0x3f
+0bcafd78  jnz 0x0bca0020	->4
+0bcafd7e  mov ebp, [rbp+0x14]
+0bcafd81  mov rdi, 0xfffffffb4043e1b0
+0bcafd8b  cmp rdi, [rbp+0x4a0]
+0bcafd92  jnz 0x0bca0020	->4
+0bcafd98  cmp dword [rbp+0x49c], -0x05
+0bcafd9f  jnz 0x0bca0020	->4
+0bcafda5  mov edi, [rbp+0x498]
+0bcafdab  lea rsi, [rsp+0x8]
+0bcafdb0  call 0x00423ad0	->lj_strscan_num
+0bcafdb5  test eax, eax
+0bcafdb7  jz 0x0bca0020	->4
+0bcafdbd  mov edx, [0x4042e4b4]
+0bcafdc4  movsd xmm7, [rsp+0x18]
+0bcafdca  movsd xmm6, [rsp+0x10]
+0bcafdd0  movsd xmm5, [0x40448b18]
+0bcafdd9  movsd xmm4, [rsp+0x8]
+0bcafddf  movsd xmm3, [0x40448b20]
+0bcafde8  cvttsd2si ebp, xmm4
+0bcafdec  xorps xmm2, xmm2
+0bcafdef  cvtsi2sd xmm2, ebp
+0bcafdf3  ucomisd xmm4, xmm2
+0bcafdf7  jnz 0x0bca0020	->4
+0bcafdfd  jpe 0x0bca0020	->4
+0bcafe03  cmp ebp, 0x7ffffffe
+0bcafe09  jg 0x0bca0020	->4
+0bcafe0f  cmp ebp, +0x01
+0bcafe12  jl 0x0bca0024	->5
+0bcafe18  movsd [rdx+0x80], xmm5
+0bcafe20  movsd [rdx+0x78], xmm5
+0bcafe25  movsd [rdx+0x70], xmm3
+0bcafe2a  movsd [rdx+0x68], xmm5
+0bcafe2f  movsd [rdx+0x60], xmm5
+0bcafe34  movsd [rdx+0x58], xmm5
+0bcafe39  movsd [rdx+0x50], xmm4
+0bcafe3e  movsd [rdx+0x48], xmm5
+0bcafe43  movsd [rdx+0x40], xmm5
+0bcafe48  mov dword [rdx+0x3c], 0x40446ba4
+0bcafe4f  mov dword [rdx+0x38], 0x40436ab0
+0bcafe56  movsd [rdx+0x18], xmm6
+0bcafe5b  movsd [rdx+0x10], xmm7
+0bcafe60  add edx, +0x40
+0bcafe63  mov [0x4042e4b4], edx
+0bcafe6a  add rsp, +0x20
+0bcafe6e  jmp 0x0bcafed9
+---- TRACE 3 stop -> 1
+
+---- TRACE 4 start 3/1 metatest.lua:11
+0024  RET1     0   2
+0026  ADDVV    2   2   8
+0027  FORL     4 => 0024
+0024  MOV      8   1
+0025  CALL     8   2   1
+0000  . FUNCF   12          ; metatest.lua:4
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0024
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0023
+---- TRACE 4 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446bd8]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #6    RI
+0007    num SLOAD  #5    I
+0008    num ADD    0007  +1  
+0009 >  num LE     0008  0006
+0010 >  fun SLOAD  #2    T
+0011 >  fun EQ     0010  metatest.lua:4
+0012    tab FLOAD  metatest.lua:4  func.env
+0013    int FLOAD  0012  tab.hmask
+0014 >  int EQ     0013  +63 
+0015    p32 FLOAD  0012  tab.node
+0016 >  p32 HREFK  0015  "m"  @49
+0017 >  str HLOAD  0016
+0018 >  num STRTO  0017
+0019 >  int CONV   0018  int.num
+0020 >  int LE     0019  +2147483646
+0021 >  int GE     0019  +1  
+---- TRACE 4 mcode 394
+0bcafb65  mov dword [0x4042e410], 0x4
+0bcafb70  mov edx, [0x4042e4b4]
+0bcafb77  cmp dword [rdx-0x4], 0x40446bd8
+0bcafb7e  jnz 0x0bca0014	->1
+0bcafb84  add edx, -0x48
+0bcafb87  mov [0x4042e4b4], edx
+0bcafb8e  cmp dword [rdx+0x14], 0xfffeffff
+0bcafb95  jnb 0x0bca0018	->2
+0bcafb9b  addsd xmm7, [rdx+0x10]
+0bcafba0  movsd [rsp+0x20], xmm7
+0bcafba6  movsd xmm2, [rdx+0x28]
+0bcafbab  movsd [rsp+0x8], xmm2
+0bcafbb1  movsd xmm6, [rdx+0x20]
+0bcafbb6  addsd xmm6, [0x40448b18]
+0bcafbbf  movsd [rsp+0x18], xmm6
+0bcafbc5  ucomisd xmm2, xmm6
+0bcafbc9  jb 0x0bca001c	->3
+0bcafbcf  cmp dword [rdx+0xc], -0x09
+0bcafbd3  jnz 0x0bca0020	->4
+0bcafbd9  cmp dword [rdx+0x8], 0x40436ab0
+0bcafbe0  jnz 0x0bca0020	->4
+0bcafbe6  mov ebp, [0x40436ab8]
+0bcafbed  cmp dword [rbp+0x1c], +0x3f
+0bcafbf1  jnz 0x0bca0020	->4
+0bcafbf7  mov ebp, [rbp+0x14]
+0bcafbfa  mov rdi, 0xfffffffb4043e1b0
+0bcafc04  cmp rdi, [rbp+0x4a0]
+0bcafc0b  jnz 0x0bca0020	->4
+0bcafc11  cmp dword [rbp+0x49c], -0x05
+0bcafc18  jnz 0x0bca0020	->4
+0bcafc1e  mov edi, [rbp+0x498]
+0bcafc24  lea rsi, [rsp+0x10]
+0bcafc29  call 0x00423ad0	->lj_strscan_num
+0bcafc2e  test eax, eax
+0bcafc30  jz 0x0bca0020	->4
+0bcafc36  mov edx, [0x4042e4b4]
+0bcafc3d  movsd xmm7, [rsp+0x20]
+0bcafc43  movsd xmm6, [rsp+0x18]
+0bcafc49  movsd xmm5, [0x40448b18]
+0bcafc52  movsd xmm4, [rsp+0x10]
+0bcafc58  movsd xmm3, [0x40448b20]
+0bcafc61  cvttsd2si ebp, xmm4
+0bcafc65  xorps xmm1, xmm1
+0bcafc68  cvtsi2sd xmm1, ebp
+0bcafc6c  ucomisd xmm4, xmm1
+0bcafc70  jnz 0x0bca0020	->4
+0bcafc76  jpe 0x0bca0020	->4
+0bcafc7c  cmp ebp, 0x7ffffffe
+0bcafc82  jg 0x0bca0020	->4
+0bcafc88  cmp ebp, +0x01
+0bcafc8b  jl 0x0bca0024	->5
+0bcafc91  movsd [rdx+0x88], xmm5
+0bcafc99  movsd [rdx+0x80], xmm5
+0bcafca1  movsd [rdx+0x78], xmm3
+0bcafca6  movsd [rdx+0x70], xmm5
+0bcafcab  movsd [rdx+0x68], xmm5
+0bcafcb0  movsd [rdx+0x60], xmm5
+0bcafcb5  movsd [rdx+0x58], xmm4
+0bcafcba  movsd [rdx+0x50], xmm5
+0bcafcbf  movsd [rdx+0x48], xmm5
+0bcafcc4  mov dword [rdx+0x44], 0x40446bd8
+0bcafccb  mov dword [rdx+0x40], 0x40436ab0
+0bcafcd2  movsd [rdx+0x20], xmm6
+0bcafcd7  movsd [rdx+0x10], xmm7
+0bcafcdc  add edx, +0x48
+0bcafcdf  mov [0x4042e4b4], edx
+0bcafce6  add rsp, +0x20
+0bcafcea  jmp 0x0bcafed9
+---- TRACE 4 stop -> 1
+
+0.677639	-958.2752386217
+---- TRACE flush
+
+withmeta
+---- TRACE 1 start metatest.lua:17
+0013  MOV     10   8
+0014  TGETS    9   8   1  ; "sin"
+0015  CALL     9   2   2
+0000  . FUNCC               ; math.sin
+0016  SUBVV    9   9   0
+0017  MOV     10   9
+0018  TGETS    9   9   1  ; "sin"
+0019  CALL     9   2   2
+0000  . FUNCC               ; math.sin
+0020  MOV      0   9
+0021  FORL     5 => 0013
+---- TRACE 1 IR
+0001    int SLOAD  #6    CI
+0002    int FLOAD  {0x41b39aa8}  tab.hmask
+0003 >  int EQ     0002  +1  
+0004    p32 FLOAD  {0x41b39aa8}  tab.node
+0005 >  p32 HREFK  0004  "__index" @1
+0006 >  tab HLOAD  0005
+0007    int FLOAD  0006  tab.hmask
+0008 >  int EQ     0007  +1  
+0009    p32 FLOAD  0006  tab.node
+0010 >  p32 HREFK  0009  "sin" @0
+0011 >  fun HLOAD  0010
+0012 >  fun EQ     0011  math.sin
+0013    num CONV   0001  num.int
+0014    num FPMATH 0013  sin
+0015 >  num SLOAD  #1    T
+0016    num SUB    0014  0015
+0017  + num FPMATH 0016  sin
+0018  + int ADD    0001  +1  
+0019 >  int LE     0018  +10 
+0020 ------ LOOP ------------
+0021    num CONV   0018  num.int
+0022    num FPMATH 0021  sin
+0023    num SUB    0022  0017
+0024  + num FPMATH 0023  sin
+0025  + int ADD    0018  +1  
+0026 >  int LE     0025  +10 
+0027    int PHI    0018  0025
+0028    num PHI    0017  0024
+---- TRACE 1 mcode 263
+0fa7feec  add rsp, -0x20
+0fa7fef0  mov dword [0x4042e410], 0x1
+0fa7fefb  cvttsd2si ebp, [rdx+0x28]
+0fa7ff00  mov [rsp+0x20], ebp
+0fa7ff04  cmp dword [0x41b39ac4], +0x01
+0fa7ff0c  jnz 0x0fa70010
+0fa7ff12  mov ebx, [0x41b39abc]
+0fa7ff19  mov rdi, 0xfffffffb40430450
+0fa7ff23  cmp rdi, [rbx+0x20]
+0fa7ff27  jnz 0x0fa70010
+0fa7ff2d  cmp dword [rbx+0x1c], -0x0c
+0fa7ff31  jnz 0x0fa70010
+0fa7ff37  mov ecx, [rbx+0x18]
+0fa7ff3a  cmp dword [rcx+0x1c], +0x01
+0fa7ff3e  jnz 0x0fa70010
+0fa7ff44  mov eax, [rcx+0x14]
+0fa7ff47  mov rdi, 0xfffffffb40434268
+0fa7ff51  cmp rdi, [rax+0x8]
+0fa7ff55  jnz 0x0fa70010
+0fa7ff5b  cmp dword [rax+0x4], -0x09
+0fa7ff5f  jnz 0x0fa70010
+0fa7ff65  cmp dword [rax], 0x40434240
+0fa7ff6b  jnz 0x0fa70010
+0fa7ff71  fild dword [rsp+0x20]
+0fa7ff75  fsin
+0fa7ff77  fstp qword [rsp]
+0fa7ff7a  movsd xmm7, [rsp]
+0fa7ff7f  cmp dword [rdx+0x4], 0xfffeffff
+0fa7ff86  jnb 0x0fa70010
+0fa7ff8c  subsd xmm7, [rdx]
+0fa7ff90  movsd [rsp+0x18], xmm7
+0fa7ff96  fld qword [rsp+0x18]
+0fa7ff9a  fsin
+0fa7ff9c  fstp qword [rsp]
+0fa7ff9f  movsd xmm7, [rsp]
+0fa7ffa4  add ebp, +0x01
+0fa7ffa7  cmp ebp, +0x0a
+0fa7ffaa  jg 0x0fa70014
+->LOOP:
+0fa7ffb0  movaps xmm6, xmm7
+0fa7ffb3  xorps xmm7, xmm7
+0fa7ffb6  cvtsi2sd xmm7, ebp
+0fa7ffba  movsd [rsp+0x10], xmm7
+0fa7ffc0  fld qword [rsp+0x10]
+0fa7ffc4  fsin
+0fa7ffc6  fstp qword [rsp]
+0fa7ffc9  movsd xmm7, [rsp]
+0fa7ffce  subsd xmm7, xmm6
+0fa7ffd2  movsd [rsp+0x8], xmm7
+0fa7ffd8  fld qword [rsp+0x8]
+0fa7ffdc  fsin
+0fa7ffde  fstp qword [rsp]
+0fa7ffe1  movsd xmm7, [rsp]
+0fa7ffe6  add ebp, +0x01
+0fa7ffe9  cmp ebp, +0x0a
+0fa7ffec  jle 0x0fa7ffb0	->LOOP
+0fa7ffee  jmp 0x0fa7001c
+---- TRACE 1 stop -> loop
+
+---- TRACE 2 start 1/3 metatest.lua:16
+0022  FORL     1 => 0009
+0009  KSHORT   5   1
+0010  KSHORT   6  10
+0011  KSHORT   7   1
+0012  JFORI    5 => 0022
+---- TRACE 2 IR
+0001    num SLOAD  #1    PI
+0002    num SLOAD  #3    RI
+0003    num SLOAD  #2    I
+0004    num ADD    0003  +1  
+0005 >  num LE     0004  0002
+---- TRACE 2 mcode 96
+0fa7fe89  mov dword [0x4042e410], 0x2
+0fa7fe94  movsd xmm5, [0x40448b18]
+0fa7fe9d  movsd xmm4, [0x40448b20]
+0fa7fea6  movsd xmm3, [rdx+0x10]
+0fa7feab  movsd xmm6, [rdx+0x8]
+0fa7feb0  addsd xmm6, xmm5
+0fa7feb4  ucomisd xmm3, xmm6
+0fa7feb8  jb 0x0fa70014
+0fa7febe  movsd [rdx+0x40], xmm5
+0fa7fec3  movsd [rdx+0x38], xmm5
+0fa7fec8  movsd [rdx+0x30], xmm4
+0fa7fecd  movsd [rdx+0x28], xmm5
+0fa7fed2  movsd [rdx+0x20], xmm6
+0fa7fed7  movsd [rdx+0x8], xmm6
+0fa7fedc  movsd [rdx], xmm7
+0fa7fee0  add rsp, +0x20
+0fa7fee4  jmp 0x0fa7feec
+---- TRACE 2 stop -> 1
+
+---- TRACE 3 start 2/1 metatest.lua:21
+0023  RET1     0   2
+0013  ADDVV    2   2   7
+0014  FORL     3 => 0011
+0011  MOV      7   1
+0012  CALL     7   2   1
+0000  . FUNCF   11          ; metatest.lua:14
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0023
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0022
+---- TRACE 3 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446ba4]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #4    I
+0007    num ADD    0006  +1  
+0008 >  num LE     0007  +500
+0009 >  fun SLOAD  #2    T
+0010 >  fun EQ     0009  metatest.lua:14
+0011    tab FLOAD  metatest.lua:14  func.env
+0012    int FLOAD  0011  tab.hmask
+0013 >  int EQ     0012  +63 
+0014    p32 FLOAD  0011  tab.node
+0015 >  p32 HREFK  0014  "m"  @49
+0016 >  str HLOAD  0015
+0017 >  num STRTO  0016
+0018 >  int CONV   0017  int.num
+0019 >  int LE     0018  +2147483646
+0020 >  int GE     0018  +1  
+---- TRACE 3 mcode 385
+0fa7fd05  mov dword [0x4042e410], 0x3
+0fa7fd10  cmp dword [rdx-0x4], 0x40446ba4
+0fa7fd17  jnz 0x0fa70014
+0fa7fd1d  add edx, -0x40
+0fa7fd20  mov [0x4042e4b4], edx
+0fa7fd27  cmp dword [rdx+0x14], 0xfffeffff
+0fa7fd2e  jnb 0x0fa70018
+0fa7fd34  movaps xmm6, xmm7
+0fa7fd37  movsd xmm7, [0x40448b28]
+0fa7fd40  addsd xmm6, [rdx+0x10]
+0fa7fd45  movsd [rsp+0x18], xmm6
+0fa7fd4b  movsd xmm6, [rdx+0x18]
+0fa7fd50  addsd xmm6, [0x40448b18]
+0fa7fd59  movsd [rsp+0x10], xmm6
+0fa7fd5f  ucomisd xmm7, xmm6
+0fa7fd63  jb 0x0fa7001c
+0fa7fd69  cmp dword [rdx+0xc], -0x09
+0fa7fd6d  jnz 0x0fa70020
+0fa7fd73  cmp dword [rdx+0x8], 0x40436ad0
+0fa7fd7a  jnz 0x0fa70020
+0fa7fd80  mov ebp, [0x40436ad8]
+0fa7fd87  cmp dword [rbp+0x1c], +0x3f
+0fa7fd8b  jnz 0x0fa70020
+0fa7fd91  mov ebp, [rbp+0x14]
+0fa7fd94  mov rdi, 0xfffffffb4043e1b0
+0fa7fd9e  cmp rdi, [rbp+0x4a0]
+0fa7fda5  jnz 0x0fa70020
+0fa7fdab  cmp dword [rbp+0x49c], -0x05
+0fa7fdb2  jnz 0x0fa70020
+0fa7fdb8  mov edi, [rbp+0x498]
+0fa7fdbe  lea rsi, [rsp+0x8]
+0fa7fdc3  call 0x00423ad0	->lj_strscan_num
+0fa7fdc8  test eax, eax
+0fa7fdca  jz 0x0fa70020
+0fa7fdd0  mov edx, [0x4042e4b4]
+0fa7fdd7  movsd xmm7, [rsp+0x18]
+0fa7fddd  movsd xmm6, [rsp+0x10]
+0fa7fde3  movsd xmm5, [0x40448b18]
+0fa7fdec  movsd xmm4, [rsp+0x8]
+0fa7fdf2  movsd xmm3, [0x40448b20]
+0fa7fdfb  cvttsd2si ebp, xmm4
+0fa7fdff  xorps xmm2, xmm2
+0fa7fe02  cvtsi2sd xmm2, ebp
+0fa7fe06  ucomisd xmm4, xmm2
+0fa7fe0a  jnz 0x0fa70020
+0fa7fe10  jpe 0x0fa70020
+0fa7fe16  cmp ebp, 0x7ffffffe
+0fa7fe1c  jg 0x0fa70020
+0fa7fe22  cmp ebp, +0x01
+0fa7fe25  jl 0x0fa70024
+0fa7fe2b  movsd [rdx+0x80], xmm5
+0fa7fe33  movsd [rdx+0x78], xmm5
+0fa7fe38  movsd [rdx+0x70], xmm3
+0fa7fe3d  movsd [rdx+0x68], xmm5
+0fa7fe42  movsd [rdx+0x60], xmm5
+0fa7fe47  movsd [rdx+0x58], xmm5
+0fa7fe4c  movsd [rdx+0x50], xmm4
+0fa7fe51  movsd [rdx+0x48], xmm5
+0fa7fe56  movsd [rdx+0x40], xmm5
+0fa7fe5b  mov dword [rdx+0x3c], 0x40446ba4
+0fa7fe62  mov dword [rdx+0x38], 0x40436ad0
+0fa7fe69  movsd [rdx+0x18], xmm6
+0fa7fe6e  movsd [rdx+0x10], xmm7
+0fa7fe73  add edx, +0x40
+0fa7fe76  mov [0x4042e4b4], edx
+0fa7fe7d  add rsp, +0x20
+0fa7fe81  jmp 0x0fa7feec
+---- TRACE 3 stop -> 1
+
+---- TRACE 4 start 3/1 metatest.lua:21
+0023  RET1     0   2
+0026  ADDVV    2   2   8
+0027  FORL     4 => 0024
+0024  MOV      8   1
+0025  CALL     8   2   1
+0000  . FUNCF   11          ; metatest.lua:14
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0023
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0022
+---- TRACE 4 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446bd8]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #6    RI
+0007    num SLOAD  #5    I
+0008    num ADD    0007  +1  
+0009 >  num LE     0008  0006
+0010 >  fun SLOAD  #2    T
+0011 >  fun EQ     0010  metatest.lua:14
+0012    tab FLOAD  metatest.lua:14  func.env
+0013    int FLOAD  0012  tab.hmask
+0014 >  int EQ     0013  +63 
+0015    p32 FLOAD  0012  tab.node
+0016 >  p32 HREFK  0015  "m"  @49
+0017 >  str HLOAD  0016
+0018 >  num STRTO  0017
+0019 >  int CONV   0018  int.num
+0020 >  int LE     0019  +2147483646
+0021 >  int GE     0019  +1  
+---- TRACE 4 mcode 394
+0fa7fb78  mov dword [0x4042e410], 0x4
+0fa7fb83  mov edx, [0x4042e4b4]
+0fa7fb8a  cmp dword [rdx-0x4], 0x40446bd8
+0fa7fb91  jnz 0x0fa70014
+0fa7fb97  add edx, -0x48
+0fa7fb9a  mov [0x4042e4b4], edx
+0fa7fba1  cmp dword [rdx+0x14], 0xfffeffff
+0fa7fba8  jnb 0x0fa70018
+0fa7fbae  addsd xmm7, [rdx+0x10]
+0fa7fbb3  movsd [rsp+0x20], xmm7
+0fa7fbb9  movsd xmm2, [rdx+0x28]
+0fa7fbbe  movsd [rsp+0x8], xmm2
+0fa7fbc4  movsd xmm6, [rdx+0x20]
+0fa7fbc9  addsd xmm6, [0x40448b18]
+0fa7fbd2  movsd [rsp+0x18], xmm6
+0fa7fbd8  ucomisd xmm2, xmm6
+0fa7fbdc  jb 0x0fa7001c
+0fa7fbe2  cmp dword [rdx+0xc], -0x09
+0fa7fbe6  jnz 0x0fa70020
+0fa7fbec  cmp dword [rdx+0x8], 0x40436ad0
+0fa7fbf3  jnz 0x0fa70020
+0fa7fbf9  mov ebp, [0x40436ad8]
+0fa7fc00  cmp dword [rbp+0x1c], +0x3f
+0fa7fc04  jnz 0x0fa70020
+0fa7fc0a  mov ebp, [rbp+0x14]
+0fa7fc0d  mov rdi, 0xfffffffb4043e1b0
+0fa7fc17  cmp rdi, [rbp+0x4a0]
+0fa7fc1e  jnz 0x0fa70020
+0fa7fc24  cmp dword [rbp+0x49c], -0x05
+0fa7fc2b  jnz 0x0fa70020
+0fa7fc31  mov edi, [rbp+0x498]
+0fa7fc37  lea rsi, [rsp+0x10]
+0fa7fc3c  call 0x00423ad0	->lj_strscan_num
+0fa7fc41  test eax, eax
+0fa7fc43  jz 0x0fa70020
+0fa7fc49  mov edx, [0x4042e4b4]
+0fa7fc50  movsd xmm7, [rsp+0x20]
+0fa7fc56  movsd xmm6, [rsp+0x18]
+0fa7fc5c  movsd xmm5, [0x40448b18]
+0fa7fc65  movsd xmm4, [rsp+0x10]
+0fa7fc6b  movsd xmm3, [0x40448b20]
+0fa7fc74  cvttsd2si ebp, xmm4
+0fa7fc78  xorps xmm1, xmm1
+0fa7fc7b  cvtsi2sd xmm1, ebp
+0fa7fc7f  ucomisd xmm4, xmm1
+0fa7fc83  jnz 0x0fa70020
+0fa7fc89  jpe 0x0fa70020
+0fa7fc8f  cmp ebp, 0x7ffffffe
+0fa7fc95  jg 0x0fa70020
+0fa7fc9b  cmp ebp, +0x01
+0fa7fc9e  jl 0x0fa70024
+0fa7fca4  movsd [rdx+0x88], xmm5
+0fa7fcac  movsd [rdx+0x80], xmm5
+0fa7fcb4  movsd [rdx+0x78], xmm3
+0fa7fcb9  movsd [rdx+0x70], xmm5
+0fa7fcbe  movsd [rdx+0x68], xmm5
+0fa7fcc3  movsd [rdx+0x60], xmm5
+0fa7fcc8  movsd [rdx+0x58], xmm4
+0fa7fccd  movsd [rdx+0x50], xmm5
+0fa7fcd2  movsd [rdx+0x48], xmm5
+0fa7fcd7  mov dword [rdx+0x44], 0x40446bd8
+0fa7fcde  mov dword [rdx+0x40], 0x40436ad0
+0fa7fce5  movsd [rdx+0x20], xmm6
+0fa7fcea  movsd [rdx+0x10], xmm7
+0fa7fcef  add edx, +0x48
+0fa7fcf2  mov [0x4042e4b4], edx
+0fa7fcf9  add rsp, +0x20
+0fa7fcfd  jmp 0x0fa7feec
+---- TRACE 4 stop -> 1
+
+0.665192	-958.2752386217
+withmetamethod
+---- TRACE 5 start metatest.lua:27
+0013  GGET     9   1      ; "getmetatable"
+0014  MOV     10   0
+0015  CALL     9   2   2
+0000  . FUNCC               ; getmetatable
+0016  TGETS    9   9   2  ; "__sin"
+0017  GGET    10   1      ; "getmetatable"
+0018  MOV     11   8
+0019  CALL    10   2   2
+0000  . FUNCC               ; getmetatable
+0020  TGETS   10  10   2  ; "__sin"
+0021  MOV     11   8
+0022  CALL    10   2   2
+0000  . FUNCC               ; math.sin
+0023  SUBVV   10  10   0
+0024  CALL     9   2   2
+0000  . FUNCC               ; math.sin
+0025  MOV      0   9
+0026  FORL     5 => 0013
+---- TRACE 5 IR
+0001    int SLOAD  #6    CI
+0002    fun SLOAD  #0    R
+0003    tab FLOAD  0002  func.env
+0004    int FLOAD  0003  tab.hmask
+0005 >  int EQ     0004  +63 
+0006    p32 FLOAD  0003  tab.node
+0007 >  p32 HREFK  0006  "getmetatable" @61
+0008 >  fun HLOAD  0007
+0009 >  num SLOAD  #1    T
+0010 >  fun EQ     0008  getmetatable
+0011    p32 HREF   {0x41b39aa8}  "__metatable"
+0012 >  p32 EQ     0011  [0x4042e458]
+0013    int FLOAD  {0x41b39aa8}  tab.hmask
+0014 >  int EQ     0013  +1  
+0015    p32 FLOAD  {0x41b39aa8}  tab.node
+0016 >  p32 HREFK  0015  "__sin" @0
+0017 >  fun HLOAD  0016
+0018 >  fun EQ     0017  math.sin
+0019    num CONV   0001  num.int
+0020    num FPMATH 0019  sin
+0021    num SUB    0020  0009
+0022  + num FPMATH 0021  sin
+0023  + int ADD    0001  +1  
+0024 >  int LE     0023  +10 
+0025 ------ LOOP ------------
+0026    num CONV   0023  num.int
+0027    num FPMATH 0026  sin
+0028    num SUB    0027  0022
+0029  + num FPMATH 0028  sin
+0030  + int ADD    0023  +1  
+0031 >  int LE     0030  +10 
+0032    int PHI    0023  0030
+0033    num PHI    0022  0029
+---- TRACE 5 mcode 339
+0fa7fa20  add rsp, -0x20
+0fa7fa24  mov dword [0x4042e410], 0x5
+0fa7fa2f  mov ecx, 0x41b39aa8
+0fa7fa34  cvttsd2si ebp, [rdx+0x28]
+0fa7fa39  mov [rsp+0x20], ebp
+0fa7fa3d  mov r8d, [rdx-0x8]
+0fa7fa41  mov esi, [r8+0x8]
+0fa7fa45  cmp dword [rsi+0x1c], +0x3f
+0fa7fa49  jnz 0x0fa70010
+0fa7fa4f  mov ebx, [rsi+0x14]
+0fa7fa52  mov rdi, 0xfffffffb40431090
+0fa7fa5c  cmp rdi, [rbx+0x5c0]
+0fa7fa63  jnz 0x0fa70010
+0fa7fa69  cmp dword [rbx+0x5bc], -0x09
+0fa7fa70  jnz 0x0fa70010
+0fa7fa76  cmp dword [rdx+0x4], 0xfffeffff
+0fa7fa7d  jnb 0x0fa70010
+0fa7fa83  cmp dword [rbx+0x5b8], 0x40431068
+0fa7fa8d  jnz 0x0fa70010
+0fa7fa93  mov edi, [rcx+0x1c]
+0fa7fa96  and edi, 0xf0d9e7ee
+0fa7fa9c  lea edi, [rdi+rdi*2]
+0fa7fa9f  shl edi, 0x03
+0fa7faa2  add edi, [rcx+0x14]
+0fa7faa5  cmp dword [rdi+0xc], -0x05
+0fa7faa9  jnz 0x0fa7fab8
+0fa7faab  cmp dword [rdi+0x8], 0x40430680
+0fa7fab2  jz 0x0fa70010
+0fa7fab8  mov edi, [rdi+0x10]
+0fa7fabb  test edi, edi
+0fa7fabd  jnz 0x0fa7faa5
+0fa7fabf  cmp dword [0x41b39ac4], +0x01
+0fa7fac7  jnz 0x0fa70010
+0fa7facd  mov eax, [0x41b39abc]
+0fa7fad4  mov rdi, 0xfffffffb40445e58
+0fa7fade  cmp rdi, [rax+0x8]
+0fa7fae2  jnz 0x0fa70010
+0fa7fae8  cmp dword [rax+0x4], -0x09
+0fa7faec  jnz 0x0fa70010
+0fa7faf2  cmp dword [rax], 0x40434240
+0fa7faf8  jnz 0x0fa70010
+0fa7fafe  fild dword [rsp+0x20]
+0fa7fb02  fsin
+0fa7fb04  fstp qword [rsp]
+0fa7fb07  movsd xmm7, [rsp]
+0fa7fb0c  subsd xmm7, [rdx]
+0fa7fb10  movsd [rsp+0x18], xmm7
+0fa7fb16  fld qword [rsp+0x18]
+0fa7fb1a  fsin
+0fa7fb1c  fstp qword [rsp]
+0fa7fb1f  movsd xmm7, [rsp]
+0fa7fb24  add ebp, +0x01
+0fa7fb27  cmp ebp, +0x0a
+0fa7fb2a  jg 0x0fa70014
+->LOOP:
+0fa7fb30  movaps xmm6, xmm7
+0fa7fb33  xorps xmm7, xmm7
+0fa7fb36  cvtsi2sd xmm7, ebp
+0fa7fb3a  movsd [rsp+0x10], xmm7
+0fa7fb40  fld qword [rsp+0x10]
+0fa7fb44  fsin
+0fa7fb46  fstp qword [rsp]
+0fa7fb49  movsd xmm7, [rsp]
+0fa7fb4e  subsd xmm7, xmm6
+0fa7fb52  movsd [rsp+0x8], xmm7
+0fa7fb58  fld qword [rsp+0x8]
+0fa7fb5c  fsin
+0fa7fb5e  fstp qword [rsp]
+0fa7fb61  movsd xmm7, [rsp]
+0fa7fb66  add ebp, +0x01
+0fa7fb69  cmp ebp, +0x0a
+0fa7fb6c  jle 0x0fa7fb30	->LOOP
+0fa7fb6e  jmp 0x0fa7001c
+---- TRACE 5 stop -> loop
+
+---- TRACE 6 start 5/3 metatest.lua:26
+0027  FORL     1 => 0009
+0009  KSHORT   5   1
+0010  KSHORT   6  10
+0011  KSHORT   7   1
+0012  JFORI    5 => 0027
+---- TRACE 6 IR
+0001    num SLOAD  #1    PI
+0002    num SLOAD  #3    RI
+0003    num SLOAD  #2    I
+0004    num ADD    0003  +1  
+0005 >  num LE     0004  0002
+---- TRACE 6 mcode 96
+0fa7f9bd  mov dword [0x4042e410], 0x6
+0fa7f9c8  movsd xmm5, [0x40448b18]
+0fa7f9d1  movsd xmm4, [0x40448b20]
+0fa7f9da  movsd xmm3, [rdx+0x10]
+0fa7f9df  movsd xmm6, [rdx+0x8]
+0fa7f9e4  addsd xmm6, xmm5
+0fa7f9e8  ucomisd xmm3, xmm6
+0fa7f9ec  jb 0x0fa70014
+0fa7f9f2  movsd [rdx+0x40], xmm5
+0fa7f9f7  movsd [rdx+0x38], xmm5
+0fa7f9fc  movsd [rdx+0x30], xmm4
+0fa7fa01  movsd [rdx+0x28], xmm5
+0fa7fa06  movsd [rdx+0x20], xmm6
+0fa7fa0b  movsd [rdx+0x8], xmm6
+0fa7fa10  movsd [rdx], xmm7
+0fa7fa14  add rsp, +0x20
+0fa7fa18  jmp 0x0fa7fa20
+---- TRACE 6 stop -> 5
+
+---- TRACE 7 start 6/1 metatest.lua:31
+0028  RET1     0   2
+0013  ADDVV    2   2   7
+0014  FORL     3 => 0011
+0011  MOV      7   1
+0012  CALL     7   2   1
+0000  . FUNCF   12          ; metatest.lua:24
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0028
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0027
+---- TRACE 7 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446ba4]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #4    I
+0007    num ADD    0006  +1  
+0008 >  num LE     0007  +500
+0009 >  fun SLOAD  #2    T
+0010 >  fun EQ     0009  metatest.lua:24
+0011    tab FLOAD  metatest.lua:24  func.env
+0012    int FLOAD  0011  tab.hmask
+0013 >  int EQ     0012  +63 
+0014    p32 FLOAD  0011  tab.node
+0015 >  p32 HREFK  0014  "m"  @49
+0016 >  str HLOAD  0015
+0017 >  num STRTO  0016
+0018 >  int CONV   0017  int.num
+0019 >  int LE     0018  +2147483646
+0020 >  int GE     0018  +1  
+---- TRACE 7 mcode 385
+0fa7f839  mov dword [0x4042e410], 0x7
+0fa7f844  cmp dword [rdx-0x4], 0x40446ba4
+0fa7f84b  jnz 0x0fa70014
+0fa7f851  add edx, -0x40
+0fa7f854  mov [0x4042e4b4], edx
+0fa7f85b  cmp dword [rdx+0x14], 0xfffeffff
+0fa7f862  jnb 0x0fa70018
+0fa7f868  movaps xmm6, xmm7
+0fa7f86b  movsd xmm7, [0x40448b28]
+0fa7f874  addsd xmm6, [rdx+0x10]
+0fa7f879  movsd [rsp+0x18], xmm6
+0fa7f87f  movsd xmm6, [rdx+0x18]
+0fa7f884  addsd xmm6, [0x40448b18]
+0fa7f88d  movsd [rsp+0x10], xmm6
+0fa7f893  ucomisd xmm7, xmm6
+0fa7f897  jb 0x0fa7001c
+0fa7f89d  cmp dword [rdx+0xc], -0x09
+0fa7f8a1  jnz 0x0fa70020
+0fa7f8a7  cmp dword [rdx+0x8], 0x40436af0
+0fa7f8ae  jnz 0x0fa70020
+0fa7f8b4  mov ebp, [0x40436af8]
+0fa7f8bb  cmp dword [rbp+0x1c], +0x3f
+0fa7f8bf  jnz 0x0fa70020
+0fa7f8c5  mov ebp, [rbp+0x14]
+0fa7f8c8  mov rdi, 0xfffffffb4043e1b0
+0fa7f8d2  cmp rdi, [rbp+0x4a0]
+0fa7f8d9  jnz 0x0fa70020
+0fa7f8df  cmp dword [rbp+0x49c], -0x05
+0fa7f8e6  jnz 0x0fa70020
+0fa7f8ec  mov edi, [rbp+0x498]
+0fa7f8f2  lea rsi, [rsp+0x8]
+0fa7f8f7  call 0x00423ad0	->lj_strscan_num
+0fa7f8fc  test eax, eax
+0fa7f8fe  jz 0x0fa70020
+0fa7f904  mov edx, [0x4042e4b4]
+0fa7f90b  movsd xmm7, [rsp+0x18]
+0fa7f911  movsd xmm6, [rsp+0x10]
+0fa7f917  movsd xmm5, [0x40448b18]
+0fa7f920  movsd xmm4, [rsp+0x8]
+0fa7f926  movsd xmm3, [0x40448b20]
+0fa7f92f  cvttsd2si ebp, xmm4
+0fa7f933  xorps xmm2, xmm2
+0fa7f936  cvtsi2sd xmm2, ebp
+0fa7f93a  ucomisd xmm4, xmm2
+0fa7f93e  jnz 0x0fa70020
+0fa7f944  jpe 0x0fa70020
+0fa7f94a  cmp ebp, 0x7ffffffe
+0fa7f950  jg 0x0fa70020
+0fa7f956  cmp ebp, +0x01
+0fa7f959  jl 0x0fa70024
+0fa7f95f  movsd [rdx+0x80], xmm5
+0fa7f967  movsd [rdx+0x78], xmm5
+0fa7f96c  movsd [rdx+0x70], xmm3
+0fa7f971  movsd [rdx+0x68], xmm5
+0fa7f976  movsd [rdx+0x60], xmm5
+0fa7f97b  movsd [rdx+0x58], xmm5
+0fa7f980  movsd [rdx+0x50], xmm4
+0fa7f985  movsd [rdx+0x48], xmm5
+0fa7f98a  movsd [rdx+0x40], xmm5
+0fa7f98f  mov dword [rdx+0x3c], 0x40446ba4
+0fa7f996  mov dword [rdx+0x38], 0x40436af0
+0fa7f99d  movsd [rdx+0x18], xmm6
+0fa7f9a2  movsd [rdx+0x10], xmm7
+0fa7f9a7  add edx, +0x40
+0fa7f9aa  mov [0x4042e4b4], edx
+0fa7f9b1  add rsp, +0x20
+0fa7f9b5  jmp 0x0fa7fa20
+---- TRACE 7 stop -> 5
+
+---- TRACE 8 start 7/1 metatest.lua:31
+0028  RET1     0   2
+0026  ADDVV    2   2   8
+0027  FORL     4 => 0024
+0024  MOV      8   1
+0025  CALL     8   2   1
+0000  . FUNCF   12          ; metatest.lua:24
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0028
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0027
+---- TRACE 8 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446bd8]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #6    RI
+0007    num SLOAD  #5    I
+0008    num ADD    0007  +1  
+0009 >  num LE     0008  0006
+0010 >  fun SLOAD  #2    T
+0011 >  fun EQ     0010  metatest.lua:24
+0012    tab FLOAD  metatest.lua:24  func.env
+0013    int FLOAD  0012  tab.hmask
+0014 >  int EQ     0013  +63 
+0015    p32 FLOAD  0012  tab.node
+0016 >  p32 HREFK  0015  "m"  @49
+0017 >  str HLOAD  0016
+0018 >  num STRTO  0017
+0019 >  int CONV   0018  int.num
+0020 >  int LE     0019  +2147483646
+0021 >  int GE     0019  +1  
+---- TRACE 8 mcode 394
+0fa7f6ac  mov dword [0x4042e410], 0x8
+0fa7f6b7  mov edx, [0x4042e4b4]
+0fa7f6be  cmp dword [rdx-0x4], 0x40446bd8
+0fa7f6c5  jnz 0x0fa70014
+0fa7f6cb  add edx, -0x48
+0fa7f6ce  mov [0x4042e4b4], edx
+0fa7f6d5  cmp dword [rdx+0x14], 0xfffeffff
+0fa7f6dc  jnb 0x0fa70018
+0fa7f6e2  addsd xmm7, [rdx+0x10]
+0fa7f6e7  movsd [rsp+0x20], xmm7
+0fa7f6ed  movsd xmm2, [rdx+0x28]
+0fa7f6f2  movsd [rsp+0x8], xmm2
+0fa7f6f8  movsd xmm6, [rdx+0x20]
+0fa7f6fd  addsd xmm6, [0x40448b18]
+0fa7f706  movsd [rsp+0x18], xmm6
+0fa7f70c  ucomisd xmm2, xmm6
+0fa7f710  jb 0x0fa7001c
+0fa7f716  cmp dword [rdx+0xc], -0x09
+0fa7f71a  jnz 0x0fa70020
+0fa7f720  cmp dword [rdx+0x8], 0x40436af0
+0fa7f727  jnz 0x0fa70020
+0fa7f72d  mov ebp, [0x40436af8]
+0fa7f734  cmp dword [rbp+0x1c], +0x3f
+0fa7f738  jnz 0x0fa70020
+0fa7f73e  mov ebp, [rbp+0x14]
+0fa7f741  mov rdi, 0xfffffffb4043e1b0
+0fa7f74b  cmp rdi, [rbp+0x4a0]
+0fa7f752  jnz 0x0fa70020
+0fa7f758  cmp dword [rbp+0x49c], -0x05
+0fa7f75f  jnz 0x0fa70020
+0fa7f765  mov edi, [rbp+0x498]
+0fa7f76b  lea rsi, [rsp+0x10]
+0fa7f770  call 0x00423ad0	->lj_strscan_num
+0fa7f775  test eax, eax
+0fa7f777  jz 0x0fa70020
+0fa7f77d  mov edx, [0x4042e4b4]
+0fa7f784  movsd xmm7, [rsp+0x20]
+0fa7f78a  movsd xmm6, [rsp+0x18]
+0fa7f790  movsd xmm5, [0x40448b18]
+0fa7f799  movsd xmm4, [rsp+0x10]
+0fa7f79f  movsd xmm3, [0x40448b20]
+0fa7f7a8  cvttsd2si ebp, xmm4
+0fa7f7ac  xorps xmm1, xmm1
+0fa7f7af  cvtsi2sd xmm1, ebp
+0fa7f7b3  ucomisd xmm4, xmm1
+0fa7f7b7  jnz 0x0fa70020
+0fa7f7bd  jpe 0x0fa70020
+0fa7f7c3  cmp ebp, 0x7ffffffe
+0fa7f7c9  jg 0x0fa70020
+0fa7f7cf  cmp ebp, +0x01
+0fa7f7d2  jl 0x0fa70024
+0fa7f7d8  movsd [rdx+0x88], xmm5
+0fa7f7e0  movsd [rdx+0x80], xmm5
+0fa7f7e8  movsd [rdx+0x78], xmm3
+0fa7f7ed  movsd [rdx+0x70], xmm5
+0fa7f7f2  movsd [rdx+0x68], xmm5
+0fa7f7f7  movsd [rdx+0x60], xmm5
+0fa7f7fc  movsd [rdx+0x58], xmm4
+0fa7f801  movsd [rdx+0x50], xmm5
+0fa7f806  movsd [rdx+0x48], xmm5
+0fa7f80b  mov dword [rdx+0x44], 0x40446bd8
+0fa7f812  mov dword [rdx+0x40], 0x40436af0
+0fa7f819  movsd [rdx+0x20], xmm6
+0fa7f81e  movsd [rdx+0x10], xmm7
+0fa7f823  add edx, +0x48
+0fa7f826  mov [0x4042e4b4], edx
+0fa7f82d  add rsp, +0x20
+0fa7f831  jmp 0x0fa7fa20
+---- TRACE 8 stop -> 5
+
+0.666021	-958.2752386217
+withcachedmetamethod
+---- TRACE 9 start metatest.lua:37
+0017  MOV     10   1
+0018  MOV     11   1
+0019  MOV     12   9
+0020  CALL    11   2   2
+0000  . FUNCC               ; math.sin
+0021  SUBVV   11  11   0
+0022  CALL    10   2   2
+0000  . FUNCC               ; math.sin
+0023  MOV      0  10
+0024  FORL     6 => 0017
+---- TRACE 9 IR
+0001    int SLOAD  #7    CI
+0002 >  fun SLOAD  #2    T
+0003 >  fun EQ     0002  math.sin
+0004    num CONV   0001  num.int
+0005    num FPMATH 0004  sin
+0006 >  num SLOAD  #1    T
+0007    num SUB    0005  0006
+0008  + num FPMATH 0007  sin
+0009  + int ADD    0001  +1  
+0010 >  int LE     0009  +10 
+0011 ------ LOOP ------------
+0012    num CONV   0009  num.int
+0013    num FPMATH 0012  sin
+0014    num SUB    0013  0008
+0015  + num FPMATH 0014  sin
+0016  + int ADD    0009  +1  
+0017 >  int LE     0016  +10 
+0018    int PHI    0009  0016
+0019    num PHI    0008  0015
+---- TRACE 9 mcode 177
+0fa7f5f2  add rsp, -0x20
+0fa7f5f6  mov dword [0x4042e410], 0x9
+0fa7f601  cvttsd2si ebp, [rdx+0x30]
+0fa7f606  mov [rsp+0x20], ebp
+0fa7f60a  cmp dword [rdx+0xc], -0x09
+0fa7f60e  jnz 0x0fa70010
+0fa7f614  cmp dword [rdx+0x8], 0x40434240
+0fa7f61b  jnz 0x0fa70010
+0fa7f621  fild dword [rsp+0x20]
+0fa7f625  fsin
+0fa7f627  fstp qword [rsp]
+0fa7f62a  movsd xmm7, [rsp]
+0fa7f62f  cmp dword [rdx+0x4], 0xfffeffff
+0fa7f636  jnb 0x0fa70010
+0fa7f63c  subsd xmm7, [rdx]
+0fa7f640  movsd [rsp+0x18], xmm7
+0fa7f646  fld qword [rsp+0x18]
+0fa7f64a  fsin
+0fa7f64c  fstp qword [rsp]
+0fa7f64f  movsd xmm7, [rsp]
+0fa7f654  add ebp, +0x01
+0fa7f657  cmp ebp, +0x0a
+0fa7f65a  jg 0x0fa70014
+->LOOP:
+0fa7f660  movaps xmm6, xmm7
+0fa7f663  xorps xmm7, xmm7
+0fa7f666  cvtsi2sd xmm7, ebp
+0fa7f66a  movsd [rsp+0x10], xmm7
+0fa7f670  fld qword [rsp+0x10]
+0fa7f674  fsin
+0fa7f676  fstp qword [rsp]
+0fa7f679  movsd xmm7, [rsp]
+0fa7f67e  subsd xmm7, xmm6
+0fa7f682  movsd [rsp+0x8], xmm7
+0fa7f688  fld qword [rsp+0x8]
+0fa7f68c  fsin
+0fa7f68e  fstp qword [rsp]
+0fa7f691  movsd xmm7, [rsp]
+0fa7f696  add ebp, +0x01
+0fa7f699  cmp ebp, +0x0a
+0fa7f69c  jle 0x0fa7f660	->LOOP
+0fa7f69e  jmp 0x0fa7001c
+---- TRACE 9 stop -> loop
+
+---- TRACE 10 start 9/3 metatest.lua:36
+0025  FORL     2 => 0013
+0013  KSHORT   6   1
+0014  KSHORT   7  10
+0015  KSHORT   8   1
+0016  JFORI    6 => 0025
+---- TRACE 10 IR
+0001    num SLOAD  #1    PI
+0002    num SLOAD  #4    RI
+0003    num SLOAD  #3    I
+0004    num ADD    0003  +1  
+0005 >  num LE     0004  0002
+---- TRACE 10 mcode 96
+0fa7f58f  mov dword [0x4042e410], 0xa
+0fa7f59a  movsd xmm5, [0x40448b18]
+0fa7f5a3  movsd xmm4, [0x40448b20]
+0fa7f5ac  movsd xmm3, [rdx+0x18]
+0fa7f5b1  movsd xmm6, [rdx+0x10]
+0fa7f5b6  addsd xmm6, xmm5
+0fa7f5ba  ucomisd xmm3, xmm6
+0fa7f5be  jb 0x0fa70014
+0fa7f5c4  movsd [rdx+0x48], xmm5
+0fa7f5c9  movsd [rdx+0x40], xmm5
+0fa7f5ce  movsd [rdx+0x38], xmm4
+0fa7f5d3  movsd [rdx+0x30], xmm5
+0fa7f5d8  movsd [rdx+0x28], xmm6
+0fa7f5dd  movsd [rdx+0x10], xmm6
+0fa7f5e2  movsd [rdx], xmm7
+0fa7f5e6  add rsp, +0x20
+0fa7f5ea  jmp 0x0fa7f5f2
+---- TRACE 10 stop -> 9
+
+---- TRACE 11 start 10/1 metatest.lua:41
+0026  RET1     0   2
+0013  ADDVV    2   2   7
+0014  FORL     3 => 0011
+0011  MOV      7   1
+0012  CALL     7   2   1
+0000  . FUNCF   13          ; metatest.lua:33
+0001  . KSHORT   0   1
+0002  . GGET     1   0      ; "getmetatable"
+0003  . MOV      2   0
+0004  . CALL     1   2   2
+0000  . . FUNCC               ; getmetatable
+0005  . TGETS    1   1   1  ; "__sin"
+0006  . KSHORT   2   1
+0007  . GGET     3   2      ; "m"
+0008  . IST          3
+0009  . JMP      4 => 0011
+0011  . KSHORT   4   1
+0012  . FORI     2 => 0026
+0013  . KSHORT   6   1
+0014  . KSHORT   7  10
+0015  . KSHORT   8   1
+0016  . JFORI    6 => 0025
+---- TRACE 11 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446ba4]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #4    I
+0007    num ADD    0006  +1  
+0008 >  num LE     0007  +500
+0009 >  fun SLOAD  #2    T
+0010 >  fun EQ     0009  metatest.lua:33
+0011    tab FLOAD  metatest.lua:33  func.env
+0012    int FLOAD  0011  tab.hmask
+0013 >  int EQ     0012  +63 
+0014    p32 FLOAD  0011  tab.node
+0015 >  p32 HREFK  0014  "getmetatable" @61
+0016 >  fun HLOAD  0015
+0017 >  fun EQ     0016  getmetatable
+0018    p32 HREF   {0x41b39aa8}  "__metatable"
+0019 >  p32 EQ     0018  [0x4042e458]
+0020    int FLOAD  {0x41b39aa8}  tab.hmask
+0021 >  int EQ     0020  +1  
+0022    p32 FLOAD  {0x41b39aa8}  tab.node
+0023 >  p32 HREFK  0022  "__sin" @0
+0024 >  fun HLOAD  0023
+0025 >  p32 HREFK  0014  "m"  @49
+0026 >  str HLOAD  0025
+0027 >  num STRTO  0026
+0028 >  int CONV   0027  int.num
+0029 >  int LE     0028  +2147483646
+0030 >  int GE     0028  +1  
+---- TRACE 11 mcode 553
+0fa7f363  mov dword [0x4042e410], 0xb
+0fa7f36e  mov ebp, 0x41b39aa8
+0fa7f373  cmp dword [rdx-0x4], 0x40446ba4
+0fa7f37a  jnz 0x0fa70014
+0fa7f380  add edx, -0x40
+0fa7f383  mov [0x4042e4b4], edx
+0fa7f38a  cmp dword [rdx+0x14], 0xfffeffff
+0fa7f391  jnb 0x0fa70018
+0fa7f397  movaps xmm6, xmm7
+0fa7f39a  movsd xmm7, [0x40448b28]
+0fa7f3a3  addsd xmm6, [rdx+0x10]
+0fa7f3a8  movsd [rsp+0x18], xmm6
+0fa7f3ae  movsd xmm6, [rdx+0x18]
+0fa7f3b3  addsd xmm6, [0x40448b18]
+0fa7f3bc  movsd [rsp+0x10], xmm6
+0fa7f3c2  ucomisd xmm7, xmm6
+0fa7f3c6  jb 0x0fa7001c
+0fa7f3cc  cmp dword [rdx+0xc], -0x09
+0fa7f3d0  jnz 0x0fa70020
+0fa7f3d6  cmp dword [rdx+0x8], 0x40435cd0
+0fa7f3dd  jnz 0x0fa70020
+0fa7f3e3  mov ebx, [0x40435cd8]
+0fa7f3ea  cmp dword [rbx+0x1c], +0x3f
+0fa7f3ee  jnz 0x0fa70020
+0fa7f3f4  mov ebx, [rbx+0x14]
+0fa7f3f7  mov rdi, 0xfffffffb40431090
+0fa7f401  cmp rdi, [rbx+0x5c0]
+0fa7f408  jnz 0x0fa70020
+0fa7f40e  cmp dword [rbx+0x5bc], -0x09
+0fa7f415  jnz 0x0fa70020
+0fa7f41b  cmp dword [rbx+0x5b8], 0x40431068
+0fa7f425  jnz 0x0fa70020
+0fa7f42b  mov edi, [rbp+0x1c]
+0fa7f42e  and edi, 0xf0d9e7ee
+0fa7f434  lea edi, [rdi+rdi*2]
+0fa7f437  shl edi, 0x03
+0fa7f43a  add edi, [rbp+0x14]
+0fa7f43d  cmp dword [rdi+0xc], -0x05
+0fa7f441  jnz 0x0fa7f450
+0fa7f443  cmp dword [rdi+0x8], 0x40430680
+0fa7f44a  jz 0x0fa70020
+0fa7f450  mov edi, [rdi+0x10]
+0fa7f453  test edi, edi
+0fa7f455  jnz 0x0fa7f43d
+0fa7f457  cmp dword [0x41b39ac4], +0x01
+0fa7f45f  jnz 0x0fa70020
+0fa7f465  mov ebp, [0x41b39abc]
+0fa7f46c  mov rdi, 0xfffffffb40445e58
+0fa7f476  cmp rdi, [rbp+0x8]
+0fa7f47a  jnz 0x0fa70020
+0fa7f480  cmp dword [rbp+0x4], -0x09
+0fa7f484  jnz 0x0fa70020
+0fa7f48a  mov ebp, [rbp+0x0]
+0fa7f48d  mov rdi, 0xfffffffb4043e1b0
+0fa7f497  cmp rdi, [rbx+0x4a0]
+0fa7f49e  jnz 0x0fa70020
+0fa7f4a4  cmp dword [rbx+0x49c], -0x05
+0fa7f4ab  jnz 0x0fa70020
+0fa7f4b1  mov edi, [rbx+0x498]
+0fa7f4b7  lea rsi, [rsp+0x8]
+0fa7f4bc  call 0x00423ad0	->lj_strscan_num
+0fa7f4c1  test eax, eax
+0fa7f4c3  jz 0x0fa70020
+0fa7f4c9  mov edx, [0x4042e4b4]
+0fa7f4d0  movsd xmm7, [rsp+0x18]
+0fa7f4d6  movsd xmm6, [rsp+0x10]
+0fa7f4dc  movsd xmm5, [0x40448b18]
+0fa7f4e5  movsd xmm4, [rsp+0x8]
+0fa7f4eb  movsd xmm3, [0x40448b20]
+0fa7f4f4  cvttsd2si ebx, xmm4
+0fa7f4f8  xorps xmm2, xmm2
+0fa7f4fb  cvtsi2sd xmm2, ebx
+0fa7f4ff  ucomisd xmm4, xmm2
+0fa7f503  jnz 0x0fa70020
+0fa7f509  jpe 0x0fa70020
+0fa7f50f  cmp ebx, 0x7ffffffe
+0fa7f515  jg 0x0fa70020
+0fa7f51b  cmp ebx, +0x01
+0fa7f51e  jl 0x0fa70024
+0fa7f524  movsd [rdx+0x88], xmm5
+0fa7f52c  movsd [rdx+0x80], xmm5
+0fa7f534  movsd [rdx+0x78], xmm3
+0fa7f539  movsd [rdx+0x70], xmm5
+0fa7f53e  movsd [rdx+0x68], xmm5
+0fa7f543  movsd [rdx+0x60], xmm5
+0fa7f548  movsd [rdx+0x58], xmm4
+0fa7f54d  movsd [rdx+0x50], xmm5
+0fa7f552  mov dword [rdx+0x4c], 0xfffffff7
+0fa7f559  mov [rdx+0x48], ebp
+0fa7f55c  movsd [rdx+0x40], xmm5
+0fa7f561  mov dword [rdx+0x3c], 0x40446ba4
+0fa7f568  mov dword [rdx+0x38], 0x40435cd0
+0fa7f56f  movsd [rdx+0x18], xmm6
+0fa7f574  movsd [rdx+0x10], xmm7
+0fa7f579  add edx, +0x40
+0fa7f57c  mov [0x4042e4b4], edx
+0fa7f583  add rsp, +0x20
+0fa7f587  jmp 0x0fa7f5f2
+---- TRACE 11 stop -> 9
+
+---- TRACE 12 start 11/1 metatest.lua:41
+0026  RET1     0   2
+0026  ADDVV    2   2   8
+0027  FORL     4 => 0024
+0024  MOV      8   1
+0025  CALL     8   2   1
+0000  . FUNCF   13          ; metatest.lua:33
+0001  . KSHORT   0   1
+0002  . GGET     1   0      ; "getmetatable"
+0003  . MOV      2   0
+0004  . CALL     1   2   2
+0000  . . FUNCC               ; getmetatable
+0005  . TGETS    1   1   1  ; "__sin"
+0006  . KSHORT   2   1
+0007  . GGET     3   2      ; "m"
+0008  . IST          3
+0009  . JMP      4 => 0011
+0011  . KSHORT   4   1
+0012  . FORI     2 => 0026
+0013  . KSHORT   6   1
+0014  . KSHORT   7  10
+0015  . KSHORT   8   1
+0016  . JFORI    6 => 0025
+---- TRACE 12 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446bd8]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #6    RI
+0007    num SLOAD  #5    I
+0008    num ADD    0007  +1  
+0009 >  num LE     0008  0006
+0010 >  fun SLOAD  #2    T
+0011 >  fun EQ     0010  metatest.lua:33
+0012    tab FLOAD  metatest.lua:33  func.env
+0013    int FLOAD  0012  tab.hmask
+0014 >  int EQ     0013  +63 
+0015    p32 FLOAD  0012  tab.node
+0016 >  p32 HREFK  0015  "getmetatable" @61
+0017 >  fun HLOAD  0016
+0018 >  fun EQ     0017  getmetatable
+0019    p32 HREF   {0x41b39aa8}  "__metatable"
+0020 >  p32 EQ     0019  [0x4042e458]
+0021    int FLOAD  {0x41b39aa8}  tab.hmask
+0022 >  int EQ     0021  +1  
+0023    p32 FLOAD  {0x41b39aa8}  tab.node
+0024 >  p32 HREFK  0023  "__sin" @0
+0025 >  fun HLOAD  0024
+0026 >  p32 HREFK  0015  "m"  @49
+0027 >  str HLOAD  0026
+0028 >  num STRTO  0027
+0029 >  int CONV   0028  int.num
+0030 >  int LE     0029  +2147483646
+0031 >  int GE     0029  +1  
+---- TRACE 12 mcode 562
+0fa7f12e  mov dword [0x4042e410], 0xc
+0fa7f139  mov edx, [0x4042e4b4]
+0fa7f140  mov ebp, 0x41b39aa8
+0fa7f145  cmp dword [rdx-0x4], 0x40446bd8
+0fa7f14c  jnz 0x0fa70014
+0fa7f152  add edx, -0x48
+0fa7f155  mov [0x4042e4b4], edx
+0fa7f15c  cmp dword [rdx+0x14], 0xfffeffff
+0fa7f163  jnb 0x0fa70018
+0fa7f169  addsd xmm7, [rdx+0x10]
+0fa7f16e  movsd [rsp+0x20], xmm7
+0fa7f174  movsd xmm2, [rdx+0x28]
+0fa7f179  movsd [rsp+0x8], xmm2
+0fa7f17f  movsd xmm6, [rdx+0x20]
+0fa7f184  addsd xmm6, [0x40448b18]
+0fa7f18d  movsd [rsp+0x18], xmm6
+0fa7f193  ucomisd xmm2, xmm6
+0fa7f197  jb 0x0fa7001c
+0fa7f19d  cmp dword [rdx+0xc], -0x09
+0fa7f1a1  jnz 0x0fa70020
+0fa7f1a7  cmp dword [rdx+0x8], 0x40435cd0
+0fa7f1ae  jnz 0x0fa70020
+0fa7f1b4  mov ebx, [0x40435cd8]
+0fa7f1bb  cmp dword [rbx+0x1c], +0x3f
+0fa7f1bf  jnz 0x0fa70020
+0fa7f1c5  mov ebx, [rbx+0x14]
+0fa7f1c8  mov rdi, 0xfffffffb40431090
+0fa7f1d2  cmp rdi, [rbx+0x5c0]
+0fa7f1d9  jnz 0x0fa70020
+0fa7f1df  cmp dword [rbx+0x5bc], -0x09
+0fa7f1e6  jnz 0x0fa70020
+0fa7f1ec  cmp dword [rbx+0x5b8], 0x40431068
+0fa7f1f6  jnz 0x0fa70020
+0fa7f1fc  mov edi, [rbp+0x1c]
+0fa7f1ff  and edi, 0xf0d9e7ee
+0fa7f205  lea edi, [rdi+rdi*2]
+0fa7f208  shl edi, 0x03
+0fa7f20b  add edi, [rbp+0x14]
+0fa7f20e  cmp dword [rdi+0xc], -0x05
+0fa7f212  jnz 0x0fa7f221
+0fa7f214  cmp dword [rdi+0x8], 0x40430680
+0fa7f21b  jz 0x0fa70020
+0fa7f221  mov edi, [rdi+0x10]
+0fa7f224  test edi, edi
+0fa7f226  jnz 0x0fa7f20e
+0fa7f228  cmp dword [0x41b39ac4], +0x01
+0fa7f230  jnz 0x0fa70020
+0fa7f236  mov ebp, [0x41b39abc]
+0fa7f23d  mov rdi, 0xfffffffb40445e58
+0fa7f247  cmp rdi, [rbp+0x8]
+0fa7f24b  jnz 0x0fa70020
+0fa7f251  cmp dword [rbp+0x4], -0x09
+0fa7f255  jnz 0x0fa70020
+0fa7f25b  mov ebp, [rbp+0x0]
+0fa7f25e  mov rdi, 0xfffffffb4043e1b0
+0fa7f268  cmp rdi, [rbx+0x4a0]
+0fa7f26f  jnz 0x0fa70020
+0fa7f275  cmp dword [rbx+0x49c], -0x05
+0fa7f27c  jnz 0x0fa70020
+0fa7f282  mov edi, [rbx+0x498]
+0fa7f288  lea rsi, [rsp+0x10]
+0fa7f28d  call 0x00423ad0	->lj_strscan_num
+0fa7f292  test eax, eax
+0fa7f294  jz 0x0fa70020
+0fa7f29a  mov edx, [0x4042e4b4]
+0fa7f2a1  movsd xmm7, [rsp+0x20]
+0fa7f2a7  movsd xmm6, [rsp+0x18]
+0fa7f2ad  movsd xmm5, [0x40448b18]
+0fa7f2b6  movsd xmm4, [rsp+0x10]
+0fa7f2bc  movsd xmm3, [0x40448b20]
+0fa7f2c5  cvttsd2si ebx, xmm4
+0fa7f2c9  xorps xmm1, xmm1
+0fa7f2cc  cvtsi2sd xmm1, ebx
+0fa7f2d0  ucomisd xmm4, xmm1
+0fa7f2d4  jnz 0x0fa70020
+0fa7f2da  jpe 0x0fa70020
+0fa7f2e0  cmp ebx, 0x7ffffffe
+0fa7f2e6  jg 0x0fa70020
+0fa7f2ec  cmp ebx, +0x01
+0fa7f2ef  jl 0x0fa70024
+0fa7f2f5  movsd [rdx+0x90], xmm5
+0fa7f2fd  movsd [rdx+0x88], xmm5
+0fa7f305  movsd [rdx+0x80], xmm3
+0fa7f30d  movsd [rdx+0x78], xmm5
+0fa7f312  movsd [rdx+0x70], xmm5
+0fa7f317  movsd [rdx+0x68], xmm5
+0fa7f31c  movsd [rdx+0x60], xmm4
+0fa7f321  movsd [rdx+0x58], xmm5
+0fa7f326  mov dword [rdx+0x54], 0xfffffff7
+0fa7f32d  mov [rdx+0x50], ebp
+0fa7f330  movsd [rdx+0x48], xmm5
+0fa7f335  mov dword [rdx+0x44], 0x40446bd8
+0fa7f33c  mov dword [rdx+0x40], 0x40435cd0
+0fa7f343  movsd [rdx+0x20], xmm6
+0fa7f348  movsd [rdx+0x10], xmm7
+0fa7f34d  add edx, +0x48
+0fa7f350  mov [0x4042e4b4], edx
+0fa7f357  add rsp, +0x20
+0fa7f35b  jmp 0x0fa7f5f2
+---- TRACE 12 stop -> 9
+
+0.662103	-958.2752386217
+standard
+---- TRACE 13 start metatest.lua:7
+0013  GGET     9   1      ; "math"
+0014  TGETS    9   9   2  ; "sin"
+0015  GGET    10   1      ; "math"
+0016  TGETS   10  10   2  ; "sin"
+0017  MOV     11   8
+0018  CALL    10   2   2
+0000  . FUNCC               ; math.sin
+0019  SUBVV   10  10   0
+0020  CALL     9   2   2
+0000  . FUNCC               ; math.sin
+0021  MOV      0   9
+0022  FORL     5 => 0013
+---- TRACE 13 IR
+0001    int SLOAD  #6    CI
+0002    fun SLOAD  #0    R
+0003    tab FLOAD  0002  func.env
+0004    int FLOAD  0003  tab.hmask
+0005 >  int EQ     0004  +63 
+0006    p32 FLOAD  0003  tab.node
+0007 >  p32 HREFK  0006  "math" @54
+0008 >  tab HLOAD  0007
+0009    int FLOAD  0008  tab.hmask
+0010 >  int EQ     0009  +31 
+0011    p32 FLOAD  0008  tab.node
+0012 >  p32 HREFK  0011  "sin" @23
+0013 >  fun HLOAD  0012
+0014 >  fun EQ     0013  math.sin
+0015    num CONV   0001  num.int
+0016    num FPMATH 0015  sin
+0017 >  num SLOAD  #1    T
+0018    num SUB    0016  0017
+0019  + num FPMATH 0018  sin
+0020  + int ADD    0001  +1  
+0021 >  int LE     0020  +10 
+0022 ------ LOOP ------------
+0023    num CONV   0020  num.int
+0024    num FPMATH 0023  sin
+0025    num SUB    0024  0019
+0026  + num FPMATH 0025  sin
+0027  + int ADD    0020  +1  
+0028 >  int LE     0027  +10 
+0029    int PHI    0020  0027
+0030    num PHI    0019  0026
+---- TRACE 13 mcode 282
+0fa7f009  add rsp, -0x20
+0fa7f00d  mov dword [0x4042e410], 0xd
+0fa7f018  cvttsd2si ebp, [rdx+0x28]
+0fa7f01d  mov [rsp+0x20], ebp
+0fa7f021  mov r8d, [rdx-0x8]
+0fa7f025  mov esi, [r8+0x8]
+0fa7f029  cmp dword [rsi+0x1c], +0x3f
+0fa7f02d  jnz 0x0fa70010
+0fa7f033  mov ebx, [rsi+0x14]
+0fa7f036  mov rdi, 0xfffffffb40433cf8
+0fa7f040  cmp rdi, [rbx+0x518]
+0fa7f047  jnz 0x0fa70010
+0fa7f04d  cmp dword [rbx+0x514], -0x0c
+0fa7f054  jnz 0x0fa70010
+0fa7f05a  mov ecx, [rbx+0x510]
+0fa7f060  cmp dword [rcx+0x1c], +0x1f
+0fa7f064  jnz 0x0fa70010
+0fa7f06a  mov eax, [rcx+0x14]
+0fa7f06d  mov rdi, 0xfffffffb40434268
+0fa7f077  cmp rdi, [rax+0x230]
+0fa7f07e  jnz 0x0fa70010
+0fa7f084  cmp dword [rax+0x22c], -0x09
+0fa7f08b  jnz 0x0fa70010
+0fa7f091  cmp dword [rax+0x228], 0x40434240
+0fa7f09b  jnz 0x0fa70010
+0fa7f0a1  fild dword [rsp+0x20]
+0fa7f0a5  fsin
+0fa7f0a7  fstp qword [rsp]
+0fa7f0aa  movsd xmm7, [rsp]
+0fa7f0af  cmp dword [rdx+0x4], 0xfffeffff
+0fa7f0b6  jnb 0x0fa70010
+0fa7f0bc  subsd xmm7, [rdx]
+0fa7f0c0  movsd [rsp+0x18], xmm7
+0fa7f0c6  fld qword [rsp+0x18]
+0fa7f0ca  fsin
+0fa7f0cc  fstp qword [rsp]
+0fa7f0cf  movsd xmm7, [rsp]
+0fa7f0d4  add ebp, +0x01
+0fa7f0d7  cmp ebp, +0x0a
+0fa7f0da  jg 0x0fa70014
+->LOOP:
+0fa7f0e0  movaps xmm6, xmm7
+0fa7f0e3  xorps xmm7, xmm7
+0fa7f0e6  cvtsi2sd xmm7, ebp
+0fa7f0ea  movsd [rsp+0x10], xmm7
+0fa7f0f0  fld qword [rsp+0x10]
+0fa7f0f4  fsin
+0fa7f0f6  fstp qword [rsp]
+0fa7f0f9  movsd xmm7, [rsp]
+0fa7f0fe  subsd xmm7, xmm6
+0fa7f102  movsd [rsp+0x8], xmm7
+0fa7f108  fld qword [rsp+0x8]
+0fa7f10c  fsin
+0fa7f10e  fstp qword [rsp]
+0fa7f111  movsd xmm7, [rsp]
+0fa7f116  add ebp, +0x01
+0fa7f119  cmp ebp, +0x0a
+0fa7f11c  jle 0x0fa7f0e0	->LOOP
+0fa7f11e  jmp 0x0fa7001c
+---- TRACE 13 stop -> loop
+
+---- TRACE 14 start 13/3 metatest.lua:6
+0023  FORL     1 => 0009
+0009  KSHORT   5   1
+0010  KSHORT   6  10
+0011  KSHORT   7   1
+0012  JFORI    5 => 0023
+---- TRACE 14 IR
+0001    num SLOAD  #1    PI
+0002    num SLOAD  #3    RI
+0003    num SLOAD  #2    I
+0004    num ADD    0003  +1  
+0005 >  num LE     0004  0002
+---- TRACE 14 mcode 96
+0fa7efa6  mov dword [0x4042e410], 0xe
+0fa7efb1  movsd xmm5, [0x40448b18]
+0fa7efba  movsd xmm4, [0x40448b20]
+0fa7efc3  movsd xmm3, [rdx+0x10]
+0fa7efc8  movsd xmm6, [rdx+0x8]
+0fa7efcd  addsd xmm6, xmm5
+0fa7efd1  ucomisd xmm3, xmm6
+0fa7efd5  jb 0x0fa70014
+0fa7efdb  movsd [rdx+0x40], xmm5
+0fa7efe0  movsd [rdx+0x38], xmm5
+0fa7efe5  movsd [rdx+0x30], xmm4
+0fa7efea  movsd [rdx+0x28], xmm5
+0fa7efef  movsd [rdx+0x20], xmm6
+0fa7eff4  movsd [rdx+0x8], xmm6
+0fa7eff9  movsd [rdx], xmm7
+0fa7effd  add rsp, +0x20
+0fa7f001  jmp 0x0fa7f009
+---- TRACE 14 stop -> 13
+
+---- TRACE 15 start 14/1 metatest.lua:11
+0024  RET1     0   2
+0013  ADDVV    2   2   7
+0014  FORL     3 => 0011
+0011  MOV      7   1
+0012  CALL     7   2   1
+0000  . FUNCF   12          ; metatest.lua:4
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0024
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0023
+---- TRACE 15 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446ba4]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #4    I
+0007    num ADD    0006  +1  
+0008 >  num LE     0007  +500
+0009 >  fun SLOAD  #2    T
+0010 >  fun EQ     0009  metatest.lua:4
+0011    tab FLOAD  metatest.lua:4  func.env
+0012    int FLOAD  0011  tab.hmask
+0013 >  int EQ     0012  +63 
+0014    p32 FLOAD  0011  tab.node
+0015 >  p32 HREFK  0014  "m"  @49
+0016 >  str HLOAD  0015
+0017 >  num STRTO  0016
+0018 >  int CONV   0017  int.num
+0019 >  int LE     0018  +2147483646
+0020 >  int GE     0018  +1  
+---- TRACE 15 mcode 385
+0fa7ee22  mov dword [0x4042e410], 0xf
+0fa7ee2d  cmp dword [rdx-0x4], 0x40446ba4
+0fa7ee34  jnz 0x0fa70014
+0fa7ee3a  add edx, -0x40
+0fa7ee3d  mov [0x4042e4b4], edx
+0fa7ee44  cmp dword [rdx+0x14], 0xfffeffff
+0fa7ee4b  jnb 0x0fa70018
+0fa7ee51  movaps xmm6, xmm7
+0fa7ee54  movsd xmm7, [0x40448b28]
+0fa7ee5d  addsd xmm6, [rdx+0x10]
+0fa7ee62  movsd [rsp+0x18], xmm6
+0fa7ee68  movsd xmm6, [rdx+0x18]
+0fa7ee6d  addsd xmm6, [0x40448b18]
+0fa7ee76  movsd [rsp+0x10], xmm6
+0fa7ee7c  ucomisd xmm7, xmm6
+0fa7ee80  jb 0x0fa7001c
+0fa7ee86  cmp dword [rdx+0xc], -0x09
+0fa7ee8a  jnz 0x0fa70020
+0fa7ee90  cmp dword [rdx+0x8], 0x40436ab0
+0fa7ee97  jnz 0x0fa70020
+0fa7ee9d  mov ebp, [0x40436ab8]
+0fa7eea4  cmp dword [rbp+0x1c], +0x3f
+0fa7eea8  jnz 0x0fa70020
+0fa7eeae  mov ebp, [rbp+0x14]
+0fa7eeb1  mov rdi, 0xfffffffb4043e1b0
+0fa7eebb  cmp rdi, [rbp+0x4a0]
+0fa7eec2  jnz 0x0fa70020
+0fa7eec8  cmp dword [rbp+0x49c], -0x05
+0fa7eecf  jnz 0x0fa70020
+0fa7eed5  mov edi, [rbp+0x498]
+0fa7eedb  lea rsi, [rsp+0x8]
+0fa7eee0  call 0x00423ad0	->lj_strscan_num
+0fa7eee5  test eax, eax
+0fa7eee7  jz 0x0fa70020
+0fa7eeed  mov edx, [0x4042e4b4]
+0fa7eef4  movsd xmm7, [rsp+0x18]
+0fa7eefa  movsd xmm6, [rsp+0x10]
+0fa7ef00  movsd xmm5, [0x40448b18]
+0fa7ef09  movsd xmm4, [rsp+0x8]
+0fa7ef0f  movsd xmm3, [0x40448b20]
+0fa7ef18  cvttsd2si ebp, xmm4
+0fa7ef1c  xorps xmm2, xmm2
+0fa7ef1f  cvtsi2sd xmm2, ebp
+0fa7ef23  ucomisd xmm4, xmm2
+0fa7ef27  jnz 0x0fa70020
+0fa7ef2d  jpe 0x0fa70020
+0fa7ef33  cmp ebp, 0x7ffffffe
+0fa7ef39  jg 0x0fa70020
+0fa7ef3f  cmp ebp, +0x01
+0fa7ef42  jl 0x0fa70024
+0fa7ef48  movsd [rdx+0x80], xmm5
+0fa7ef50  movsd [rdx+0x78], xmm5
+0fa7ef55  movsd [rdx+0x70], xmm3
+0fa7ef5a  movsd [rdx+0x68], xmm5
+0fa7ef5f  movsd [rdx+0x60], xmm5
+0fa7ef64  movsd [rdx+0x58], xmm5
+0fa7ef69  movsd [rdx+0x50], xmm4
+0fa7ef6e  movsd [rdx+0x48], xmm5
+0fa7ef73  movsd [rdx+0x40], xmm5
+0fa7ef78  mov dword [rdx+0x3c], 0x40446ba4
+0fa7ef7f  mov dword [rdx+0x38], 0x40436ab0
+0fa7ef86  movsd [rdx+0x18], xmm6
+0fa7ef8b  movsd [rdx+0x10], xmm7
+0fa7ef90  add edx, +0x40
+0fa7ef93  mov [0x4042e4b4], edx
+0fa7ef9a  add rsp, +0x20
+0fa7ef9e  jmp 0x0fa7f009
+---- TRACE 15 stop -> 13
+
+---- TRACE 16 start 15/1 metatest.lua:11
+0024  RET1     0   2
+0026  ADDVV    2   2   8
+0027  FORL     4 => 0024
+0024  MOV      8   1
+0025  CALL     8   2   1
+0000  . FUNCF   12          ; metatest.lua:4
+0001  . KSHORT   0   1
+0002  . KSHORT   1   1
+0003  . GGET     2   0      ; "m"
+0004  . IST          2
+0005  . JMP      3 => 0007
+0007  . KSHORT   3   1
+0008  . FORI     1 => 0024
+0009  . KSHORT   5   1
+0010  . KSHORT   6  10
+0011  . KSHORT   7   1
+0012  . JFORI    5 => 0023
+---- TRACE 16 IR
+0001    num SLOAD  #1    PI
+0003 >  p32 RETF   proto: 0x40446b30  [0x40446bd8]
+0004 >  num SLOAD  #3    T
+0005    num ADD    0004  0001
+0006    num SLOAD  #6    RI
+0007    num SLOAD  #5    I
+0008    num ADD    0007  +1  
+0009 >  num LE     0008  0006
+0010 >  fun SLOAD  #2    T
+0011 >  fun EQ     0010  metatest.lua:4
+0012    tab FLOAD  metatest.lua:4  func.env
+0013    int FLOAD  0012  tab.hmask
+0014 >  int EQ     0013  +63 
+0015    p32 FLOAD  0012  tab.node
+0016 >  p32 HREFK  0015  "m"  @49
+0017 >  str HLOAD  0016
+0018 >  num STRTO  0017
+0019 >  int CONV   0018  int.num
+0020 >  int LE     0019  +2147483646
+0021 >  int GE     0019  +1  
+---- TRACE 16 mcode 394
+0fa7ec95  mov dword [0x4042e410], 0x10
+0fa7eca0  mov edx, [0x4042e4b4]
+0fa7eca7  cmp dword [rdx-0x4], 0x40446bd8
+0fa7ecae  jnz 0x0fa70014
+0fa7ecb4  add edx, -0x48
+0fa7ecb7  mov [0x4042e4b4], edx
+0fa7ecbe  cmp dword [rdx+0x14], 0xfffeffff
+0fa7ecc5  jnb 0x0fa70018
+0fa7eccb  addsd xmm7, [rdx+0x10]
+0fa7ecd0  movsd [rsp+0x20], xmm7
+0fa7ecd6  movsd xmm2, [rdx+0x28]
+0fa7ecdb  movsd [rsp+0x8], xmm2
+0fa7ece1  movsd xmm6, [rdx+0x20]
+0fa7ece6  addsd xmm6, [0x40448b18]
+0fa7ecef  movsd [rsp+0x18], xmm6
+0fa7ecf5  ucomisd xmm2, xmm6
+0fa7ecf9  jb 0x0fa7001c
+0fa7ecff  cmp dword [rdx+0xc], -0x09
+0fa7ed03  jnz 0x0fa70020
+0fa7ed09  cmp dword [rdx+0x8], 0x40436ab0
+0fa7ed10  jnz 0x0fa70020
+0fa7ed16  mov ebp, [0x40436ab8]
+0fa7ed1d  cmp dword [rbp+0x1c], +0x3f
+0fa7ed21  jnz 0x0fa70020
+0fa7ed27  mov ebp, [rbp+0x14]
+0fa7ed2a  mov rdi, 0xfffffffb4043e1b0
+0fa7ed34  cmp rdi, [rbp+0x4a0]
+0fa7ed3b  jnz 0x0fa70020
+0fa7ed41  cmp dword [rbp+0x49c], -0x05
+0fa7ed48  jnz 0x0fa70020
+0fa7ed4e  mov edi, [rbp+0x498]
+0fa7ed54  lea rsi, [rsp+0x10]
+0fa7ed59  call 0x00423ad0	->lj_strscan_num
+0fa7ed5e  test eax, eax
+0fa7ed60  jz 0x0fa70020
+0fa7ed66  mov edx, [0x4042e4b4]
+0fa7ed6d  movsd xmm7, [rsp+0x20]
+0fa7ed73  movsd xmm6, [rsp+0x18]
+0fa7ed79  movsd xmm5, [0x40448b18]
+0fa7ed82  movsd xmm4, [rsp+0x10]
+0fa7ed88  movsd xmm3, [0x40448b20]
+0fa7ed91  cvttsd2si ebp, xmm4
+0fa7ed95  xorps xmm1, xmm1
+0fa7ed98  cvtsi2sd xmm1, ebp
+0fa7ed9c  ucomisd xmm4, xmm1
+0fa7eda0  jnz 0x0fa70020
+0fa7eda6  jpe 0x0fa70020
+0fa7edac  cmp ebp, 0x7ffffffe
+0fa7edb2  jg 0x0fa70020
+0fa7edb8  cmp ebp, +0x01
+0fa7edbb  jl 0x0fa70024
+0fa7edc1  movsd [rdx+0x88], xmm5
+0fa7edc9  movsd [rdx+0x80], xmm5
+0fa7edd1  movsd [rdx+0x78], xmm3
+0fa7edd6  movsd [rdx+0x70], xmm5
+0fa7eddb  movsd [rdx+0x68], xmm5
+0fa7ede0  movsd [rdx+0x60], xmm5
+0fa7ede5  movsd [rdx+0x58], xmm4
+0fa7edea  movsd [rdx+0x50], xmm5
+0fa7edef  movsd [rdx+0x48], xmm5
+0fa7edf4  mov dword [rdx+0x44], 0x40446bd8
+0fa7edfb  mov dword [rdx+0x40], 0x40436ab0
+0fa7ee02  movsd [rdx+0x20], xmm6
+0fa7ee07  movsd [rdx+0x10], xmm7
+0fa7ee0c  add edx, +0x48
+0fa7ee0f  mov [0x4042e4b4], edx
+0fa7ee16  add rsp, +0x20
+0fa7ee1a  jmp 0x0fa7f009
+---- TRACE 16 stop -> 13
+
+0.671175	-958.2752386217
