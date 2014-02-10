@@ -354,8 +354,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             end
         end
     end
-    function luametry.Polygon:GetIsPointInPolygon(point, rayDirection, edgeIgnoreMap)
-        edgeIgnoreMap = edgeIgnoreMap or {}
+    function luametry.Polygon:GetIsPointInPolygon(point, rayDirection, edgeShouldIgnoreMap)
+        edgeShouldIgnoreMap = edgeShouldIgnoreMap or {}
         rayDirection = rayDirection or nil
         local intersectRayOrigin = point
         local intersectRayDir = rayDirection
@@ -365,7 +365,10 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         end
         local intersectionCount = 0
         for edge, edgeData in pairs(self.edgeMap) do
-            if not edgeIgnoreMap[edge] and edge:GetShortestDistanceToRay(intersectRayOrigin, intersectRayDir):GetIsEqualToZero() then
+            if (
+                    not edgeShouldIgnoreMap[edge]
+                and edge:GetShortestDistanceToRay(intersectRayOrigin, intersectRayDir):GetIsEqualToZero()
+            ) then
                 intersectionCount = intersectionCount+1
             end
         end
@@ -400,16 +403,31 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
     function luametry.Polygon:GetIntersectionWith(other)
         assert(self:IsCoplanerWith(other), "Polygons must be coplanar")
         local edgeIntersectionMap = {}
+        
         for selfEdge, selfEdgeData in pairs(self.edgeMap) do
+            local selfEdgeVA, selfEdgeVB = selfEdge:GetVertices()
             edgeIntersectionMap[selfEdge] = {}
+            
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
+                local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
                 local intersectionData = { doesIntersect = false }
                 edgeIntersectionMap[selfEdge][otherEdge] = intersectionData
+                
                 intersectionData.dist, intersectionData.pos = selfEdge:GetShortestEdgeToEdge(otherEdge)
                 if shortestDistance:GetIsEqualToZero() then
                     intersectionData.doesIntersect = true
+                    
                     intersectionData.selfEdgeTowardAIsInOther = self:GetIsPointInPolygon(
-                        intersectionData.pos, 
+                        intersectionData.pos, ( selfEdgeVA.p-intersectionData.pos):GetNormalized(), { [otherEdge] = true },
+                    )
+                    intersectionData.selfEdgeTowardBIsInOther = self:GetIsPointInPolygon(
+                        intersectionData.pos, ( selfEdgeVB.p-intersectionData.pos):GetNormalized(), { [otherEdge] = true },
+                    )
+                    intersectionData.otherEdgeTowardAIsInSelf = other:GetIsPointInPolygon(
+                        intersectionData.pos, (otherEdgeVA.p-intersectionData.pos):GetNormalized(), { [ selfEdge] = true },
+                    )
+                    intersectionData.otherEdgeTowardBIsInSelf = other:GetIsPointInPolygon(
+                        intersectionData.pos, (otherEdgeVB.p-intersectionData.pos):GetNormalized(), { [ selfEdge] = true },
                     )
                 end
             end
