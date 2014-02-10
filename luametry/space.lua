@@ -41,6 +41,16 @@ do luametry.Space = concept{
     function luametry.Space:EdgeOf(va, vb)
         return self.edgeType(va, vb)
     end
+    function luametry.Space:EdgeLoopOf(...)
+        local edgeLoop = {}
+        local vertexCount = select('#', ...)
+        for currVertexI = 1, vertexCount do
+            local currVertex = select(currVertexI, ...)
+            local nextVertex = select(currVertexI%vertexCount+1, ...)
+            table.insert(edgeLoop, self:EdgeOf(currVertex, nextVertex))
+        end
+        return edgeLoop
+    end
     function luametry.Space:PolygonOf(...)
         return self.polygonType(...)
     end
@@ -214,6 +224,9 @@ end
 
 do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         -- (all vertices on one plane; concave or convex; holes allowed; no self-intersection; no normal)
+        -- This is defined by a series of non-intersecting edgeloops.
+        -- The encompassing edgeloop is the "border" loop.
+        -- The internal edgeloops define holes in the polygon.
         const = true,
         --space = luametry.Space(),
         
@@ -377,10 +390,16 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             intersectRayDir = (p2-p1):GetNormalized()
         end
         local intersectionCount = 0
+        print("---")
         for edge, edgeData in pairs(self.edgeMap) do
+            local edgeVA, edgeVB = edge:GetVertices()
+            if intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs():GetIsEqualTo(1) then
+                edge.loldbg = true
+            end
             if (
                     not edgeShouldIgnoreMap[edge]
                 and edge:GetShortestDistanceToRay(intersectRayOrigin, intersectRayDir):GetIsEqualToZero()
+                and not intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs():GetIsEqualTo(1) -- ignore colinear lines
             ) then
                 intersectionCount = intersectionCount+1
             end
@@ -421,35 +440,28 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
     end
     function luametry.Polygon:GetIntersectionWith(other) -- returns a list of geometric objects (polygons only atm)
         assert(self:GetIsCoplanerWith(other), "Polygons must be coplanar")
-        local edgeCutVertexListMap = {}
-        local edgeFirstVertexMap = {} -- because we need a consistent order
-        local edgeSecondVertexMap = {} -- because we need a consistent order
+        local edgeCutVertexSortedListMap = {}
         local edgePairVertexMapMap = {}
         
         for selfEdge, selfEdgeData in pairs(self.edgeMap) do
             local selfEdgeVA, selfEdgeVB = selfEdge:GetVertices()
-            edgeCutVertexListMap[selfEdge] = edgeCutVertexListMap[selfEdge] or {}
-            edgeFirstVertexMap [selfEdge] = selfEdgeVA
-            edgeSecondVertexMap[selfEdge] = selfEdgeVB
             
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
                 local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
-                edgeCutVertexListMap[otherEdge] = edgeCutVertexListMap[otherEdge] or {}
-                edgeFirstVertexMap [otherEdge] = otherEdgeVA
-                edgeSecondVertexMap[otherEdge] = otherEdgeVB
                 
                 local intersectionDist, intersectionVertex = selfEdge:GetShortestDistanceToEdge(otherEdge)
                 if intersectionDist and intersectionDist:GetIsEqualToZero() then
                     --local intersectionVertex = self.space:VertexOf(intersectionPos)
-                    table.bininsert(edgeCutVertexListMap[ selfEdge], intersectionVertex, sortIntersectionPoint,  selfEdgeVA,  selfEdgeVB)
-                    table.bininsert(edgeCutVertexListMap[otherEdge], intersectionVertex, sortIntersectionPoint, otherEdgeVA, otherEdgeVB)
-                    print(intersectionVertex)
+                    edgeCutVertexSortedListMap[selfEdge] = edgeCutVertexSortedListMap[selfEdge] or {}
+                    edgeCutVertexSortedListMap[otherEdge] = edgeCutVertexSortedListMap[otherEdge] or {}
+                    table.bininsert(edgeCutVertexSortedListMap[ selfEdge], intersectionVertex, sortIntersectionPoint,  selfEdgeVA,  selfEdgeVB)
+                    table.bininsert(edgeCutVertexSortedListMap[otherEdge], intersectionVertex, sortIntersectionPoint, otherEdgeVA, otherEdgeVB)
                 end
             end
         end
         local newEdgeList = {}
-        for edge, cutVertexList in pairs(edgeCutVertexListMap) do
-            local edgeVA, edgeVB = edgeFirstVertexMap[edge], edgeSecondVertexMap[edge]
+        for edge, cutVertexList in pairs(edgeCutVertexSortedListMap) do
+            local edgeVA, edgeVB = edge:GetVertices()
             local currentVertex = edgeVA
             for i = 1, #cutVertexList+1 do
                 local nextVertex = (i <= #cutVertexList and cutVertexList[i] or edgeVB)
@@ -461,6 +473,24 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                     table.insert(newEdgeList, self.space:EdgeOf(currentVertex, nextVertex))
                 end
                 currentVertex = nextVertex
+            end
+        end
+        for edge, edgeData in pairs(self.edgeMap) do
+            local edgeVA, edgeVB = edge:GetVertices()
+            if not edgeCutVertexSortedListMap[edge] then
+                local centrePoint = (edgeVA.p+edgeVB.p)/2
+                if other:GetIsPointInPolygon(centrePoint) then
+                    table.insert(newEdgeList, edge)
+                end
+            end
+        end
+        for edge, edgeData in pairs(other.edgeMap) do
+            local edgeVA, edgeVB = edge:GetVertices()
+            if not edgeCutVertexSortedListMap[edge] then
+                local centrePoint = (edgeVA.p+edgeVB.p)/2
+                if self:GetIsPointInPolygon(centrePoint) then
+                    table.insert(newEdgeList, edge)
+                end
             end
         end
         --
@@ -508,7 +538,8 @@ do luametry.Face = concept{-- Uniplanar weakly simple polygon with normal
     function luametry.Face:GetEdgeMap() -- not in order
         return self.polygon:GetEdgeMap()
     end
-    function luametry.Face:GetOrderedEdgeLoopList() -- "Loop" is essentially a "List"; goes anti-clockwise around face normal
+    function luametry.Face:GetOrderedEdgeLoopList() -- "Loop" is essentially a "List"; goes anti-clockwise around face normal.. or clockwise (I can't remember)
+        -- http://debian.fmi.uni-sofia.bg/~sergei/cgsr/docs/clockwise.htm
         local edgeLoopList = self.edgeLoopList
         if not edgeLoopList then
             edgeLoopList = {}
@@ -523,6 +554,7 @@ do luametry.Face = concept{-- Uniplanar weakly simple polygon with normal
                         break
                     end
                 end
+                local currentEdgeLoopCounterClockwiseCount = 0
                 while currentEdge do
                     table.insert(currentEdgeLoop, currentEdge)
                     traversedEdgeMap[currentEdge] = true
@@ -532,6 +564,7 @@ do luametry.Face = concept{-- Uniplanar weakly simple polygon with normal
                     for otherEdge, otherEdgeData in pairs(self.polygon.edgeMap) do
                         if not traversedEdgeMap[otherEdge] then
                             local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
+                            -- print("@", currentEdge, otherEdge)
                             local doesShareEdge = true
                             local currentEdgeV1, commonV, otherEdgeV2 = nil, nil, nil
                             if currentEdgeVA == otherEdgeVA then
@@ -550,14 +583,21 @@ do luametry.Face = concept{-- Uniplanar weakly simple polygon with normal
                                     (commonV.p-currentEdgeV1.p):GetCrossProduct(otherEdgeV2.p-currentEdgeV1.p)
                                 )
                                 local isCounterClockwise = (orientationTest:GetSign() == 1)
-                                if isCounterClockwise then
-                                    nextEdge = otherEdge
-                                    break
-                                end
+                                currentEdgeLoopCounterClockwiseCount = currentEdgeLoopCounterClockwiseCount+(isCounterClockwise and 1 or -1)
+                                nextEdge = otherEdge
+                                break
+                                -- if isCounterClockwise then
+                                    -- nextEdge = otherEdge
+                                    -- print(">", currentEdgeV1, commonV, otherEdgeV2)
+                                    -- break
+                                -- end
                             end
                         end
                     end
                     currentEdge = nextEdge
+                end
+                if currentEdgeLoopCounterClockwiseCount < 0 then
+                    table.reverse(currentEdgeLoop)
                 end
                 table.insert(edgeLoopList, currentEdgeLoop)
             end

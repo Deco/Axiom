@@ -10,6 +10,14 @@ do -- utils
     -- these probably shouldn't be here, but meh
     pcall(require, "table.new")
     table.new = table.new or function(hashCount, arrayCount) return {} end
+    table.reverse = table.reverse or function(t)
+        local n = #t
+        for i = 1, math.floor(n/2) do
+            t[i], t[n-i+1] = t[n-i+1], t[i]
+        end
+        -- don't return anything to make it clear we're reversing the table passed
+        --return t
+    end
     
     _G._dbg = function(...)
         local info = debug.getinfo(2, "nSl")

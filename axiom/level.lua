@@ -102,7 +102,7 @@ function axiom.Level:GetChunk()
         local rawEdge = {
             fromvertexid = assert(vertexRawIdMap[va], "vertex not present"),
             tovertexid   = assert(vertexRawIdMap[vb], "vertex not present"),
-            issmoothed = false,
+            issmoothed = edge.loldbg and true or false,
         }
         rawEdgeList[rawEdgeId+1] = rawEdge
     end
