@@ -37,15 +37,13 @@ do
         local p1, p2, f1, f2
         do
             local o = V(0, 0, 0)+wat
-            local v1 = space:VertexOf(o+V(0.00, 0.00, 0.00))
-            local v2 = space:VertexOf(o+V(1.00, 0.00, 0.00))
-            local v3 = space:VertexOf(o+V(1.00, 0.00, 1.00))
-            local v4 = space:VertexOf(o+V(0.00, 0.00, 1.00))
-            local e1 = space:EdgeOf(v1, v2)
-            local e2 = space:EdgeOf(v2, v3)
-            local e3 = space:EdgeOf(v3, v4)
-            local e4 = space:EdgeOf(v4, v1)
-            p1 = space:PolygonOf(e1, e2, e3, e4)
+            p1 = space:PolygonOf(unpack(space:EdgeLoopOf(
+                space:VertexOf(o+V(0.00, 0.00, 0.00)),
+                space:VertexOf(o+V(1.00, 0.00, 0.00)),
+                space:VertexOf(o+V(1.00, 0.00, 0.75)),
+                space:VertexOf(o+V(2.00, 0.00, 1.00)),
+                space:VertexOf(o+V(0.00, 0.00, 1.00))
+            )))
             f1 = space:FaceOf(p1, n1)
         end
         do
@@ -71,7 +69,7 @@ do
     -- p3 = p1:GetIntersectionWith(p2)[1]
     -- f3 = space:FaceOf(p3, n1)
     
-    local edgeList = p1:GetIntersectionWith(p2)
+    local edgeList, randomEdge = p1:GetIntersectionWith(p2)
     -- local o = V(0, 0.15, 0)
     for edgeI, edge in ipairs(edgeList) do
         level:AddEdge(edge)
@@ -79,6 +77,15 @@ do
         -- level:AddEdge(space:EdgeOf(space:VertexOf(edgeVA.p+o), space:VertexOf(edgeVB.p+o)))
         -- o = o+V(0, 0.01, 0)
     end
+    print("###")
+    local randomEdgeVA, randomEdgeVB = randomEdge:GetVertices()
+    print(p1:GetIsPointInPolygon((randomEdgeVA.p+randomEdgeVB.p)/2))
+    -- level:AddEdge(randomEdge)
+    print(randomEdgeVA.p, randomEdgeVB.p)
+    print("###")
+    -- local testv = V(0.5, 0, 0.5)
+    -- level:AddEdge(space:EdgeOf(space:VertexOf(testv), space:VertexOf(testv+V(0, 1, 0))))
+    -- print(p1:GetIsPointInPolygon(testv))
     
     p1, p2, f1, f2 = makefacethingies(V(0, -0.15, 0))
     

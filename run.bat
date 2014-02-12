@@ -1,1 +1,1 @@
-@C:\workspace\lua\ufo\luajit64 -e "package.path='./?.lua;'..package.path io.stdout:setvbuf('no')" level_test.lua %*
+@luajit_bin\luajit.exe -e "io.stdout:setvbuf('no')" level_test.lua %*

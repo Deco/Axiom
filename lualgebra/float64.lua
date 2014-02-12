@@ -18,6 +18,7 @@ function lualgebra.Float64.__init(class, existingObj, ...)
     return 0
 end
 
+lualgebra.Float64.pi = math.pi
 lualgebra.Float64.epsilon = 2.22e-15
 
 lualgebra.Float64.abs   = math.abs
@@ -26,13 +27,15 @@ lualgebra.Float64.pow   = math.pow
 lualgebra.Float64.sqrt  = math.sqrt
 lualgebra.Float64.sin   = math.sin
 lualgebra.Float64.cos   = math.cos
+lualgebra.Float64.acos  = math.acos
 
-lualgebra.Float64.GetAbs   = lualgebra.Float64.abs
-lualgebra.Float64.GetSign  = lualgebra.Float64.sign
-lualgebra.Float64.GetPow   = lualgebra.Float64.pow
-lualgebra.Float64.GetSqrt  = lualgebra.Float64.sqrt
-lualgebra.Float64.GetSin   = lualgebra.Float64.sin
-lualgebra.Float64.GetCos   = lualgebra.Float64.cos
+lualgebra.Float64.GetAbs    = lualgebra.Float64.abs
+lualgebra.Float64.GetSign   = lualgebra.Float64.sign
+lualgebra.Float64.GetPow    = lualgebra.Float64.pow
+lualgebra.Float64.GetSqrt   = lualgebra.Float64.sqrt
+lualgebra.Float64.GetSin    = lualgebra.Float64.sin
+lualgebra.Float64.GetCos    = lualgebra.Float64.cos
+lualgebra.Float64.GetArcCos = lualgebra.Float64.acos
 
 function lualgebra.Float64:GetIsEqualTo(other)
     --[[print("eq", self, other,

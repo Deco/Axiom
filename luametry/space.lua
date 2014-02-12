@@ -54,6 +54,52 @@ do luametry.Space = concept{
     function luametry.Space:PolygonOf(...)
         return self.polygonType(...)
     end
+    function luametry.Space:GetEdgeLoopListFromEdgeList(edgeList)
+        local edgeLoopList = {}
+        local traversedEdgeMap = {}
+        local traversedEdgeCount = 0
+        while traversedEdgeCount < self.edgeCount do
+            local currentEdgeLoop = {}
+            local currentEdge = nil
+            for edge, edgeData in pairs(self.edgeMap) do
+                if not traversedEdgeMap[edge] then
+                    currentEdge = edge
+                    break
+                end
+            end
+            while currentEdge do
+                table.insert(currentEdgeLoop, currentEdge)
+                traversedEdgeMap[currentEdge] = true
+                traversedEdgeCount = traversedEdgeCount+1
+                local currentEdgeVA, currentEdgeVB = currentEdge:GetVertices()
+                local nextEdge
+                for otherEdge, otherEdgeData in pairs(self.edgeMap) do
+                    if not traversedEdgeMap[otherEdge] then
+                        local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
+                        if (
+                                currentEdgeVA == otherEdgeVA or currentEdgeVA == otherEdgeVB
+                            or  currentEdgeVB == otherEdgeVA or currentEdgeVB == otherEdgeVB
+                        ) then
+                            nextEdge = otherEdge
+                            break
+                        end
+                    end
+                end
+                currentEdge = nextEdge
+            end
+            table.insert(edgeLoopList, currentEdgeLoop)
+        end
+        return edgeLoopList
+    end
+    function luametry.Space:GetEdgeLoopGroupListFromEdgeLoopList(edgeLoopList)
+        -- wwwweeeeeeee
+        -- right... gets a list of groups of loops of edges.
+        -- The first element of the group is the major loop (the border), and the rest are minor loops (holes).
+        -- You can flatten a group and make a polygon out of it. (use table.arrayflatten(group))
+        -- This method asserts a few things, but be careful:
+        -- TODO: Make luametry.Space:GetEdgeLoopGroupListFromEdgeLoopList assert all required premises.
+        
+    end
     function luametry.Space:FaceOf(...)
         return self.faceType(...)
     end
@@ -231,9 +277,12 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         --space = luametry.Space(),
         
         --edgeMap = {},
+        
         --edgeCount = 0, -- generated
         --vertexMap = {}, -- generated
         --vertexCount = 0,-- generated
+        
+        --edgeList = {} -- generated
     }
     function luametry.Polygon.__declare(class)
         assert(class.space                , "Polygon.space must be defined in specialisation")
@@ -248,7 +297,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         obj = { [class.space] = true }
         local argCount = select('#', ...)
         if argCount >= 3 then
-            obj.edgeMap = table.new(argCount, 0)
+            obj.edgeMap = table.new(0, argCount)
+            obj.edgeList = table.new(argCount, 0)
             obj.edgeCount = 0
             for argI = 1, argCount do
                 local edge = select(argI, ...)
@@ -256,6 +306,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                     error"cannot have same edge twice"
                 end
                 obj.edgeMap[edge] = {}
+                obj.edgeList[argI] = edge
                 obj.edgeCount = obj.edgeCount+1
             end
         else
@@ -273,41 +324,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         return self.edgeMap
     end
     function luametry.Polygon:GetEdgeLoopList() -- "Loop" is essentially a "List"
-        local edgeLoopList = {}
-        local traversedEdgeMap = {}
-        local traversedEdgeCount = 0
-        while traversedEdgeCount < self.edgeCount do
-            local currentEdgeLoop = {}
-            local currentEdge = nil
-            for edge, edgeData in pairs(self.edgeMap) do
-                if not traversedEdgeMap[edge] then
-                    currentEdge = edge
-                    break
-                end
-            end
-            while currentEdge do
-                table.insert(currentEdgeLoop, currentEdge)
-                traversedEdgeMap[currentEdge] = true
-                traversedEdgeCount = traversedEdgeCount+1
-                local currentEdgeVA, currentEdgeVB = currentEdge:GetVertices()
-                local nextEdge
-                for otherEdge, otherEdgeData in pairs(self.edgeMap) do
-                    if not traversedEdgeMap[otherEdge] then
-                        local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
-                        if (
-                                currentEdgeVA == otherEdgeVA or currentEdgeVA == otherEdgeVB
-                            or  currentEdgeVB == otherEdgeVA or currentEdgeVB == otherEdgeVB
-                        ) then
-                            nextEdge = otherEdge
-                            break
-                        end
-                    end
-                end
-                currentEdge = nextEdge
-            end
-            table.insert(edgeLoopList, currentEdgeLoop)
-        end
-        return edgeLoopList
+        
     end
     function luametry.Polygon:BuildVertexMap()
         self.vertexMap = {}
@@ -382,15 +399,38 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
     end
     function luametry.Polygon:GetIsPointInPolygon(point, rayDirection, edgeShouldIgnoreMap)
         edgeShouldIgnoreMap = edgeShouldIgnoreMap or {}
-        rayDirection = rayDirection or nil
+        rayDirection = rayDirection and error"NYI" or nil
         local intersectRayOrigin = point
         local intersectRayDir = rayDirection
         if not intersectRayDir then
-            local normal, d, p1, p2  = self:CalculateOrthagonalDirection()
-            intersectRayDir = (p2-p1):GetNormalized()
+            -- local normal, d, p1, p2  = self:CalculateOrthagonalDirection()
+            -- intersectRayDir = (p2-p1):GetNormalized()
+            local v1 = next(self.vertexMap, nil)
+            local v2 = v1
+            local isColinear = true
+            while isColinear do
+                v2 = next(self.vertexMap, v2) or next(self.vertexMap, v1)
+                local v12t = math.random()
+                intersectRayDir = ((v2.p*v12t+v1.p*(1-v12t))-point):GetNormalized()
+                isColinear = false
+                for edge, edgeData in pairs(self.edgeMap) do
+                    local edgeVA, edgeVB = edge:GetVertices()
+                    -- if intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs():GetIsEqualTo(1) then
+                    if intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs() >= 0.98 then
+                        isColinear = true
+                        break
+                    end
+                end
+                for vertex, vertexData in pairs(self.vertexMap) do
+                    -- if intersectRayDir:GetDotProduct((vertex.p-point):GetNormalized()):GetAbs():GetIsEqualTo(1) then
+                    if intersectRayDir:GetDotProduct((vertex.p-point):GetNormalized()):GetAbs() >= 0.98 then
+                        isColinear = true
+                        break
+                    end
+                end
+            end
         end
         local intersectionCount = 0
-        print("---")
         for edge, edgeData in pairs(self.edgeMap) do
             local edgeVA, edgeVB = edge:GetVertices()
             if intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs():GetIsEqualTo(1) then
@@ -399,14 +439,59 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             if (
                     not edgeShouldIgnoreMap[edge]
                 and edge:GetShortestDistanceToRay(intersectRayOrigin, intersectRayDir):GetIsEqualToZero()
-                and not intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs():GetIsEqualTo(1) -- ignore colinear lines
+                and not (intersectRayDir:GetDotProduct((edgeVB.p-edgeVA.p):GetNormalized()):GetAbs():GetIsEqualTo(1) and error"NYI") -- ignore colinear lines
             ) then
                 intersectionCount = intersectionCount+1
             end
         end
-        local doesIntersect = (intersectionCount%2 == 1)
-        return doesIntersect, intersectionCount
+        local isInPolygon = (intersectionCount%2 == 1)
+        return isInPolygon, intersectionCount, intersectRayDir
     end
+    --[[ function luametry.Polygon:GetIsPointInPolygon(point)
+        -- http://bbs.dartmouth.edu/~fangq/MATH/download/source/Determining%20if%20a%20point%20lies%20on%20the%20interior%20of%20a%20polygon.htm
+        local insideEdgeLoopCount = 0
+        for edgeLoopI, edgeLoop in ipairs(self:GetEdgeLoopList()) do
+            local angleSum = 0
+            for currEdgeI = 1, #edgeLoop do
+                local currEdge = edgeLoop[currEdgeI]
+                local nextEdge = edgeLoop[(currEdgeI%#edgeLoop)+1]
+                local currEdgeVA, currEdgeVB = currEdge:GetVertices()
+                local nextEdgeVA, nextEdgeVB = nextEdge:GetVertices()
+                local currPoint, nextPoint
+                if currEdgeVA == nextEdgeVA or currEdgeVA == nextEdgeVB then
+                    currPoint, nextPoint = currEdgeVB.p, currEdgeVA.p
+                else
+                    currPoint, nextPoint = currEdgeVA.p, currEdgeVB.p
+                end
+                local p1 = currPoint-point
+                local p2 = nextPoint-point
+                local m1, m2 = p1:GetMagnitude(), p2:GetMagnitude()
+                if (m1*m2):GetIsEqualToZero() then
+                    local aRandomNumberOfTheAppropriateType = m1
+                    angleSum = 2*aRandomNumberOfTheAppropriateType.pi
+                    break
+                else
+                    angleSum = angleSum+(p1:GetDotProduct(p2)/(m1*m2)):GetArcCos()
+                end
+            end
+            local aRandomNumberOfTheAppropriateType = angleSum -- TODO: fix aRandomNumberOfTheAppropriateType... for the love of god!
+            --if angleSum:GetIsEqualTo(2*aRandomNumberOfTheAppropriateType.pi) then
+            if angleSum >= 2*aRandomNumberOfTheAppropriateType.pi then
+                insideEdgeLoopCount = insideEdgeLoopCount+1
+            end
+            print(angleSum)
+        end
+        print(insideEdgeLoopCount)
+        if insideEdgeLoopCount == 0 then
+            return false
+        elseif insideEdgeLoopCount == 1 then
+            return true
+        elseif insideEdgeLoopCount == 2 then
+            return false
+        else
+            error("wat")
+        end
+    end]]
     function luametry.Polygon:GetRayIntersection(rayOrigin, rayDirection)
         -- http://stackoverflow.com/questions/4447917/ray-and-3d-face-intersection
         -- http://www.cs.princeton.edu/courses/archive/fall00/cs426/lectures/raycast/sld017.htm
@@ -432,6 +517,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             or  (selfNormal:GetIsEqualTo(-otherNormal) and selfD:GetIsEqualTo(-otherD))
         )
     end
+    
     local function sortIntersectionPoint(va, vb, eva, evb)
         local el = (evb.p-eva.p):GetMagnitude()
         local vat = (va.p-eva.p):GetMagnitude()/el
@@ -459,46 +545,48 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                 end
             end
         end
+        local wat
         local newEdgeList = {}
-        for edge, cutVertexList in pairs(edgeCutVertexSortedListMap) do
-            local edgeVA, edgeVB = edge:GetVertices()
-            local currentVertex = edgeVA
-            for i = 1, #cutVertexList+1 do
-                local nextVertex = (i <= #cutVertexList and cutVertexList[i] or edgeVB)
-                local centrePoint = (currentVertex.p+nextVertex.p)/2
-                if (
-                        (self :GetEdgeMap()[edge] and other:GetIsPointInPolygon(centrePoint))
-                    or  (other:GetEdgeMap()[edge] and self :GetIsPointInPolygon(centrePoint))
-                ) then
-                    table.insert(newEdgeList, self.space:EdgeOf(currentVertex, nextVertex))
+        for polygonI = 1, 2 do
+            local localPolygon   = (polygonI == 1 and self or other)
+            local foreignPolygon = (polygonI == 2 and self or other)
+            for edge, edgeData in pairs(localPolygon.edgeMap) do
+                local edgeVA, edgeVB = edge:GetVertices()
+                local subEdgesToCheckList = nil
+                local cutVertexList = edgeCutVertexSortedListMap[edge] 
+                if cutVertexList ~= nil then
+                    subEdgesToCheckList = table.new(#cutVertexList, 0)
+                    local currentVertex = edgeVA
+                    for i = 1, #cutVertexList+1 do
+                        local nextVertex = (i <= #cutVertexList and cutVertexList[i] or edgeVB)
+                        table.insert(subEdgesToCheckList, self.space:EdgeOf(currentVertex, nextVertex))
+                        currentVertex = nextVertex
+                    end
+                else
+                    subEdgesToCheckList = {edge}
                 end
-                currentVertex = nextVertex
-            end
-        end
-        for edge, edgeData in pairs(self.edgeMap) do
-            local edgeVA, edgeVB = edge:GetVertices()
-            if not edgeCutVertexSortedListMap[edge] then
-                local centrePoint = (edgeVA.p+edgeVB.p)/2
-                if other:GetIsPointInPolygon(centrePoint) then
-                    table.insert(newEdgeList, edge)
-                end
-            end
-        end
-        for edge, edgeData in pairs(other.edgeMap) do
-            local edgeVA, edgeVB = edge:GetVertices()
-            if not edgeCutVertexSortedListMap[edge] then
-                local centrePoint = (edgeVA.p+edgeVB.p)/2
-                if self:GetIsPointInPolygon(centrePoint) then
-                    table.insert(newEdgeList, edge)
+                for subEdgeI, subEdge in ipairs(subEdgesToCheckList) do
+                    local subEdgeVA, subEdgeVB = subEdge:GetVertices()
+                    local centrePoint = (subEdgeVA.p+subEdgeVB.p)/2
+                    local isInForeignPolygon, intersectionCount, intersectRayDir = foreignPolygon:GetIsPointInPolygon(centrePoint)
+                    if isInForeignPolygon then
+                        table.insert(newEdgeList, subEdge)
+                    else
+                        subEdge.loldbg = true
+                        table.insert(newEdgeList, subEdge)
+                        wat = subEdge
+                        local blarghEdge = self.space:EdgeOf(self.space:VertexOf(centrePoint), self.space:VertexOf(centrePoint+intersectRayDir*10))
+                        table.insert(newEdgeList, blarghEdge)
+                    end
                 end
             end
         end
         --
-        local edgeLoopGroupList = {} -- right... a list of groups of loops of edges (where groups are more-or-less lists)
+        local edgeLoopGroupList = {}
         local edgeLoopList = {}
         
         -- temp
-        return newEdgeList
+        return newEdgeList, wat
         -- return { self.space:PolygonOf( unpack(newEdgeList) ) }
     end
 end
@@ -633,11 +721,14 @@ do luametry.Polyhedron = concept{-- Weakly simple polyhedron
         --space = luametry.Space(),
         
         --polygonMap = {},
+        
         --polygonCount = 0, -- generated
         --edgeMap = {}, -- generated
         --edgeCount = 0, -- generated
         --vertexMap = {}, -- generated
         --vertexCount = 0,-- generated
+        
+        --polygonList = {}, -- generated
     }
     function luametry.Polyhedron.__declare(class)
         assert(class.space                , "Polyhedron.space must be defined in specialisation")
@@ -652,7 +743,8 @@ do luametry.Polyhedron = concept{-- Weakly simple polyhedron
         obj = { [class.space] = true }
         local argCount = select('#', ...)
         if argCount >= 4 then
-            obj.polygonMap = table.new(argCount, 0)
+            obj.polygonMap = table.new(0, argCount)
+            obj.polygonList = table.new(argCount, 0)
             obj.polygonCount = 0
             for argI = 1, argCount do
                 local polygon = select(argI, ...)
@@ -660,6 +752,7 @@ do luametry.Polyhedron = concept{-- Weakly simple polyhedron
                     error"cannot have same polygon twice"
                 end
                 obj.polygonMap[polygon] = {}
+                obj.polygonList[argI] = polygon
                 obj.polygonCount = obj.polygonCount+1
             end
         else

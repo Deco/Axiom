@@ -8,8 +8,9 @@ setmetatable(concept, concept)
 
 do -- utils
     -- these probably shouldn't be here, but meh
+    
     pcall(require, "table.new")
-    table.new = table.new or function(hashCount, arrayCount) return {} end
+    table.new = table.new or function(narray, nhash) return {} end
     table.reverse = table.reverse or function(t)
         local n = #t
         for i = 1, math.floor(n/2) do
@@ -17,6 +18,46 @@ do -- utils
         end
         -- don't return anything to make it clear we're reversing the table passed
         --return t
+    end
+    
+    local function arrayflatten_internal(result, resultLength, level, tbl)
+        if level == 0 then
+            for tblPairKey, tblPairValue in ipairs(tbl) do
+                resultLength = resultLength+1
+                result[resultLength] = tblPairValue
+            end
+        else
+            level = level-1
+            for tblPairKey, tblPairValue in ipairs(tbl) do
+                resultLength = arrayflatten_internal(result, resultLength, level, tblPairValue)
+            end
+        end
+        return resultLength
+    end
+    table.arrayflatten = function(array, level, precomputeSize)
+        -- TODO: Implement table.arrayflattern size precomputing
+        level = level or 1
+        local result = {}
+        local resultLength = arrayflatten_internal(result, 0, level, array)
+        return result, resultLength
+    end
+    
+    table.arrayjoin = table.arrayjoin or function(...)
+        -- TODO: fix table.arrayjoin size precomputing
+        local size = 0
+        for argI = 1, select('#', ...) do
+            size = size+#select(argI, ...)
+        end
+        local result = table.new(size, 0)
+        local resultLength = 0
+        for argI = 1, select('#', ...) do
+            local arg = select(argI, ...)
+            for argPairKey, argPairValue in ipairs(arg) do
+                resultLength = resultLength+1
+                result[resultLength] = argPairValue
+            end
+        end
+        return result, resultLength
     end
     
     _G._dbg = function(...)
@@ -44,6 +85,22 @@ do -- utils
             table.insert(t, (iMid+iState), value)
             return iMid+iState
         end
+    end
+    
+    local function copairs_internal(state, k)
+        local i = state.i
+        local t = state[i]
+        local k, v = next(t, k)
+        if k ~= nil then return k, v end
+        i = i+1
+        if i > #state then return nil end
+        state.i = i
+        t = state[i]
+        return next(t, nil)
+    end
+    _G.copairs = _G.copairs or function(...)
+        local state = { i = 1, ... }
+        return copairs_internal, state
     end
 end
 
@@ -159,7 +216,7 @@ if TEST then -- example class
         pcall(require, "table.new")
         if table.new then
             return function(class, ...)
-                return class.__init(class, table.new(0, class.size), ...)
+                return class.__init(class, table.new(class.size, 0), ...)
             end
         end
     end
