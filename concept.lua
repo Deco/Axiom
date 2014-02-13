@@ -11,6 +11,7 @@ do -- utils
     
     pcall(require, "table.new")
     table.new = table.new or function(narray, nhash) return {} end
+    
     table.reverse = table.reverse or function(t)
         local n = #t
         for i = 1, math.floor(n/2) do
@@ -18,6 +19,14 @@ do -- utils
         end
         -- don't return anything to make it clear we're reversing the table passed
         --return t
+    end
+    table.getreversed = table.reverse or function(t)
+        local n = #t
+        local r = table.new(n, 0)
+        for i = 1, n do
+            r[n+1-i] = t[i]
+        end
+        return r
     end
     
     local function arrayflatten_internal(result, resultLength, level, tbl)
@@ -60,6 +69,25 @@ do -- utils
         return result, resultLength
     end
     
+    local function arraycopy_internal(level, tbl)
+        local result = table.new(#tbl, 0)
+        if level == 0 then
+            for tblPairKey, tblPairValue in ipairs(tbl) do
+                result[tblPairKey] = tblPairValue
+            end
+        else
+            level = level-1
+            for tblPairKey, tblPairValue in ipairs(tbl) do
+                result[tblPairKey] = arraycopy_internal(level, tblPairValue)
+            end
+        end
+        return result
+    end
+    table.arraycopy = table.arraycopy or function(array, level)
+        level = level or 1
+        return arraycopy_internal(level, array)
+    end
+    
     _G._dbg = function(...)
         local info = debug.getinfo(2, "nSl")
         print(tostring(info.short_src)..":"..tostring(info.currentline).."-"..tostring(info.name), ...)
@@ -91,16 +119,38 @@ do -- utils
         local i = state.i
         local t = state[i]
         local k, v = next(t, k)
-        if k ~= nil then return k, v end
+        if k ~= nil then return k, v, t end
         i = i+1
         if i > #state then return nil end
         state.i = i
         t = state[i]
-        return next(t, nil)
+        k, v = next(t, nil)
+        return k, v, t
     end
     _G.copairs = _G.copairs or function(...)
         local state = { i = 1, ... }
         return copairs_internal, state
+    end
+    
+    local function coipairs_internal(state, k)
+        local ti = state.ti
+        local t = state[ti]
+        local k = (k or 0)-state.ci+1
+        if k <= #t then return state.ci+k, t[k], t end
+        state.ci = state.ci+#t
+        k = 1
+        for ti = ti+1, #state do
+            t = state[ti]
+            if k <= #t then
+                state.ti = ti
+                return state.ci+k, t[1], t
+            end
+        end
+        return nil
+    end
+    _G.coipairs = _G.coipairs or function(...)
+        local state = { ci = 0, ti = 1, ... }
+        return coipairs_internal, state
     end
 end
 
