@@ -18,6 +18,11 @@ function lualgebra.Float64.__init(class, existingObj, ...)
     return 0
 end
 
+
+math.randrange = math.randrange or function(min, max)
+    return min+math.random()*(max-min)
+end
+
 lualgebra.Float64.pi = math.pi
 lualgebra.Float64.epsilon = 1.22e-15
 
@@ -28,6 +33,7 @@ lualgebra.Float64.sqrt  = math.sqrt
 lualgebra.Float64.sin   = math.sin
 lualgebra.Float64.cos   = math.cos
 lualgebra.Float64.acos  = math.acos
+lualgebra.Float64.randrange = math.randrange
 
 lualgebra.Float64.GetAbs    = lualgebra.Float64.abs
 lualgebra.Float64.GetSign   = lualgebra.Float64.sign

@@ -11,6 +11,37 @@ local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 
 local level = (axiom.Level%{ space = space })()
 
+
+do
+    local normal = V(0, 1, 0)
+    
+    local p1 = space:PolygonOf(space:BuildEdgeLoopOf{
+        space:VertexOf(V(0.00, 0.00, 0.25)),
+        space:VertexOf(V(0.25, 0.00, 0.25)),
+        space:VertexOf(V(0.25, 0.00, 0.00)),
+        space:VertexOf(V(1.00, 0.00, 0.00)),
+        space:VertexOf(V(1.00, 0.00, 1.00)),
+        space:VertexOf(V(0.00, 0.00, 1.00)),
+    })
+    local f1 = space:FaceOf(p1, normal)
+    level:AddFace(f1)
+    
+    
+    for i = 1, 1 do
+        local point = V(math.randrange(-1, 2), 0, math.randrange(-1, 2))
+        local e1 = space:EdgeOf(
+            space:VertexOf(point),
+            space:VertexOf(point+V(0, 0.3, 0))
+        )
+        if p1:GetIsPointInPolygon(point) then
+            e1.loldbg = true
+        end
+        level:AddEdge(e1)
+    end
+end
+
+
+--[==[
 do
     local n1 = V(0, 1, 0)
     local function makefacethingies(wat)
@@ -91,6 +122,7 @@ do
     -- level:AddFace(f3)
     
 end
+]==]
 --[[do
     local o = V(0.5, 0, 0.5)
     local edgeLoop = space:EdgeLoopOf(

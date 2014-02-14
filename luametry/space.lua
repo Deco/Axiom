@@ -235,7 +235,32 @@ do luametry.Space = concept{
         -- Utility function. Finding common vertices is common, but very verbose
         return edgeLoopIterator, edgeLoop, 0
     end
-    function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point, rayDirection, edgeShouldIgnoreMap)
+    function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point)
+        local normal = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopSequence[1])
+        -- local greatestDimension = table.getgreatest{ x = normal.x, y = normal.y, z = normal.z }
+        -- WRONG WRONG WRONG D:
+        local inCount = 0
+        for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
+            local wn = 0
+            for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
+                local aPos, bPos = currEdgeUniqueV.p, commonV.p
+                local crossResult = normal:GetCrossProduct((bPos-aPos):GetNormalized()):GetNormalized()
+                local apDir = (point-aPos):GetNormalized()
+                if apDir:GetDotProduct(crossResult):GetSign() == 1 then
+                    wn = wn+1
+                else
+                    wn = wn-1
+                end
+            end
+            print(wn)
+            if wn == 0 then
+                inCount = inCount+1
+            end
+        end
+        assert(inCount <= 2, "?!?")
+        return (inCount == 1)
+    end
+    --[[function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point, rayDirection, edgeShouldIgnoreMap)
         edgeShouldIgnoreMap = edgeShouldIgnoreMap or {}
         rayDirection = rayDirection and error"NYI" or nil
         local intersectRayOrigin = point
@@ -347,16 +372,35 @@ do luametry.Space = concept{
             WTFBBQ = wtfbbq
         end
         return isInPolygon, intersectionCount, intersectRayDir
-    end
+    end]]
     
-    -- function luametry.Space:TriangulateEgdeLoopSequence(edgeLoopSequence)
-        -- local vertexList = {}
-        -- for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
-            -- for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self.space:IterateEdgesOfEdgeLoop(edgeLoop) do
-                -- table.insert(vertexList, 
-            -- end
-        -- end
-    -- end
+    --[[function luametry.Space:TriangulateEgdeLoopSequence(edgeLoopSequence)
+        local vertexList = {}
+        for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
+            for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self.space:IterateEdgesOfEdgeLoop(edgeLoop) do
+                table.insert(vertexList, 
+            end
+        end
+    end]]
+    function luametry.Space:CalculateOrthagonalDirectionToEdgeLoop(edgeLoop)
+        local aPos, bPos, cPos
+        local normal
+        for edgeI, edge in ipairs(edgeLoop) do
+            local va, vb = edge:GetVertices()
+            if not aPos then
+                aPos = va.p
+            elseif not bPos then
+                bPos = va.p
+            elseif not cPos then
+                cPos = va.p
+                local dot = (bPos-aPos):GetNormalized():GetDotProduct((cPos-aPos):GetNormalized())
+                if not dot:GetAbs():GetIsEqualTo(1) then -- make sure they aren't colinear
+                    normal = (bPos-aPos):GetNormalized():GetCrossProduct((cPos-aPos):GetNormalized()):GetNormalized()
+                    return normal
+                end
+            end
+        end
+    end
 end
 
 do luametry.Vertex = concept{ -- Vertex
@@ -801,8 +845,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                     if isInForeignPolygon then
                         subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)
-                        local blarghEdge = self.space:EdgeOf(self.space:VertexOf(centrePoint), self.space:VertexOf(centrePoint+intersectRayDir*10))
-                        table.insert(newEdgeList, blarghEdge)
+                        -- local blarghEdge = self.space:EdgeOf(self.space:VertexOf(centrePoint), self.space:VertexOf(centrePoint+intersectRayDir*10))
+                        -- table.insert(newEdgeList, blarghEdge)
                     else
                         -- subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)

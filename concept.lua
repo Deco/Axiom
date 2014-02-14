@@ -29,6 +29,17 @@ do -- utils
         return r
     end
     
+    table.getgreatest = table.getgreatest or function(t, f)
+        f = f or function(a, b) return a > b end
+        local gk, gv
+        for k,v in pairs(t) do
+            if gv == nil or f(v, gv) then
+                gk, gv = k, v
+            end
+        end
+        return gk, gv
+    end
+    
     local function arrayflatten_internal(result, resultLength, level, tbl)
         if level == 0 then
             for tblPairKey, tblPairValue in ipairs(tbl) do
