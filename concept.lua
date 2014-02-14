@@ -71,7 +71,7 @@ do -- utils
     
     local function arraycopy_internal(level, tbl)
         local result = table.new(#tbl, 0)
-        if level == 0 then
+        if level == 1 then
             for tblPairKey, tblPairValue in ipairs(tbl) do
                 result[tblPairKey] = tblPairValue
             end

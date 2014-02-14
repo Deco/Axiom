@@ -19,7 +19,7 @@ function lualgebra.Float64.__init(class, existingObj, ...)
 end
 
 lualgebra.Float64.pi = math.pi
-lualgebra.Float64.epsilon = 2.22e-15
+lualgebra.Float64.epsilon = 1.22e-15
 
 lualgebra.Float64.abs   = math.abs
 lualgebra.Float64.sign  = math.sign or function(x) return x>0 and 1 or x<0 and -1 or 0 end

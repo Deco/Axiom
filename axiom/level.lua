@@ -124,19 +124,23 @@ function axiom.Level:GetChunk()
             }
         }
         
-        local faceEdgeLoopList = face:GetOrderedEdgeLoopList()
-        for edgeLoopI, edgeLoop in ipairs(faceEdgeLoopList) do
+        local faceEdgeLoopSequence = face:GetCounterClockwiseEdgeLoopSequence()
+        for edgeLoopI, edgeLoop in ipairs(faceEdgeLoopSequence) do
             local edgeIdList, edgeIsFlippedList, shouldInverseIsFlippedState, edgeStartI, edgeEndI, edgeDeltaI
             if edgeLoopI%2 == 1 then
                 edgeIdList, edgeIsFlippedList = rawFace.borderedgeidlist, rawFace.borderedgeisflippedlist
-                shouldInverseIsFlippedState = false
-                edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
+                -- shouldInverseIsFlippedState = false
+                -- edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
+                shouldInverseIsFlippedState = true
+                edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
             else
                 edgeIdList, edgeIsFlippedList = {}, {}
                 table.insert(rawFace.edgeidlistlist, edgeIdList)
                 table.insert(rawFace.edgeisflippedlistlist, edgeIsFlippedList)
-                shouldInverseIsFlippedState = true
-                edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
+                -- shouldInverseIsFlippedState = true
+                -- edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
+                shouldInverseIsFlippedState = false
+                edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
             end
             for currEdgeI = edgeStartI, edgeEndI, edgeDeltaI do
                 local currEdge = edgeLoop[currEdgeI]

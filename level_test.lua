@@ -10,52 +10,49 @@ local V = luametry.Vec3cf
 local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 
 local level = (axiom.Level%{ space = space })()
---[[
-do
-    local v1 = space:VertexOf(V(-1.0,  0.0,  0.0))
-    local v2 = space:VertexOf(V( 1.0,  0.0,  0.0))
-    local e1 = space:EdgeOf(v1, v2)
-    
-    local v3 = space:VertexOf(V( 0.5,  0.4,  1.0))
-    local v4 = space:VertexOf(V( 0.0,  0.4,  2.0))
-    local e2 = space:EdgeOf(v3, v4)
-    
-    local dontClamp = false
-    local dist, v5, v6, e1t, e2t = e1:GetShortestDistanceToEdge(e2, dontClamp)
-    print(dist, e1t, e2t)
-    local e3 = space:EdgeOf(v5, v6)
-    
-    level:AddEdge(e1)
-    level:AddEdge(e2)
-    level:AddEdge(e3)
-end
-]]
 
 do
     local n1 = V(0, 1, 0)
     local function makefacethingies(wat)
         local p1, p2, f1, f2
+        math.randomseed(479) for i = 1, 10 do math.random() end
         do
             local o = V(0, 0, 0)+wat
-            p1 = space:PolygonOf(unpack(space:EdgeLoopOf(
-                space:VertexOf(o+V(0.00, 0.00, 0.00)),
-                space:VertexOf(o+V(1.00, 0.00, 0.00)),
-                space:VertexOf(o+V(1.00, 0.00, 0.75)),
-                space:VertexOf(o+V(2.00, 0.00, 1.00)),
-                space:VertexOf(o+V(0.00, 0.00, 1.00))
-            )))
+            local vertexList = {}
+            local count, rad = 32, 1.4
+            for i = 1, count do
+                local a = 2*math.pi/count*(i-1)
+                local r = 0.1*rad+0.9*math.random()*rad
+                table.insert(vertexList, space:VertexOf(o+V(math.cos(a)*r, 0, math.sin(a)*r)))
+            end
+            p1 = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
+            -- p1 = space:PolygonOf(space:BuildEdgeLoopOf{
+                -- space:VertexOf(o+V(0.00, 0.00, 0.00)),
+                -- space:VertexOf(o+V(1.00, 0.00, 0.00)),
+                -- space:VertexOf(o+V(1.00, 0.00, 0.75)),
+                -- space:VertexOf(o+V(2.00, 0.00, 1.00)),
+                -- space:VertexOf(o+V(0.00, 0.00, 1.00)),
+            -- })
             f1 = space:FaceOf(p1, n1)
         end
         do
-            local o = V(0.5, 0, 0.5)+wat
-            p2 = space:PolygonOf(unpack(space:EdgeLoopOf(
+            local o = V(0., 0, 0.)+wat
+            -- local vertexList = {}
+            -- local count, rad = 16, 1.4
+            -- for i = 1, count do
+                -- local a = 2*math.pi/count*(i-1)
+                -- local r = 0.1*rad+0.9*math.random()*rad
+                -- table.insert(vertexList, space:VertexOf(o+V(math.cos(a)*r, 0, math.sin(a)*r)))
+            -- end
+            -- p2 = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
+            p2 = space:PolygonOf(space:BuildEdgeLoopOf{
                 space:VertexOf(o+V(0.00, 0.00, 0.25)),
                 space:VertexOf(o+V(0.25, 0.00, 0.25)),
                 space:VertexOf(o+V(0.25, 0.00, 0.00)),
                 space:VertexOf(o+V(1.00, 0.00, 0.00)),
                 space:VertexOf(o+V(1.00, 0.00, 1.00)),
-                space:VertexOf(o+V(0.00, 0.00, 1.00))
-            )))
+                space:VertexOf(o+V(0.00, 0.00, 1.00)),
+            })
             f2 = space:FaceOf(p2, n1)
         end
         return p1, p2, f1, f2
@@ -77,12 +74,12 @@ do
         -- level:AddEdge(space:EdgeOf(space:VertexOf(edgeVA.p+o), space:VertexOf(edgeVB.p+o)))
         -- o = o+V(0, 0.01, 0)
     end
-    print("###")
-    local randomEdgeVA, randomEdgeVB = randomEdge:GetVertices()
-    print(p1:GetIsPointInPolygon((randomEdgeVA.p+randomEdgeVB.p)/2))
+    -- print("###")
+    -- local randomEdgeVA, randomEdgeVB = randomEdge:GetVertices()
+    -- print(p1:GetIsPointInPolygon((randomEdgeVA.p+randomEdgeVB.p)/2))
     -- level:AddEdge(randomEdge)
-    print(randomEdgeVA.p, randomEdgeVB.p)
-    print("###")
+    -- print(randomEdgeVA.p, randomEdgeVB.p)
+    -- print("###")
     -- local testv = V(0.5, 0, 0.5)
     -- level:AddEdge(space:EdgeOf(space:VertexOf(testv), space:VertexOf(testv+V(0, 1, 0))))
     -- print(p1:GetIsPointInPolygon(testv))
@@ -92,8 +89,6 @@ do
     level:AddFace(f1)
     level:AddFace(f2)
     -- level:AddFace(f3)
-    
-    
     
 end
 --[[do
