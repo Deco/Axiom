@@ -18,7 +18,10 @@ function lualgebra.Float64.__init(class, existingObj, ...)
     return 0
 end
 
-
+math.round = function(x, digit, base)
+    local mul = (base or 10)^(-(digit or 0))
+    return math.floor(x*mul+0.5)/mul
+end
 math.randrange = math.randrange or function(min, max)
     return min+math.random()*(max-min)
 end

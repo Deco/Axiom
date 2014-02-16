@@ -237,28 +237,72 @@ do luametry.Space = concept{
     end
     function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point)
         local normal = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopSequence[1])
-        -- local greatestDimension = table.getgreatest{ x = normal.x, y = normal.y, z = normal.z }
-        -- WRONG WRONG WRONG D:
+        -- local wat = {}
         local inCount = 0
         for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
-            local wn = 0
+            local edgeLoopOrientation = self:GetEdgeLoopOrientation(edgeLoop, normal)
+            local closestEdgeDist, closestEdgeI, closestEdgeV1, closestEdgeV2, closestEdgeClosestPoint = math.huge
             for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
-                local aPos, bPos = currEdgeUniqueV.p, commonV.p
-                local crossResult = normal:GetCrossProduct((bPos-aPos):GetNormalized()):GetNormalized()
-                local apDir = (point-aPos):GetNormalized()
-                if apDir:GetDotProduct(crossResult):GetSign() == 1 then
-                    wn = wn+1
-                else
-                    wn = wn-1
+                local edgeDist, edgeClosestPoint = currEdge:GetShortestDistanceToPoint(point)
+                if edgeDist < closestEdgeDist then
+                    local edgeDir = (commonV.p-currEdgeUniqueV.p):GetNormalized()
+                    local vertToPointDir = (point-currEdgeUniqueV.p):GetNormalized()
+                    if edgeDir:GetDotProduct(vertToPointDir):GetAbs():GetIsEqualTo(1) then
+                        -- the point is colinear to the edge
+                        print("colinear!")
+                    else
+                        closestEdgeDist, closestEdgeI = edgeDist, currEdge
+                        closestEdgeV1, closestEdgeV2 = currEdgeUniqueV, commonV
+                        closestEdgeClosestPoint = edgeClosestPoint
+                        -- if true then
+                            -- if math.round(point.x, -2) == 0.71 and math.round(point.z, -2) == 1.04 then
+                                -- print("YAY", point)
+                                -- local edgeDir = (closestEdgeV2.p-closestEdgeV1.p):GetNormalized()
+                                -- local edgeInDirection = normal:GetCrossProduct(edgeDir)
+                                -- local centrePoint = (currEdgeUniqueV.p+commonV.p)/2
+                                -- local we = self:EdgeOf(
+                                    -- self:VertexOf(centrePoint),
+                                    -- self:VertexOf(centrePoint+edgeInDirection*0.1)
+                                -- )
+                                -- we.loldbg = true
+                                -- table.insert(wat, we)
+                                
+                                -- local we = self:EdgeOf(
+                                    -- self:VertexOf(centrePoint),
+                                    -- self:VertexOf(centrePoint+normal*0.1)
+                                -- )
+                                -- table.insert(wat, we)
+                                
+                                -- local we = self:EdgeOf(
+                                    -- self:VertexOf(point),
+                                    -- self:VertexOf(point+normal*0.3)
+                                -- )
+                                -- we.loldbg = true
+                                -- table.insert(wat, we)
+                            -- end
+                        -- end
+                    end
                 end
             end
-            print(wn)
-            if wn == 0 then
+            local edgeDir = (closestEdgeV2.p-closestEdgeV1.p):GetNormalized() -- no need to actually normalize this
+            local edgeInDirection = normal:GetCrossProduct(edgeDir) -- hehe... "indirection"
+            local edgeToPointDir = (point-closestEdgeClosestPoint):GetNormalized()
+            local dotResult = edgeInDirection:GetDotProduct(edgeToPointDir)
+            local insideDotSign = (
+                    edgeLoopOrientation == "cw"  and -1
+                or  edgeLoopOrientation == "ccw" and  1
+                or  1--error"?!?"
+            )
+            local pointIsInside = (dotResult:GetSign() == insideDotSign)
+            if pointIsInside then
                 inCount = inCount+1
+            end
+            if edgeLoopOrientation == "cw" then
+                
             end
         end
         assert(inCount <= 2, "?!?")
-        return (inCount == 1)
+        return (inCount == 1)--, wat
     end
     --[[function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point, rayDirection, edgeShouldIgnoreMap)
         edgeShouldIgnoreMap = edgeShouldIgnoreMap or {}
@@ -374,14 +418,18 @@ do luametry.Space = concept{
         return isInPolygon, intersectionCount, intersectRayDir
     end]]
     
-    --[[function luametry.Space:TriangulateEgdeLoopSequence(edgeLoopSequence)
-        local vertexList = {}
-        for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
-            for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self.space:IterateEdgesOfEdgeLoop(edgeLoop) do
-                table.insert(vertexList, 
-            end
+    function luametry.Space:GetEdgeLoopOrientation(edgeLoop, normal)
+        local counterClockwiseCount = 0
+        for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
+            local orientationTest = normal:GetDotProduct(
+                (commonV.p-currEdgeUniqueV.p):GetCrossProduct(nextEdgeUniqueV.p-currEdgeUniqueV.p)
+            )
+            local isCounterClockwise = (orientationTest:GetSign() == 1)
+            -- print(isCounterClockwise and "ccw" or "cw")
+            counterClockwiseCount = counterClockwiseCount+(isCounterClockwise and 1 or -1)
         end
-    end]]
+        return (counterClockwiseCount > 0 and "ccw" or counterClockwiseCount < 0 and "cw" or nil)
+    end
     function luametry.Space:CalculateOrthagonalDirectionToEdgeLoop(edgeLoop)
         local aPos, bPos, cPos
         local normal
@@ -560,6 +608,16 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local dP = w+(rayT*u)-(edgeT*v)
         return dP:GetMagnitude(), rayT, edgeT
     end
+    function luametry.Edge:GetShortestDistanceToPoint(point)
+        local a, b = self:GetVertices()
+        local v, w = b.p-a.p, point-a.p
+        local c1, c2 = w:GetDotProduct(v), v:GetDotProduct(v)
+        if c1 <= 0  then return (a.p-point):GetMagnitude(), a.p end
+        if c2 <= c1 then return (b.p-point):GetMagnitude(), b.p end
+        local b = c1/c2
+        local r = a.p+b*v
+        return (r-point):GetMagnitude(), r
+    end
     function luametry.Edge:TestIntersection(otherEdge)
         self:VerifyEdgeCompatibility(otherEdge)
         
@@ -718,8 +776,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             end
         end
     end
-    function luametry.Polygon:GetIsPointInPolygon(point, rayDirection, edgeShouldIgnoreMap)
-        return self.space:GetIsPointInEdgeLoopSequence(self.edgeLoopSequence, point, rayDirection, edgeShouldIgnoreMap)
+    function luametry.Polygon:GetIsPointInPolygon(point)
+        return self.space:GetIsPointInEdgeLoopSequence(self.edgeLoopSequence, point)
     end
     --[[ function luametry.Polygon:GetIsPointInPolygon(point)
         -- http://bbs.dartmouth.edu/~fangq/MATH/download/source/Determining%20if%20a%20point%20lies%20on%20the%20interior%20of%20a%20polygon.htm
@@ -841,23 +899,19 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                 for subEdgeI, subEdge in ipairs(subEdgesToCheckList) do
                     local subEdgeVA, subEdgeVB = subEdge:GetVertices()
                     local centrePoint = (subEdgeVA.p+subEdgeVB.p)/2
-                    local isInForeignPolygon, intersectionCount, intersectRayDir = foreignPolygon:GetIsPointInPolygon(centrePoint)
+                    local isInForeignPolygon, watel = foreignPolygon:GetIsPointInPolygon(centrePoint)
                     if isInForeignPolygon then
                         subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)
+                        for k,edge in ipairs(watel) do
+                            table.insert(newEdgeList, edge)
+                        end
                         -- local blarghEdge = self.space:EdgeOf(self.space:VertexOf(centrePoint), self.space:VertexOf(centrePoint+intersectRayDir*10))
                         -- table.insert(newEdgeList, blarghEdge)
                     else
                         -- subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)
                         wat = subEdge
-                        if WTFBBQ then
-                            for i, e in ipairs(WTFBBQ) do
-                                -- local blarghEdge = self.space:EdgeOf(self.space:VertexOf(centrePoint), self.space:VertexOf(centrePoint+intersectRayDir*10))
-                                table.insert(newEdgeList, e)
-                            end
-                            WTFBBQ = nil
-                        end
                     end
                 end
             end

@@ -12,41 +12,46 @@ local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 local level = (axiom.Level%{ space = space })()
 
 
-do
-    local normal = V(0, 1, 0)
+-- do
+    -- local normal = V(0, 1, 0)
     
-    local p1 = space:PolygonOf(space:BuildEdgeLoopOf{
-        space:VertexOf(V(0.00, 0.00, 0.25)),
-        space:VertexOf(V(0.25, 0.00, 0.25)),
-        space:VertexOf(V(0.25, 0.00, 0.00)),
-        space:VertexOf(V(1.00, 0.00, 0.00)),
-        space:VertexOf(V(1.00, 0.00, 1.00)),
-        space:VertexOf(V(0.00, 0.00, 1.00)),
-    })
-    local f1 = space:FaceOf(p1, normal)
-    level:AddFace(f1)
+    -- local p1 = space:PolygonOf(space:BuildEdgeLoopOf{
+        -- space:VertexOf(V(0.00, 0.00, 0.25)),
+        -- space:VertexOf(V(0.25, 0.00, 0.25)),
+        -- space:VertexOf(V(0.25, 0.00, 0.00)),
+        -- space:VertexOf(V(1.00, 0.00, 0.00)),
+        -- space:VertexOf(V(1.00, 0.00, 1.00)),
+        -- space:VertexOf(V(0.00, 0.00, 1.00)),
+    -- })
+    -- local f1 = space:FaceOf(p1, normal)
+    -- level:AddFace(f1)
     
     
-    for i = 1, 1 do
-        local point = V(math.randrange(-1, 2), 0, math.randrange(-1, 2))
-        local e1 = space:EdgeOf(
-            space:VertexOf(point),
-            space:VertexOf(point+V(0, 0.3, 0))
-        )
-        if p1:GetIsPointInPolygon(point) then
-            e1.loldbg = true
-        end
-        level:AddEdge(e1)
-    end
-end
+    -- for i = 1, 1000 do
+        -- local point = V(math.randrange(-0.3, 1.3), 0, math.randrange(-0.3, 1.3))
+        -- local e1 = space:EdgeOf(
+            -- space:VertexOf(point),
+            -- space:VertexOf(point+V(0, 0.3, 0))
+        -- )
+        -- local isInside, wat = p1:GetIsPointInPolygon(point)
+        -- if isInside then
+            -- e1.loldbg = true
+        -- end
+        -- level:AddEdge(e1)
+        -- for k,edge in ipairs(wat) do
+            -- level:AddEdge(edge)
+        -- end
+    -- end
+-- end
 
 
---[==[
 do
+    local seed = 9187, math.floor(math.random()*9999)
+    print(seed)
     local n1 = V(0, 1, 0)
     local function makefacethingies(wat)
         local p1, p2, f1, f2
-        math.randomseed(479) for i = 1, 10 do math.random() end
+        math.randomseed(seed) for i = 1, 10 do math.random() end
         do
             local o = V(0, 0, 0)+wat
             local vertexList = {}
@@ -115,14 +120,13 @@ do
     -- level:AddEdge(space:EdgeOf(space:VertexOf(testv), space:VertexOf(testv+V(0, 1, 0))))
     -- print(p1:GetIsPointInPolygon(testv))
     
-    p1, p2, f1, f2 = makefacethingies(V(0, -0.15, 0))
+    p1, p2, f1, f2 = makefacethingies(V(0, -0.02, 0))
     
     level:AddFace(f1)
     level:AddFace(f2)
     -- level:AddFace(f3)
     
 end
-]==]
 --[[do
     local o = V(0.5, 0, 0.5)
     local edgeLoop = space:EdgeLoopOf(
