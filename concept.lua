@@ -20,7 +20,7 @@ do -- utils
         -- don't return anything to make it clear we're reversing the table passed
         --return t
     end
-    table.getreversed = table.reverse or function(t)
+    table.getreversed = table.getreversed or function(t)
         local n = #t
         local r = table.new(n, 0)
         for i = 1, n do

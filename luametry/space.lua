@@ -11,7 +11,7 @@ local lualgebra = require"lualgebra"
 -- A "vertex" is defined by a point
 -- An "edge" is defined by two distinct vertices
 -- A "polygon" is defined by three or more distinct coplanar edges which form one or more complete loops with no intersections
--- A "face" is defined by a poloygon and a normal which is perpendicular to the plane of the polygon
+-- A "face" is defined by a polygon and a normal which is perpendicular to the plane of the polygon
 -- A "polyhedon"
 -- A "volume"
 
@@ -23,6 +23,18 @@ local lualgebra = require"lualgebra"
 do luametry.Space = concept{
         coordinateType = luametry.Vec3cf,
         
+        --vertexMap = {},
+        --vertexList = {},
+        --edgeMap = {},
+        --edgeList = {},
+        --polygonMap = {},
+        --polygonList = {},
+        --faceMap = {},
+        --faceList = {},
+        --polyhedronMap = {},
+        --polyhedronList = {},
+        --volumeMap = {},
+        --volumeList = {},
     }
     function luametry.Space.__declare(class)
         assert(class.coordinateType[luametry.Coordinate], "Space.coordinateType must implement luametry.Coordinate")
@@ -36,20 +48,74 @@ do luametry.Space = concept{
         obj.edgeType    = luametry.Edge   %{ space = obj }
         obj.polygonType = luametry.Polygon%{ space = obj }
         obj.faceType    = luametry.Face   %{ space = obj }
+        
+        obj.vertexMap = {}
+        obj.vertexList = {}
+        obj.edgeMap = {}
+        obj.edgeList = {}
+        obj.polygonMap = {}
+        obj.polygonList = {}
+        obj.faceMap = {}
+        obj.faceList = {}
+        obj.polyhedronMap = {}
+        obj.polyhedronList = {}
+        obj.volumeMap = {}
+        obj.volumeList = {}
+        
         return setmetatable(obj, class)
     end
     
-    function luametry.Space:VertexOf(...)
-        return self.vertexType(...)
+    function luametry.Space:VertexOf(pos)
+        -- TODO: Make luametry.Space use an octree for vertex identity
+        for vertexI, vertex in ipairs(self.vertexList) do
+            if vertex.p:GetIsEqualTo(pos) then
+                return vertex
+            end
+        end
+        local vertex = self.vertexType(pos)
+        table.insert(self.vertexList, vertex)
+        self.vertexMap[vertex] = {}
+        return vertex
     end
     function luametry.Space:EdgeOf(va, vb)
-        return self.edgeType(va, vb)
+        for edgeI, edge in ipairs(self.edgeList) do
+            if edge.vertexMap[va] and edge.vertexMap[vb] then
+                return edge
+            end
+        end
+        local edge = self.edgeType(va, vb)
+        table.insert(self.edgeList, edge)
+        self.edgeMap[edge] = {}
+        return edge
     end
     function luametry.Space:PolygonOf(edgeList)
-        return self.polygonType(edgeList)
+        for polygonI, polygon in ipairs(self.polygonList) do
+            local isIdentical = true
+            for edgeI, edge in ipairs(edgeList) do
+                if not polygon.edgeMap[edge] then
+                    isIdentical = false
+                    break
+                end
+            end
+            if isIdentical then
+                return polygon
+            end
+        end
+        local polygon = self.polygonType(edgeList)
+        table.insert(self.polygonList, polygon)
+        self.polygonMap[polygon] = {}
+        return polygon
     end
     function luametry.Space:FaceOf(polygon, normal)
-        return self.faceType(polygon, normal)
+        for faceI, face in ipairs(self.faceList) do
+            if face.polygon == polygon and face.normal == normal then
+                return face
+            end
+        end
+        local face = self.faceType(polygon, normal)
+        table.insert(self.faceList, face)
+        self.faceMap[face] = {}
+        return face
     end
     
     function luametry.Space:BuildEdgeLoopOf(vertexList) -- convenience, for manually specifying complex edge loops
@@ -123,13 +189,15 @@ do luametry.Space = concept{
         -- returns true if edgeLoopA is inside edgeLoopB
         if assertValidity then
             local vertexAttachCountMap = {}
+            for edgeI, edge in ipairs(edgeLoopA, edgeLoopB) do
+                local edgeVA, edgeVB = edge:GetVertices()
+                vertexAttachCountMap[edgeVA] = (vertexAttachCountMap[edgeVA] or 0)+1
+                vertexAttachCountMap[edgeVB] = (vertexAttachCountMap[edgeVB] or 0)+1
+            end
             for edge1I, edge1, edgeLoop1 in coipairs(edgeLoopA, edgeLoopB) do
                 for edge2I, edge2, edgeLoop2 in coipairs(edgeLoopA, edgeLoopB) do
                     local edge1VA, edge1VB = edge1:GetVertices()
                     local edge2VA, edge2VB = edge1:GetVertices()
-                    for vertexI, vertex in ipairs{edge1VA, edge1VB, edge2VA, edge2VB} do
-                        vertexCountMap[vertex] = (vertexCountMap[vertex] or 0)+1
-                    end
                     local shouldCheckIntersection = true
                     if edgeLoop1 == edgeLoop2 then
                         if (edge1VA == edge2VA or edge1VA == edge2VB or edge1VB == edge2VA or edge1VB == edge2VB) then
@@ -138,7 +206,7 @@ do luametry.Space = concept{
                     end
                     if shouldCheckIntersection then
                         local intersectionDist = edge1:GetShortestDistanceToEdge(edge2)
-                        if intersectionDist:GetIsEqualToZero() then
+                        if intersectionDist and intersectionDist:GetIsEqualToZero() then
                             if edgeLoop1 == edgeLoop2 then
                                 error"Self-intersecting edge loop"
                             else
@@ -151,8 +219,8 @@ do luametry.Space = concept{
             local threeVertexList = {}
             local calculatedNormal
             for vertex, vertexAttachCount in pairs(vertexAttachCountMap) do
-                assert(not vertexAttachCount < 2, "Bad edge loop (a vertex only has one attaching edge)")
-                assert(not vertexAttachCount > 2, "Bad edge loop (a vertex attachs to more than one edge)")
+                assert(vertexAttachCount >= 2, "Bad edge loop (a vertex only has one attaching edge)")
+                assert(vertexAttachCount <= 2, "Bad edge loop (a vertex attachs to more than one edge)")
                 if #threeVertexList < 2 then
                     table.insert(threeVertexList, vertex)
                 elseif #threeVertexList == 2 then
@@ -615,7 +683,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         else
             local newEdgeLoopSequence = table.arraycopy(self.edgeLoopSequence)
             -- print("---")
-            for edgeLoopI, edgeLoop in ipairs(self.edgeLoopSequence) do
+            for edgeLoopI, edgeLoop in ipairs(newEdgeLoopSequence) do
                 local edgeLoopCounterClockwiseCount = 0
                 for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self.space:IterateEdgesOfEdgeLoop(edgeLoop) do
                     local orientationTest = normal:GetDotProduct(
@@ -736,52 +804,82 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         )
     end
     
-    local function sortIntersectionPoint(va, vb, eva, evb)
-        local el = (evb.p-eva.p):GetMagnitude()
-        local vat = (va.p-eva.p):GetMagnitude()/el
-        local vbt = (vb.p-eva.p):GetMagnitude()/el
-        return vat < vbt
+    local function sortIntersectionCut(intersectionA, intersectionB)
+        if intersectionA[1] == true then return true  end
+        if intersectionB[1] == true then return false end
+        return (intersectionA[1] < intersectionB[1])
     end
     function luametry.Polygon:GetIntersectionWith(other) -- returns a list of geometric objects (polygons only atm)
         assert(self:GetIsCoplanerWith(other), "Polygons must be coplanar")
-        local edgeCutVertexSortedListMap = {}
+        local edgeCutSortedListMap = {} -- [edge] = { time in owning edge, intersection vertex, is a shared edge segment }
         
         for selfEdge, selfEdgeData in pairs(self.edgeMap) do
             local selfEdgeVA, selfEdgeVB = selfEdge:GetVertices()
+            local selfEdgeDir = (selfEdgeVB.p-selfEdgeVA.p):GetNormalized()
             
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
+                edgeCutSortedListMap[otherEdge] = edgeCutSortedListMap[otherEdge] or {}
                 local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
+                local otherEdgeDir = (otherEdgeVB.p-otherEdgeVA.p):GetNormalized()
                 
-                local doesShareVertex = (
-                        selfEdgeVA == otherEdgeVA or selfEdgeVA == otherEdgeVB
-                    or  selfEdgeVB == otherEdgeVA or selfEdgeVB == otherEdgeVB
-                )
+                -- local doesShareVertex = (
+                        -- selfEdgeVA == otherEdgeVA or selfEdgeVA == otherEdgeVB
+                    -- or  selfEdgeVB == otherEdgeVA or selfEdgeVB == otherEdgeVB
+                -- )
                 local intersectionDist, intersectionVertex = selfEdge:GetShortestDistanceToEdge(otherEdge)
-                if doesShareVertex or intersectionDist == nil then
+                local isColinear = (selfEdgeDir:GetDotProduct(otherEdgeDir):GetAbs():GetIsEqualTo(1))
+                local minDist = (
+                        ((selfEdge:GetShortestDistanceToPoint(otherEdgeVA.p)))
+                    :min((selfEdge:GetShortestDistanceToPoint(otherEdgeVB.p)))
+                    :min((otherEdge:GetShortestDistanceToPoint(selfEdgeVA.p)))
+                    :min((otherEdge:GetShortestDistanceToPoint(selfEdgeVB.p)))
+                )
+                if isColinear and minDist:GetIsEqualToZero() then
                     -- edges are colinear
-                    local thisP1, thisP2 = selfEdgeVA.p, selfEdgeVB.p
-                    local thatP1, thatP2 = otherEdgeVA.p, otherEdgeVB.p
-                    local thisLen = (thisP2-thisP1):GetMagnitude()
-                    local thisP1T = 0
-                    local thisP2T = 1
-                    local thatP1T = thatP1:GetDotProduct(thisP1)/thisLen
-                    local thatP2T = thatP2:GetDotProduct(thisP1)/thisLen
-                    local thatisSwapped = (thatP2T > thatP1T)
-                    if thatisSwapped then
-                        thatP1, thatP2 = thatP2, thatP1
-                        thatP1T, thatP2T = thatP2T, thatP1T
+                    for edgeI = 1, 2 do
+                        local edge        = (edgeI == 1 and selfEdge or otherEdge)
+                        local foreignEdge = (edgeI == 1 and otherEdge or selfEdge)
+                        local edgeVA, edgeVB = edge:GetVertices()
+                        local foreignEdgeVA, foreignEdgeVB = foreignEdge:GetVertices()
+                        local foreignEdgeVAT, foreignEdgeVBT = foreignEdgeVA.p:GetClosestLineT(edgeVA.p, edgeVB.p), foreignEdgeVB.p:GetClosestLineT(edgeVA.p, edgeVB.p)
+                        if foreignEdgeVAT > foreignEdgeVBT then
+                            foreignEdgeVA, foreignEdgeVB = foreignEdgeVB, foreignEdgeVA
+                            foreignEdgeVAT, foreignEdgeVBT = foreignEdgeVBT, foreignEdgeVAT
+                        end
+                        if (
+                                foriegnEdgeVA == edgeVB or foreignEdgeVB == edgeVA
+                            or  foreignEdgeVAT >= 1     or foreignEdgeVBT <= 0
+                        ) then
+                            -- they are either disjoint or only share a vertex
+                        else
+                            edgeCutSortedListMap[edge] = edgeCutSortedListMap[edge] or {}
+                            if foreignEdgeVA == edgeVA or foreignEdgeVAT <= 0 then
+                                -- the first segment of this edge is shared, mark it with a sentinel value (time = true)
+                                table.bininsert(edgeCutSortedListMap[edge], { true          , nil          , true , "A-START" }, sortIntersectionCut)
+                            else
+                                table.bininsert(edgeCutSortedListMap[edge], { foreignEdgeVAT, foreignEdgeVA, true , "A-MID"   }, sortIntersectionCut)
+                            end
+                            if foreignEdgeVB == edgeVB or foreignEdgeVBT >= 1 then
+                                -- no need to post-mark a segment
+                            else
+                                table.bininsert(edgeCutSortedListMap[edge], { foreignEdgeVBT, foreignEdgeVB, false, "B-MID"   }, sortIntersectionCut)
+                            end
+                        end
                     end
-                    if thisP2T < thatP1T or thatP2T < thisP1T then
-                        -- edges are seperate, ignore
-                    else
-                        
+                elseif intersectionDist and intersectionDist:GetIsEqualToZero() then
+                    local selfEdgeIntersectionT = intersectionVertex.p:GetClosestLineT(selfEdgeVA.p, selfEdgeVB.p)
+                    local otherEdgeIntersectionT = intersectionVertex.p:GetClosestLineT(otherEdgeVA.p, otherEdgeVB.p)
+                    if (
+                            not  selfEdgeIntersectionT:GetIsEqualTo(0) and not  selfEdgeIntersectionT:GetIsEqualTo(1)
+                        and not otherEdgeIntersectionT:GetIsEqualTo(0) and not otherEdgeIntersectionT:GetIsEqualTo(1)
+                    ) then
+                        for edgeI = 1, 2 do
+                            local edge = (edgeI == 1 and selfEdge or otherEdge)
+                            local intersectionT = (edgeI == 1 and selfEdgeIntersectionT or otherEdgeIntersectionT)
+                            edgeCutSortedListMap[edge] = edgeCutSortedListMap[edge] or {}
+                            table.bininsert(edgeCutSortedListMap[edge], { intersectionT, intersectionVertex, false, "INTERSECT" }, sortIntersectionCut)
+                        end
                     end
-                elseif intersectionDist:GetIsEqualToZero() then
-                    --local intersectionVertex = self.space:VertexOf(intersectionPos)
-                    edgeCutVertexSortedListMap[selfEdge] = edgeCutVertexSortedListMap[selfEdge] or {}
-                    edgeCutVertexSortedListMap[otherEdge] = edgeCutVertexSortedListMap[otherEdge] or {}
-                    table.bininsert(edgeCutVertexSortedListMap[ selfEdge], intersectionVertex, sortIntersectionPoint,  selfEdgeVA,  selfEdgeVB)
-                    table.bininsert(edgeCutVertexSortedListMap[otherEdge], intersectionVertex, sortIntersectionPoint, otherEdgeVA, otherEdgeVB)
                 end
             end
         end
@@ -792,14 +890,31 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             for edge, edgeData in pairs(localPolygon.edgeMap) do
                 local edgeVA, edgeVB = edge:GetVertices()
                 local subEdgesToCheckList = nil
-                local cutVertexList = edgeCutVertexSortedListMap[edge]
-                if cutVertexList ~= nil then
-                    subEdgesToCheckList = table.new(#cutVertexList, 0)
+                local cutList = edgeCutSortedListMap[edge]
+                if cutList ~= nil and #cutList > 0 then
+                    subEdgesToCheckList = table.new(#cutList, 0)
                     local currentVertex = edgeVA
-                    for i = 1, #cutVertexList+1 do
-                        local nextVertex = (i <= #cutVertexList and cutVertexList[i] or edgeVB)
-                        table.insert(subEdgesToCheckList, self.space:EdgeOf(currentVertex, nextVertex))
-                        currentVertex = nextVertex
+                    local currentSegmentIsShared = false
+                    table.insert(cutList, { 1, edgeVB, nil, "END"})
+                    for i = 1, #cutList do
+                        local currentCut = cutList[i]
+                        -- print("CUT", currentCut[1], currentCut[2] and currentCut[2].p or nil, currentCut[3], currentCut[4])
+                        if currentCut[1] == true then
+                            currentSegmentIsShared = true
+                        else
+                            local nextVertex = currentCut[2]
+                            local subEdge = self.space:EdgeOf(currentVertex, nextVertex)
+                            if currentSegmentIsShared then
+                                if polygonI == 1 then
+                                    subEdge.loldbg = true
+                                    table.insert(newEdgeList, subEdge)
+                                end
+                            else
+                                table.insert(subEdgesToCheckList, subEdge)
+                            end
+                            currentVertex = nextVertex
+                            currentSegmentIsShared = currentCut[3]
+                        end
                     end
                 else
                     subEdgesToCheckList = {edge}
@@ -818,12 +933,21 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             end
         end
         --
-        local edgeLoopGroupList = {}
-        local edgeLoopSequence = {}
-        
-        -- temp
+        if false then
+            local edgeLoopGroupList = {}
+            local edgeLoopSequence = {}
+            
+            local edgeLoopList = self.space:GetEdgeLoopListFromEdgeList(newEdgeList)
+            local edgeLoopSequenceList = self.space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
+            local geometryList = {}
+            for edgeLoopSequenceI, edgeLoopSequence in ipairs(edgeLoopSequenceList) do
+                local edgeList = table.arrayflatten(edgeLoopSequence)
+                local polygon = self.space:PolygonOf(edgeList)
+                table.insert(geometryList, polygon)
+            end
+            return geometryList
+        end
         return newEdgeList
-        -- return { self.space:PolygonOf( newEdgeList ) }
     end
 end
 

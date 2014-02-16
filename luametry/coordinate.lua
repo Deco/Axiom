@@ -338,6 +338,20 @@ do luametry.__coord3dConstantMethods = {}
     function luametry.__coord3dConstantMethods:GetDirection()
         error"NYI"
     end
+    function luametry.__coord3dConstantMethods:GetClosestLinePoint(a, b)
+        local v, w = b-a, self-a
+        local c1, c2 = w:GetDotProduct(v), v:GetDotProduct(v)
+        if c1 <= 0  then return (a-self):GetMagnitude(), a, 0 end
+        if c2 <= c1 then return (b-self):GetMagnitude(), b, 1 end
+        local t = c1/c2
+        local r = a+t*v
+        return (r-self):GetMagnitude(), r, t
+    end
+    function luametry.__coord3dConstantMethods:GetClosestLineT(a, b)
+        local v, w = b-a, self-a
+        local c1, c2 = w:GetDotProduct(v), v:GetDotProduct(v)
+        return c1/c2
+    end
     function luametry.__coord3dConstantMethods:GetAbs()
         return ffi.typeof(self)(self.v_abs(self.x), self.v_abs(self.y), self.v_abs(self.z))
     end

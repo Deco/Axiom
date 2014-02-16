@@ -46,6 +46,26 @@ _G.DBGLVL = level
 
 local normal_up = V(0, 1, 0)
 
+function facetemp0(offset, seed)
+    local p = space:PolygonOf(space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(0.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 1.00)),
+        space:VertexOf(offset+V(0.00, 0.00, 1.00)),
+    })
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+function facetemp9(offset, seed)
+    local p = space:PolygonOf(space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(0.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.70)),
+        space:VertexOf(offset+V(0.00, 0.00, 0.70)),
+    })
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
 function facetemp1(offset, seed)
     local p = space:PolygonOf(space:BuildEdgeLoopOf{
         space:VertexOf(offset+V(0.00, 0.00, 0.00)),
@@ -73,7 +93,7 @@ end
 function facetemp3(offset, seed)
     math.randomseed(seed) for i = 1, 10 do math.random() end
     local vertexList = {}
-    local count, rad = 16, 10--32, 1.4
+    local count, rad = 16, 2--32, 1.4
     for i = 1, count do
         local a = 2*math.pi/count*(i-1)
         local r = 0.1*rad+0.9*math.random()*rad
@@ -84,32 +104,36 @@ function facetemp3(offset, seed)
     return p, f
 end
 
-
-do
-    local seed = 4444, 9187, math.floor(math.random()*9999)
-    print(seed)
-    local function stuff(offset, showInput, showResult)
-        
-        local p1, f1 = facetemp1(offset+V(0,0,0), seed)
-        local p2, f2 = facetemp2(offset+V(0,0,0), seed+12)
-        if showInput then
-            level:AddFace(f1)
-            level:AddFace(f2)
-        end
-        if showResult then
-            local edgeList = p1:GetIntersectionWith(p2)
-            for edgeI, edge in ipairs(edgeList) do
-                level:AddEdge(edge)
+for i = 1, 7 do
+    for j = 1, 7 do
+        local seed = i+j*999, 9187, math.floor(math.random()*9999)
+        print(i, j, seed)
+        local function stuff(offset, showInput, showResult)
+            
+            local p1, f1 = facetemp3(offset+V(0.0,0,0), seed)
+            local p2, f2 = facetemp3(offset+V(1.0,0,0), seed+12)
+            local p3, f3-- = facetemp3(offset+V(0.0,0,0), seed+12)
+            if showInput then
+                level:AddFace(f1, true)
+                level:AddFace(f2, true)
+                if f3 then level:AddFace(f3, true) end
             end
-            -- local resultantPolygonList = p1:GetIntersectionWith(p2)
-            -- for prI, pr in ipairs(resultantPolygonList) do
-                -- local fr = space:FaceOf(pr, normal_up)
-                -- level:AddFace(fr)
-            -- end
+            if showResult then
+                local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
+                for thingI, thing in ipairs(result) do
+                    if thing:isa(space.edgeType) then
+                        level:AddEdge(thing)
+                    else
+                        local fr = space:FaceOf(thing, normal_up)
+                        level:AddFace(fr, true)
+                    end
+                end
+            end
         end
+        local o = V(i*5.1, 0, j*4.1)
+        stuff(o+V( 0.00,-0.06, 0.00), true, false)
+        stuff(o+V( 0.00, 0.00, 0.00), false, true)
     end
-    stuff(V( 0.00,-0.06, 0.00), true, false)
-    stuff(V( 0.00, 0.00, 0.00), false, true)
 end
 --[[do
     local o = V(0.5, 0, 0.5)

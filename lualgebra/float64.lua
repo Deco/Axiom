@@ -41,6 +41,7 @@ lualgebra.Float64.floor = math.floor
 lualgebra.Float64.ceil  = math.ceil
 lualgebra.Float64.round = math.round
 lualgebra.Float64.randrange = math.randrange
+lualgebra.Float64.min   = math.min
 
 lualgebra.Float64.GetAbs    = lualgebra.Float64.abs
 lualgebra.Float64.GetSign   = lualgebra.Float64.sign
