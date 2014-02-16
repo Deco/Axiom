@@ -44,87 +44,61 @@ local level = (axiom.Level%{ space = space })()
     -- end
 -- end
 
+local normal_up = V(0, 1, 0)
+
+function facetemp1(offset, seed)
+    local p = space:PolygonOf(space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(0.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.75)),
+        space:VertexOf(offset+V(2.00, 0.00, 1.00)),
+        space:VertexOf(offset+V(0.00, 0.00, 1.00)),
+    })
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+function facetemp2(offset, seed)
+    local p = space:PolygonOf(space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(0.00, 0.00, 0.25)),
+        space:VertexOf(offset+V(0.25, 0.00, 0.25)),
+        space:VertexOf(offset+V(0.25, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 1.00)),
+        space:VertexOf(offset+V(0.00, 0.00, 1.00)),
+    })
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+
+function facetemp3(offset, seed)
+    math.randomseed(seed) for i = 1, 10 do math.random() end
+    local vertexList = {}
+    local count, rad = 32, 1.4
+    for i = 1, count do
+        local a = 2*math.pi/count*(i-1)
+        local r = 0.1*rad+0.9*math.random()*rad
+        table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
+    end
+    local p = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+
 
 do
     local seed = 9187, math.floor(math.random()*9999)
     print(seed)
-    local n1 = V(0, 1, 0)
-    local function makefacethingies(wat)
-        local p1, p2, f1, f2
-        math.randomseed(seed) for i = 1, 10 do math.random() end
-        do
-            local o = V(0, 0, 0)+wat
-            local vertexList = {}
-            local count, rad = 32, 1.4
-            for i = 1, count do
-                local a = 2*math.pi/count*(i-1)
-                local r = 0.1*rad+0.9*math.random()*rad
-                table.insert(vertexList, space:VertexOf(o+V(math.cos(a)*r, 0, math.sin(a)*r)))
-            end
-            p1 = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
-            -- p1 = space:PolygonOf(space:BuildEdgeLoopOf{
-                -- space:VertexOf(o+V(0.00, 0.00, 0.00)),
-                -- space:VertexOf(o+V(1.00, 0.00, 0.00)),
-                -- space:VertexOf(o+V(1.00, 0.00, 0.75)),
-                -- space:VertexOf(o+V(2.00, 0.00, 1.00)),
-                -- space:VertexOf(o+V(0.00, 0.00, 1.00)),
-            -- })
-            f1 = space:FaceOf(p1, n1)
-        end
-        do
-            local o = V(0., 0, 0.)+wat
-            -- local vertexList = {}
-            -- local count, rad = 16, 1.4
-            -- for i = 1, count do
-                -- local a = 2*math.pi/count*(i-1)
-                -- local r = 0.1*rad+0.9*math.random()*rad
-                -- table.insert(vertexList, space:VertexOf(o+V(math.cos(a)*r, 0, math.sin(a)*r)))
-            -- end
-            -- p2 = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
-            p2 = space:PolygonOf(space:BuildEdgeLoopOf{
-                space:VertexOf(o+V(0.00, 0.00, 0.25)),
-                space:VertexOf(o+V(0.25, 0.00, 0.25)),
-                space:VertexOf(o+V(0.25, 0.00, 0.00)),
-                space:VertexOf(o+V(1.00, 0.00, 0.00)),
-                space:VertexOf(o+V(1.00, 0.00, 1.00)),
-                space:VertexOf(o+V(0.00, 0.00, 1.00)),
-            })
-            f2 = space:FaceOf(p2, n1)
-        end
-        return p1, p2, f1, f2
-    end
     
-    
-    -- local p1, p2, p3
-    -- local f1, f2, f3
-    p1, p2, f1, f2 = makefacethingies(V(0,0,0))
-    
-    -- p3 = p1:GetIntersectionWith(p2)[1]
-    -- f3 = space:FaceOf(p3, n1)
+    local p1, f1 = facetemp3(V(0,0,0), seed)
+    local p2, f2 = facetemp3(V(1,0,1), seed)
     
     local edgeList, randomEdge = p1:GetIntersectionWith(p2)
-    -- local o = V(0, 0.15, 0)
     for edgeI, edge in ipairs(edgeList) do
         level:AddEdge(edge)
-        -- local edgeVA, edgeVB = edge:GetVertices()
-        -- level:AddEdge(space:EdgeOf(space:VertexOf(edgeVA.p+o), space:VertexOf(edgeVB.p+o)))
-        -- o = o+V(0, 0.01, 0)
     end
-    -- print("###")
-    -- local randomEdgeVA, randomEdgeVB = randomEdge:GetVertices()
-    -- print(p1:GetIsPointInPolygon((randomEdgeVA.p+randomEdgeVB.p)/2))
-    -- level:AddEdge(randomEdge)
-    -- print(randomEdgeVA.p, randomEdgeVB.p)
-    -- print("###")
-    -- local testv = V(0.5, 0, 0.5)
-    -- level:AddEdge(space:EdgeOf(space:VertexOf(testv), space:VertexOf(testv+V(0, 1, 0))))
-    -- print(p1:GetIsPointInPolygon(testv))
-    
-    p1, p2, f1, f2 = makefacethingies(V(0, -0.02, 0))
     
     level:AddFace(f1)
     level:AddFace(f2)
-    -- level:AddFace(f3)
     
 end
 --[[do
