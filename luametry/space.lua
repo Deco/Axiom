@@ -752,8 +752,31 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
                 local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
                 
+                local doesShareVertex = (
+                        selfEdgeVA == otherEdgeVA or selfEdgeVA == otherEdgeVB
+                    or  selfEdgeVB == otherEdgeVA or selfEdgeVB == otherEdgeVB
+                )
                 local intersectionDist, intersectionVertex = selfEdge:GetShortestDistanceToEdge(otherEdge)
-                if intersectionDist and intersectionDist:GetIsEqualToZero() then
+                if doesShareVertex or intersectionDist == nil then
+                    -- edges are colinear
+                    local thisP1, thisP2 = selfEdgeVA.p, selfEdgeVB.p
+                    local thatP1, thatP2 = otherEdgeVA.p, otherEdgeVB.p
+                    local thisLen = (thisP2-thisP1):GetMagnitude()
+                    local thisP1T = 0
+                    local thisP2T = 1
+                    local thatP1T = thatP1:GetDotProduct(thisP1)/thisLen
+                    local thatP2T = thatP2:GetDotProduct(thisP1)/thisLen
+                    local thatisSwapped = (thatP2T > thatP1T)
+                    if thatisSwapped then
+                        thatP1, thatP2 = thatP2, thatP1
+                        thatP1T, thatP2T = thatP2T, thatP1T
+                    end
+                    if thisP2T < thatP1T or thatP2T < thisP1T then
+                        -- edges are seperate, ignore
+                    else
+                        
+                    end
+                elseif intersectionDist:GetIsEqualToZero() then
                     --local intersectionVertex = self.space:VertexOf(intersectionPos)
                     edgeCutVertexSortedListMap[selfEdge] = edgeCutVertexSortedListMap[selfEdge] or {}
                     edgeCutVertexSortedListMap[otherEdge] = edgeCutVertexSortedListMap[otherEdge] or {}
@@ -762,7 +785,6 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                 end
             end
         end
-        local wat
         local newEdgeList = {}
         for polygonI = 1, 2 do
             local localPolygon   = (polygonI == 1 and self or other)
@@ -770,7 +792,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             for edge, edgeData in pairs(localPolygon.edgeMap) do
                 local edgeVA, edgeVB = edge:GetVertices()
                 local subEdgesToCheckList = nil
-                local cutVertexList = edgeCutVertexSortedListMap[edge] 
+                local cutVertexList = edgeCutVertexSortedListMap[edge]
                 if cutVertexList ~= nil then
                     subEdgesToCheckList = table.new(#cutVertexList, 0)
                     local currentVertex = edgeVA
@@ -800,8 +822,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local edgeLoopSequence = {}
         
         -- temp
-        -- return newEdgeList, wat
-        return { self.space:PolygonOf( newEdgeList ) }
+        return newEdgeList
+        -- return { self.space:PolygonOf( newEdgeList ) }
     end
 end
 

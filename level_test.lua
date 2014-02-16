@@ -97,14 +97,15 @@ do
             level:AddFace(f2)
         end
         if showResult then
-            local resultantPolygonList = p1:GetIntersectionWith(p2)
-            -- for edgeI, edge in ipairs(edgeList) do
-                -- level:AddEdge(edge)
-            -- end
-            for prI, pr in ipairs(resultantPolygonList) do
-                local fr = space:FaceOf(pr, normal_up)
-                level:AddFace(fr)
+            local edgeList = p1:GetIntersectionWith(p2)
+            for edgeI, edge in ipairs(edgeList) do
+                level:AddEdge(edge)
             end
+            -- local resultantPolygonList = p1:GetIntersectionWith(p2)
+            -- for prI, pr in ipairs(resultantPolygonList) do
+                -- local fr = space:FaceOf(pr, normal_up)
+                -- level:AddFace(fr)
+            -- end
         end
     end
     stuff(V( 0.00,-0.06, 0.00), true, false)
