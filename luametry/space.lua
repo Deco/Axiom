@@ -238,23 +238,72 @@ do luametry.Space = concept{
     function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point)
         local normal = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopSequence[1])
         local inCount = 0
+        -- if false or (point.x:round(-2) == 0.46 and point.z:round(-2) == 0.04) then
+        if false or (point.x:round(-2) == -5.04 and point.z:round(-2) == -2.36) then
+            -- MEOW = true
+            print("########")
+        else
+            MEOW = false
+        end
         for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
             local edgeLoopOrientation = self:GetEdgeLoopOrientation(edgeLoop, normal)
-            local closestEdgeDist, closestEdgeI, closestEdgeV1, closestEdgeV2, closestEdgeClosestPoint = math.huge
+            local closestEdgeDist, closestEdgeIsClamped, closestEdgeI, closestEdgeV1, closestEdgeV2, closestEdgeClosestPoint = math.huge
             for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
-                local edgeDist, edgeClosestPoint = currEdge:GetShortestDistanceToPoint(point)
-                if edgeDist < closestEdgeDist then
-                    local edgeDir = (commonV.p-currEdgeUniqueV.p):GetNormalized()
-                    local vertToPointDir = (point-currEdgeUniqueV.p):GetNormalized()
-                    if edgeDir:GetDotProduct(vertToPointDir):GetAbs():GetIsEqualTo(1) then
+                local edgeDist, edgeClosestPoint, edgeClosestT = currEdge:GetShortestDistanceToPoint(point)
+                local edgeIsClamped = (edgeClosestT:GetIsEqualTo(0) or edgeClosestT:GetIsEqualTo(1))
+                local edgeIsCloser = false
+                local edgeDir = (commonV.p-currEdgeUniqueV.p):GetNormalized()
+                local vertToPointDir = (point-edgeClosestPoint):GetNormalized()
+                local edgePointDot = edgeDir:GetDotProduct(vertToPointDir)
+                if closestEdgeDist == math.huge then
+                    edgeIsCloser = true
+                elseif edgeDist:GetIsEqualTo(closestEdgeDist) then
+                    if MEOW then
+                        print("!", closestEdgeIsClamped, edgeIsClamped)
+                    end
+                    if closestEdgeIsClamped and edgeIsClamped then
+                        -- the point is closest to a vertex, pick the edge which is least colinear
+                        local closestEdgeDir = (closestEdgeV2.p-closestEdgeV1.p):GetNormalized()
+                        local closestEdgeVertToPointDir = (point-closestEdgeClosestPoint):GetNormalized()
+                        local closestEdgePointDot = closestEdgeDir:GetDotProduct(closestEdgeVertToPointDir)
+                        if MEOW then
+                            print("!!", edgePointDot, closestEdgePointDot)
+                            local edgeCentrePoint = closestEdgeV1.p--(currEdgeUniqueV.p+commonV.p)/2
+                            local e = self:EdgeOf(
+                                self:VertexOf(edgeCentrePoint),
+                                self:VertexOf(edgeCentrePoint+closestEdgeVertToPointDir*0.2)
+                            )
+                            e.loldbg = true
+                            DBGLVL:AddEdge(e)
+                        end
+                        if edgePointDot:GetAbs() < closestEdgePointDot:GetAbs() then
+                            edgeIsCloser = true
+                        else
+                            edgeIsCloser = false
+                        end
+                    elseif closestEdgeIsClamped then
+                        edgeIsCloser = true
+                    elseif edgeIsClamped then
+                        edgeIsCloser = false
+                    else
+                        -- shouldn't matter
+                        edgeIsCloser = true
+                    end
+                elseif edgeDist < closestEdgeDist then
+                    edgeIsCloser = true
+                end
+                if edgeIsCloser then
+                    if edgePointDot:GetAbs():GetIsEqualTo(1) then
                         -- the point is colinear to the edge
                     else
                         closestEdgeDist, closestEdgeI = edgeDist, currEdge
                         closestEdgeV1, closestEdgeV2 = currEdgeUniqueV, commonV
                         closestEdgeClosestPoint = edgeClosestPoint
+                        closestEdgeIsClamped = edgeIsClamped
                     end
                 end
             end
+            if MEOW then print("########") end
             local edgeDir = (closestEdgeV2.p-closestEdgeV1.p):GetNormalized() -- no need to actually normalize this
             local edgeInDirection = normal:GetCrossProduct(edgeDir) -- hehe... "indirection"
             local edgeToPointDir = (point-closestEdgeClosestPoint):GetNormalized()
@@ -268,8 +317,32 @@ do luametry.Space = concept{
             if pointIsInside then
                 inCount = inCount+1
             end
-            if edgeLoopOrientation == "cw" then
-                
+            
+            if MEOW then
+                print("YAY", point)
+                print(normal, closestEdgeIsClamped)
+                print(edgeDir, edgeDir:GetMagnitude())
+                print(edgeInDirection, edgeInDirection:GetMagnitude())
+                print(edgeToPointDir)
+                print(dotResult, edgeLoopOrientation, insideDotSign)
+                local e = self:EdgeOf(
+                    self:VertexOf(point),
+                    self:VertexOf(point+normal*0.3)
+                )
+                e.loldbg = true
+                DBGLVL:AddEdge(e)
+                local edgeCentrePoint = (closestEdgeV1.p+closestEdgeV2.p)/2
+                local e = self:EdgeOf(
+                    self:VertexOf(edgeCentrePoint),
+                    self:VertexOf(edgeCentrePoint+normal*0.1)
+                )
+                DBGLVL:AddEdge(e)
+                local e = self:EdgeOf(
+                    self:VertexOf(edgeCentrePoint),
+                    self:VertexOf(edgeCentrePoint+edgeInDirection*0.1)
+                )
+                -- e.loldbg = true
+                DBGLVL:AddEdge(e)
             end
         end
         assert(inCount <= 2, "?!?")
@@ -470,11 +543,11 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local a, b = self:GetVertices()
         local v, w = b.p-a.p, point-a.p
         local c1, c2 = w:GetDotProduct(v), v:GetDotProduct(v)
-        if c1 <= 0  then return (a.p-point):GetMagnitude(), a.p end
-        if c2 <= c1 then return (b.p-point):GetMagnitude(), b.p end
-        local b = c1/c2
-        local r = a.p+b*v
-        return (r-point):GetMagnitude(), r
+        if c1 <= 0  then return (a.p-point):GetMagnitude(), a.p, 0 end
+        if c2 <= c1 then return (b.p-point):GetMagnitude(), b.p, 1 end
+        local t = c1/c2
+        local r = a.p+t*v
+        return (r-point):GetMagnitude(), r, t
     end
     function luametry.Edge:TestIntersection(otherEdge)
         self:VerifyEdgeCompatibility(otherEdge)
@@ -676,10 +749,29 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         for selfEdge, selfEdgeData in pairs(self.edgeMap) do
             local selfEdgeVA, selfEdgeVB = selfEdge:GetVertices()
             
+            local selfCentrePoint = (selfEdgeVA.p+selfEdgeVB.p)/2
+            
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
                 local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
                 
                 local intersectionDist, intersectionVertex = selfEdge:GetShortestDistanceToEdge(otherEdge)
+                
+                local otherCentrePoint = (otherEdgeVA.p+otherEdgeVB.p)/2
+            
+                if selfCentrePoint.x:round(-2) == -4.28 and selfCentrePoint.z:round(-2) == -2.11 then
+                    print("meow", intersectionDist, intersectionDist:GetIsEqualToZero())
+                    print("", intersectionVertex.p)
+                    if intersectionDist < 1.6e-014 then
+                        local e = self.space:EdgeOf(
+                            self.space:VertexOf(intersectionVertex.p),
+                            self.space:VertexOf(intersectionVertex.p+self.space.coordinateType(0, 1, 0)*0.3)
+                        )
+                        e.loldbg = true
+                        DBGLVL:AddEdge(e)
+                    end
+                end
+                
+                
                 if intersectionDist and intersectionDist:GetIsEqualToZero() then
                     --local intersectionVertex = self.space:VertexOf(intersectionPos)
                     edgeCutVertexSortedListMap[selfEdge] = edgeCutVertexSortedListMap[selfEdge] or {}
@@ -716,6 +808,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                     if isInForeignPolygon then
                         subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)
+                    else
+                        -- table.insert(newEdgeList, subEdge)
                     end
                 end
             end
@@ -725,8 +819,8 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local edgeLoopSequence = {}
         
         -- temp
-        return newEdgeList, wat
-        -- return { self.space:PolygonOf( unpack(newEdgeList) ) }
+        -- return newEdgeList, wat
+        return { self.space:PolygonOf( newEdgeList ) }
     end
 end
 

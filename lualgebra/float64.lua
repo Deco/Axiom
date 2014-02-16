@@ -27,7 +27,8 @@ math.randrange = math.randrange or function(min, max)
 end
 
 lualgebra.Float64.pi = math.pi
-lualgebra.Float64.epsilon = 1.22e-15
+-- lualgebra.Float64.epsilon = 1.22e-15
+lualgebra.Float64.epsilon = 1.22e-13
 
 lualgebra.Float64.abs   = math.abs
 lualgebra.Float64.sign  = math.sign or function(x) return x>0 and 1 or x<0 and -1 or 0 end
@@ -36,6 +37,9 @@ lualgebra.Float64.sqrt  = math.sqrt
 lualgebra.Float64.sin   = math.sin
 lualgebra.Float64.cos   = math.cos
 lualgebra.Float64.acos  = math.acos
+lualgebra.Float64.floor = math.floor
+lualgebra.Float64.ceil  = math.ceil
+lualgebra.Float64.round = math.round
 lualgebra.Float64.randrange = math.randrange
 
 lualgebra.Float64.GetAbs    = lualgebra.Float64.abs

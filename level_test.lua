@@ -10,7 +10,7 @@ local V = luametry.Vec3cf
 local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 
 local level = (axiom.Level%{ space = space })()
-
+_G.DBGLVL = level
 
 -- do
     -- local normal = V(0, 1, 0)
@@ -73,7 +73,7 @@ end
 function facetemp3(offset, seed)
     math.randomseed(seed) for i = 1, 10 do math.random() end
     local vertexList = {}
-    local count, rad = 32, 1.4
+    local count, rad = 16, 10--32, 1.4
     for i = 1, count do
         local a = 2*math.pi/count*(i-1)
         local r = 0.1*rad+0.9*math.random()*rad
@@ -86,20 +86,29 @@ end
 
 
 do
-    local seed = 9187, math.floor(math.random()*9999)
+    local seed = 4444, 9187, math.floor(math.random()*9999)
     print(seed)
-    
-    local p1, f1 = facetemp3(V(0,0,0), seed)
-    local p2, f2 = facetemp3(V(1,0,1), seed)
-    
-    local edgeList, randomEdge = p1:GetIntersectionWith(p2)
-    for edgeI, edge in ipairs(edgeList) do
-        level:AddEdge(edge)
+    local function stuff(offset, showInput, showResult)
+        
+        local p1, f1 = facetemp3(offset+V(0,0,0), seed)
+        local p2, f2 = facetemp3(offset+V(0,0,0), seed+12)
+        if showInput then
+            level:AddFace(f1)
+            level:AddFace(f2)
+        end
+        if showResult then
+            local resultantPolygonList = p1:GetIntersectionWith(p2)
+            -- for edgeI, edge in ipairs(edgeList) do
+                -- level:AddEdge(edge)
+            -- end
+            for prI, pr in ipairs(resultantPolygonList) do
+                local fr = space:FaceOf(pr, normal_up)
+                level:AddFace(fr)
+            end
+        end
     end
-    
-    level:AddFace(f1)
-    level:AddFace(f2)
-    
+    stuff(V( 0.00,-0.06, 0.00), true, false)
+    stuff(V( 0.00, 0.00, 0.00), false, true)
 end
 --[[do
     local o = V(0.5, 0, 0.5)
