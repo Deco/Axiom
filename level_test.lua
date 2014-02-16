@@ -90,8 +90,8 @@ do
     print(seed)
     local function stuff(offset, showInput, showResult)
         
-        local p1, f1 = facetemp3(offset+V(0,0,0), seed)
-        local p2, f2 = facetemp3(offset+V(0,0,0), seed+12)
+        local p1, f1 = facetemp1(offset+V(0,0,0), seed)
+        local p2, f2 = facetemp2(offset+V(0,0,0), seed+12)
         if showInput then
             level:AddFace(f1)
             level:AddFace(f2)

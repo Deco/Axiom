@@ -749,29 +749,10 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         for selfEdge, selfEdgeData in pairs(self.edgeMap) do
             local selfEdgeVA, selfEdgeVB = selfEdge:GetVertices()
             
-            local selfCentrePoint = (selfEdgeVA.p+selfEdgeVB.p)/2
-            
             for otherEdge, otherEdgeData in pairs(other.edgeMap) do
                 local otherEdgeVA, otherEdgeVB = otherEdge:GetVertices()
                 
                 local intersectionDist, intersectionVertex = selfEdge:GetShortestDistanceToEdge(otherEdge)
-                
-                local otherCentrePoint = (otherEdgeVA.p+otherEdgeVB.p)/2
-            
-                if selfCentrePoint.x:round(-2) == -4.28 and selfCentrePoint.z:round(-2) == -2.11 then
-                    print("meow", intersectionDist, intersectionDist:GetIsEqualToZero())
-                    print("", intersectionVertex.p)
-                    if intersectionDist < 1.6e-014 then
-                        local e = self.space:EdgeOf(
-                            self.space:VertexOf(intersectionVertex.p),
-                            self.space:VertexOf(intersectionVertex.p+self.space.coordinateType(0, 1, 0)*0.3)
-                        )
-                        e.loldbg = true
-                        DBGLVL:AddEdge(e)
-                    end
-                end
-                
-                
                 if intersectionDist and intersectionDist:GetIsEqualToZero() then
                     --local intersectionVertex = self.space:VertexOf(intersectionPos)
                     edgeCutVertexSortedListMap[selfEdge] = edgeCutVertexSortedListMap[selfEdge] or {}
