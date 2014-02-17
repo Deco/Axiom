@@ -108,24 +108,28 @@ function axiom.Level:CreateGeometryGroup(groupName, groupColor, groupIsHidden)
     self.groupMap[group] = group
     return group
 end
-function axiom.Level:SetGeometryGroup(object, group)
-    local objectData
+function axiom.Level:SetGeometryGroup(object, group, dontOverride)
+    local objectData, subObjectList = {}
     if object:isa(luametry.Vertex) then
         objectData = assert(self.vertexMap[object], "cannot assign group to vertex not in level")
     elseif object:isa(luametry.Edge) then
         objectData = assert(self.edgeMap[object], "cannot assign group to edge not in level")
         local vertexA, vertexB = object:GetVertices()
-        self:SetGeometryGroup(vertexA, group)
-        self:SetGeometryGroup(vertexB, group)
+        subObjectList = { vertexA, vertexB }
     elseif object:isa(luametry.Face) then
         objectData = assert(self.faceMap[object], "cannot assign group to face not in level")
-        for edge, edgeData in pairs(object:GetEdgeMap()) do
-            self:SetGeometryGroup(edge, group)
-        end
+        subObjectList = object.polygon.edgeList
     else
         error"NYI"
     end
-    objectData.group = group
+    if not objectData.group or not dontOverride then
+        objectData.group = group
+    end
+    if subObjectList then
+        for subObjectI, subObject in ipairs(subObjectList) do
+            self:SetGeometryGroup(subObject, group, dontOverride)
+        end
+    end
 end
 function axiom.Level:SetDefaultGeometryGroup(group)
     self.defaultGroup = group
@@ -221,18 +225,20 @@ function axiom.Level:GetChunk()
             local edgeIdList, edgeIsFlippedList, shouldInverseIsFlippedState, edgeStartI, edgeEndI, edgeDeltaI
             if edgeLoopI == 1 then
                 edgeIdList, edgeIsFlippedList = rawFace.borderedgeidlist, rawFace.borderedgeisflippedlist
-                -- border loop is clockwise
-                shouldInverseIsFlippedState = false
-                edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
-            else
-                edgeIdList, edgeIsFlippedList = {}, {}
-                table.insert(rawFace.edgeidlistlist, edgeIdList)
-                table.insert(rawFace.edgeisflippedlistlist, edgeIsFlippedList)
-                -- hole loops are anticlockwise
+                -- border loop is anticlockwise
                 -- shouldInverseIsFlippedState = false
                 -- edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
                 shouldInverseIsFlippedState = true
                 edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
+            else
+                edgeIdList, edgeIsFlippedList = {}, {}
+                table.insert(rawFace.edgeidlistlist, edgeIdList)
+                table.insert(rawFace.edgeisflippedlistlist, edgeIsFlippedList)
+                -- hole loops are clockwise
+                -- shouldInverseIsFlippedState = true
+                -- edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
+                shouldInverseIsFlippedState = false
+                edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
             end
             for currEdgeI = edgeStartI, edgeEndI, edgeDeltaI do
                 local currEdge = edgeLoop[currEdgeI]
@@ -267,7 +273,12 @@ function axiom.Level:GetChunk()
     local rawEdgeGroupList = {}
     local rawFaceGroupList = {}
     
+    table.sort(groupDataList, function(a, b)
+        return (a.name < b.name)
+    end)
+    
     for groupI, group in ipairs(groupDataList) do
+        group.id = groupI-1
         local rawVertexIdList = group.rawVertexIdList
         rawVertexIdList.id = group.id
         table.insert(rawVertexGroupList, rawVertexIdList)

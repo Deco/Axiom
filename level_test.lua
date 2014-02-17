@@ -12,44 +12,70 @@ local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 local level = (axiom.Level%{ space = space })()
 _G.DBGLVL = level
 function DBGERR(...)
+    local info = debug.getinfo(2, "nSl")
+    local str = tostring(info.short_src)..":"..tostring(info.currentline).."-"..tostring(info.name)
+    local errGroup = DBGLVL:CreateGeometryGroup("ERROR-"..str, {r=255,g=0,b=0,a=255})
     for objectI = 1, select('#', ...) do
         local object = select(objectI, ...)
         DBGLVL:Add(object)
-        DBGLVL:SetGeometryGroup(object, DBGLVL:CreateGeometryGroup("ERROR", {r=255,g=0,b=0,a=255}))
+        DBGLVL:SetGeometryGroup(object, errGroup)
     end
 end
 
--- do
-    -- local normal = V(0, 1, 0)
+--[[do
+    local edgeA = space:EdgeOf(
+        space:VertexOf(V(0, 0, 0)),
+        space:VertexOf(V(0, 0, 0.2))
+    ) edgeA.loldbg = true
+    level:AddEdge(edgeA)
+    for i = 1, 1 do
+        local vertexA = space:VertexOf(V(1, 0, -0.1))--V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
+        local vertexB = space:VertexOf(V(1, 0, 0.1))--V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
+        local edgeT = space:EdgeOf(
+            vertexA,
+            vertexB
+        ) edgeT.loldbg = true
+        level:AddEdge(edgeT)
+        local dist, vrA, vrB, tA, tB = edgeA:GetShortestDistanceToEdge(edgeT)
+        local edgeR = space:EdgeOf(
+            vrA,
+            vrB
+        )
+        level:AddEdge(edgeR)
+    end
+end]]
+
+--[[do
+    local normal = V(0, 1, 0)
     
-    -- local p1 = space:PolygonOf(space:BuildEdgeLoopOf{
-        -- space:VertexOf(V(0.00, 0.00, 0.25)),
-        -- space:VertexOf(V(0.25, 0.00, 0.25)),
-        -- space:VertexOf(V(0.25, 0.00, 0.00)),
-        -- space:VertexOf(V(1.00, 0.00, 0.00)),
-        -- space:VertexOf(V(1.00, 0.00, 1.00)),
-        -- space:VertexOf(V(0.00, 0.00, 1.00)),
-    -- })
-    -- local f1 = space:FaceOf(p1, normal)
-    -- level:AddFace(f1)
+    local p1 = space:PolygonOf(space:BuildEdgeLoopOf{
+        space:VertexOf(V(0.00, 0.00, 0.25)),
+        space:VertexOf(V(0.25, 0.00, 0.25)),
+        space:VertexOf(V(0.25, 0.00, 0.00)),
+        space:VertexOf(V(1.00, 0.00, 0.00)),
+        space:VertexOf(V(1.00, 0.00, 1.00)),
+        space:VertexOf(V(0.00, 0.00, 1.00)),
+    })
+    local f1 = space:FaceOf(p1, normal)
+    level:AddFace(f1)
     
     
-    -- for i = 1, 1000 do
-        -- local point = V(math.randrange(-0.3, 1.3), 0, math.randrange(-0.3, 1.3))
-        -- local e1 = space:EdgeOf(
-            -- space:VertexOf(point),
-            -- space:VertexOf(point+V(0, 0.3, 0))
-        -- )
-        -- local isInside, wat = p1:GetIsPointInPolygon(point)
-        -- if isInside then
-            -- e1.loldbg = true
-        -- end
-        -- level:AddEdge(e1)
-        -- for k,edge in ipairs(wat) do
-            -- level:AddEdge(edge)
-        -- end
-    -- end
--- end
+    for i = 1, 1000 do
+        local point = V(math.randrange(-0.3, 1.3), 0, math.randrange(-0.3, 1.3))
+        local e1 = space:EdgeOf(
+            space:VertexOf(point),
+            space:VertexOf(point+V(0, 0.3, 0))
+        )
+        local isInside, wat = p1:GetIsPointInPolygon(point)
+        if isInside then
+            e1.loldbg = true
+        end
+        level:AddEdge(e1)
+        for k,edge in ipairs(wat) do
+            level:AddEdge(edge)
+        end
+    end
+end]]
 
 local normal_up = V(0, 1, 0)
 
@@ -182,45 +208,45 @@ local err
 xpcall(function()
     local defaultGroup = level:CreateGeometryGroup("Default", {r=255,g=255,b=255,a=255}, false)
     local inputGroup = level:CreateGeometryGroup("Input", {r=0,g=100,b=0,a=100}, false)
-    local resultGroup = level:CreateGeometryGroup("Result", {r=100,g=0,b=255,a=255}, false)
     level:SetDefaultGeometryGroup(defaultGroup)
     for i = 1, 7 do
         for j = 1, 7 do
-            if false or (i == 1 and j == 1) then
+            if true or (i == 1 and j == 1) then
+                local resultGroup = level:CreateGeometryGroup("Result "..i.."x"..j, {r=100,g=0,b=255,a=255}, false)
                 local seed = i+j*999, 9187, math.floor(math.random()*9999)
                 print(i, j, seed)
                 local function stuff(offset, showInput, showResult)
                     local inputList = {
-                        {facetemp6(offset+V(0,0,0), seed)},
-                        {facetemp7(offset+V(0.4,0,0), seed+12)},
+                        {facetemp7(offset+V(0,0,0), seed)},
+                        {facetemp3(offset+V(0.4,0,0), seed+12)},
                         -- {facetemp3(offset+V(0.0,0,0), seed+12)},
                     }
                     if showInput then
                         for inputI, input in ipairs(inputList) do
                             local face = input[2]
                             level:AddFace(face, true)
-                            level:SetGeometryGroup(face, inputGroup)
+                            level:SetGeometryGroup(face, inputGroup, true)
                         end
                     end
                     if showResult and #inputList >= 2 then
-                        MEOW = true
+                        -- MEOW = true
                         local p1, p2 = inputList[1][1], inputList[2][1]
                         local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
                         for thingI, thing in ipairs(result) do
                             if thing:isa(space.edgeType) then
                                 level:AddEdge(thing)
-                                level:SetGeometryGroup(thing, resultGroup)
+                                level:SetGeometryGroup(thing, resultGroup, true)
                             else
                                 local fr = space:FaceOf(thing, normal_up)
                                 level:AddFace(fr, true)
-                                level:SetGeometryGroup(fr, resultGroup)
+                                level:SetGeometryGroup(fr, resultGroup, true)
                             end
                         end
-                        MEOW = false
+                        -- MEOW = false
                     end
                 end
                 local o = V((i-1)*5.1, 0, (j-1)*4.1)
-                stuff(o+V( 0.00,-0.06, 0.00), true, false)
+                stuff(o+V( 0.00,-0.16, 0.00), true, false)
                 stuff(o+V( 0.00, 0.00, 0.00), false, true)
             end
         end
@@ -233,6 +259,7 @@ if err then
         level:AddEdge(edge)
     end
 end
+
 --[[do
     local o = V(0.5, 0, 0.5)
     local edgeLoop = space:EdgeLoopOf(
@@ -311,6 +338,7 @@ do
     level:AddFace(f1)
 end
 ]]
+
 local outputfile = assert(io.open("obj/ns2_blah.level", "wb"))
 local data = axiom.levelformat.encode(level:GetChunk())
 outputfile:write(data)

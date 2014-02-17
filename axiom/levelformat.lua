@@ -85,9 +85,11 @@ local meshsubchunkidenum = enum{
 levelformat.LevelChunk = concept{
     
 }
-function levelformat.LevelChunk:__construct(class, supers)
-    self.version = self.version
-    self.chunklistmap = self.chunklistmap or {}
+function levelformat.LevelChunk.__init(class, obj, ...)
+    obj = obj or {}
+    obj.version = obj.version
+    obj.chunklistmap = obj.chunklistmap or {}
+    return setmetatable(obj, class)
 end
 
 function string.tohex(str, delim)
@@ -237,7 +239,7 @@ do -- decode
             
             local level_header, _, level_header_data = readstructptr("level_header", reader, levelformat.ct_fileheader)
             assert(ffi.C.memcmp(level_header.magic, levelformat.formatmagic, 3) == 0, "not a NS2 level")
-            assert(level_header.version == levelformat.formatversion, "unsupported level version")
+            -- assert(level_header.version == levelformat.formatversion, "unsupported level version "..level_header.version)
             levelchunk.version = level_header.version
             local chunk_i, dbglastparsedid = 1, -1
             for chunk_header, chunk_header_data in levelformat.iterateChunks(reader, endpos-reader:seek()) do
@@ -866,7 +868,7 @@ do -- Chunk_Vertices
     cdefstruct("vertexdata", [[
         float x, y, z; // TODO: Clean up vec3 usage in vertex struct.
         bool issmoothed; // Is this 1-byte on all platforms?
-    ]])
+    ]], false, { __tostring = function(v) return "<"..tostring(v.x)..","..tostring(v.y)..","..tostring(v.z)..","..">" end })
     function levelformat.parseChunk_Vertices(reader, chunk_header, level, mesh)
         local chunk = {}
         

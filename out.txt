@@ -1,0 +1,939 @@
+1	1	1000
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+true	A	in	B
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+false	B	in	A
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+true	C	in	D
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+false	D	in	C
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+true	E	in	F
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+false	F	in	E
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+true	G	in	H
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+false	H	in	G
+###
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.70710678118655
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.99654575824488
+NORMNORMNORM
+LOOOOP	3
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+false	I	in	J
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-1, 0, 0)
+false	I	in	K
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0
+NORMNORMNORM
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+true	J	in	I
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+false	J	in	K
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0
+NORMNORMNORM
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+true	K	in	I
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+true	K	in	J
+###
+SEEEEQ	2
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0
+NORMNORMNORM
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+true	L	in	M
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-1, -0, -8.8817841970013e-016)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-1, -0, -1.3322676295502e-015)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, -1, 0)
+true	L	in	N
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+false	M	in	L
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-1, 0, 0)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, 0, 1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+false	M	in	N
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0.89442719099992
+NORMNORMNORM
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -8.8817841970013e-016)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-8.8817841970013e-016, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, -0, -1.3322676295502e-015)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-1.3322676295502e-015, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+false	N	in	L
+###
+###
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+NORMNORMNORM
+NORMNORMNORM	lmc3_double_t(0, -1, 0)
+NORMNORMNORM	0
+NORMNORMNORM
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, -1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, -0, -1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(-1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-1, 0, 0)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(0, 0, 1)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, 0, 1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, 8.8817841970013e-016)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(8.8817841970013e-016, 0, -1)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(-0, -0, -1)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1, 0, 0)	lmc3_double_t(0, -1, 0)
+@@@@	lmc3_double_t(-0, 0, 1)	lmc3_double_t(1, 0, -1.3322676295502e-015)
+lmc3_double_t(1, 0, 0)	lmc3_double_t(-1.3322676295502e-015, 0, -1)	lmc3_double_t(0, -1, 0)
+true	N	in	M
+###
+SUCCESS: Sent termination signal to the process "Editor.exe" with PID 21860.
+SUCCESS: The process "Editor.exe" with PID 21860 has been terminated.
