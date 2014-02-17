@@ -412,11 +412,6 @@ do luametry.Space = concept{
     function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point)
         local normal = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopSequence[1])
         local inCount = 0
-        -- if false or (point.x:round(-2) == 0.46 and point.z:round(-2) == 0.04) then
-        if false or (point.x:round(-2) == -5.04 and point.z:round(-2) == -2.36) then
-            -- MEOW = true
-            print("########")
-        end
         local closestDistToPoint = math.huge
         for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
             local edgeLoopOrientation = self:GetEdgeLoopOrientation(edgeLoop, normal)
@@ -431,24 +426,11 @@ do luametry.Space = concept{
                 if closestEdgeDist == math.huge then
                     edgeIsCloser = true
                 elseif edgeDist:GetIsEqualTo(closestEdgeDist) then
-                    if MEOW then
-                        print("!", closestEdgeIsClamped, edgeIsClamped)
-                    end
                     if closestEdgeIsClamped and edgeIsClamped then
                         -- the point is closest to a vertex, pick the edge which is least colinear
                         local closestEdgeDir = (closestEdgeV2.p-closestEdgeV1.p):GetNormalized()
                         local closestEdgeVertToPointDir = (point-closestEdgeClosestPoint):GetNormalized()
                         local closestEdgePointDot = closestEdgeDir:GetDotProduct(closestEdgeVertToPointDir)
-                        if MEOW then
-                            print("!!", edgePointDot, closestEdgePointDot)
-                            local edgeCentrePoint = closestEdgeV1.p--(currEdgeUniqueV.p+commonV.p)/2
-                            local e = self:EdgeOf(
-                                self:VertexOf(edgeCentrePoint),
-                                self:VertexOf(edgeCentrePoint+closestEdgeVertToPointDir*0.2)
-                            )
-                            e.loldbg = true
-                            DBGLVL:AddEdge(e)
-                        end
                         if edgePointDot:GetAbs() < closestEdgePointDot:GetAbs() then
                             edgeIsCloser = true
                         else
@@ -476,7 +458,6 @@ do luametry.Space = concept{
                     end
                 end
             end
-            if MEOW then print("########") end
             local edgeDir = (closestEdgeV2.p-closestEdgeV1.p):GetNormalized() -- no need to actually normalize this
             local edgeInDirection = normal:GetCrossProduct(edgeDir) -- hehe... "indirection"
             local edgeToPointDir = (point-closestEdgeClosestPoint):GetNormalized()
@@ -493,36 +474,6 @@ do luametry.Space = concept{
             if closestEdgeDist < closestDistToPoint then
                 closestDistToPoint = closestEdgeDist
             end
-            
-            if MEOW then
-                print("YAY", point)
-                print(normal, closestEdgeIsClamped)
-                print(edgeDir, edgeDir:GetMagnitude())
-                print("indir", edgeInDirection, edgeInDirection:GetMagnitude())
-                print("ptdir", edgeToPointDir)
-                print(dotResult, edgeLoopOrientation, insideDotSign)
-                local e = self:EdgeOf(
-                    self:VertexOf(point),
-                    self:VertexOf(point+normal*0.05)
-                )
-                e.loldbg = true
-                DBGLVL:AddEdge(e)
-                local edgeCentrePoint = (closestEdgeV1.p+closestEdgeV2.p)/2
-                local e = self:EdgeOf(
-                    self:VertexOf(edgeCentrePoint),
-                    self:VertexOf(edgeCentrePoint+normal*0.05)
-                )
-                DBGLVL:AddEdge(e)
-                local e = self:EdgeOf(
-                    self:VertexOf(edgeCentrePoint),
-                    self:VertexOf(edgeCentrePoint+edgeInDirection*0.05)
-                )
-                e.loldbg = true
-                DBGLVL:AddEdge(e)
-            end
-        end
-        if MEOW then
-            MEOW = false
         end
         if inCount > 2 then
             DBGERR(unpack(table.arrayflatten(edgeLoopSequence, 1)))
