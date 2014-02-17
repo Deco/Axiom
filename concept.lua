@@ -163,6 +163,22 @@ do -- utils
         local state = { ci = 0, ti = 1, ... }
         return coipairs_internal, state
     end
+    
+    debug.labelpool = function()
+        local mt = {
+            __index = function(self, obj)
+                local objId = self.__idMap[obj]
+                if not objId then
+                    objId = self.__idCounter
+                    self.__idCounter = self.__idCounter+1
+                    self.__idMap[obj] = objId
+                end
+                assert(objId <= 26, "alphabet too smaalll (NYI)")
+                return string.char(string.byte'A'+objId-1)
+            end,
+        }
+        return setmetatable({ __idMap = {}, __idCounter = 1 }, mt)
+    end
 end
 
 function concept.__call(library, class)

@@ -82,6 +82,23 @@ function axiom.Level:AddVolume(volume, acceptDuplicates) -- automatically includ
     assert(volume.space == self.space, "volume.space ~= Level.space")
     error"NYI"
 end
+function axiom.Level:Add(object)
+    if object:isa(luametry.Vertex) then
+        self:AddVertex(object)
+    elseif object:isa(luametry.Edge) then
+        self:AddEdge(object)
+    elseif object:isa(luametry.Polygon) then
+        self:AddPolygon(object)
+    elseif object:isa(luametry.Face) then
+        self:AddFace(object)
+    elseif object:isa(luametry.Polyhedron) then
+        self:AddPolyhedron(object)
+    elseif object:isa(luametry.Volume) then
+        self:AddVolume(object)
+    else
+        error"NYI?!?"
+    end
+end
 
 function axiom.Level:CreateGeometryGroup(groupName, groupColor, groupIsHidden)
     local group = {}

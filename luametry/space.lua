@@ -143,6 +143,7 @@ do luametry.Space = concept{
                 end
             end
             if not currEdge then
+                DBGERR(currEdge)
                 error"repeated edge in edgeList"
             end
             while currEdge do
@@ -210,6 +211,7 @@ do luametry.Space = concept{
                     if shouldCheckIntersection then
                         local intersectionDist = edge1:GetShortestDistanceToEdge(edge2)
                         if intersectionDist and intersectionDist:GetIsEqualToZero() then
+                            DBGERR(edge1) DBGERR(edge2)
                             if edgeLoop1 == edgeLoop2 then
                                 error"Self-intersecting edge loop"
                             else
@@ -222,8 +224,10 @@ do luametry.Space = concept{
             local threeVertexList = {}
             local calculatedNormal
             for vertex, vertexAttachCount in pairs(vertexAttachCountMap) do
-                assert(vertexAttachCount >= 2, "Bad edge loop (a vertex only has one attaching edge)")
-                assert(vertexAttachCount <= 2, "Bad edge loop (a vertex attachs to more than one edge)")
+                if vertexAttachCount ~= 2 then
+                    DBGERR(vertex)
+                    error("Bad edge loop (a vertex "..(vertexAttachCount < 1 and "attaches to only one edge" or "attaches to more than two edges")..")")
+                end
                 if #threeVertexList < 2 then
                     table.insert(threeVertexList, vertex)
                 elseif #threeVertexList == 2 then
@@ -236,9 +240,10 @@ do luametry.Space = concept{
                         table.insert(threeVertexList, vertex)
                     end
                 else
-                    assert(calculatedNormal:GetDotProduct(vertex.p-threeVertexList[1].p):GetIsEqualToZero(),
-                        "Vertices must be coplanar"
-                    )
+                    if not calculatedNormal:GetDotProduct(vertex.p-threeVertexList[1].p):GetIsEqualToZero() then
+                        DBGERR(vertex)
+                        error("Vertices must be coplanar")
+                    end
                 end
             end
         end
@@ -279,14 +284,14 @@ do luametry.Space = concept{
         end
         local edgeBToEdgeADir = (closestPairEdgeAClosestVertex.p-closestPairEdgeBClosestVertex.p):GetNormalized()
         if MEOW then
-            local e = self:EdgeOf(
-                self:VertexOf(closestPairEdgeAClosestVertex.p+self.coordinateType(0, 1, 0)*0),
-                self:VertexOf(closestPairEdgeBClosestVertex.p+self.coordinateType(0, 1, 0)*0)
-            )
-            e.loldbg = true
-            DBGLVL:AddEdge(e)
+            -- local e = self:EdgeOf(
+                -- self:VertexOf(closestPairEdgeAClosestVertex.p+self.coordinateType(0, 1, 0)*0),
+                -- self:VertexOf(closestPairEdgeBClosestVertex.p+self.coordinateType(0, 1, 0)*0)
+            -- )
+            -- e.loldbg = true
+            -- DBGLVL:AddEdge(e)
             
-            print(closestPairEdgeAInDirection, closestPairEdgeBInDirection)
+            -- print(closestPairEdgeAInDirection, closestPairEdgeBInDirection)
         end
         
         return (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0)
@@ -348,9 +353,19 @@ do luametry.Space = concept{
         local edgeLoopContainedEdgeLoopListMap = {}
         local edgeLoopIsContainedMap = {}
         
+        local dbglabelmap = debug.labelpool()
+        
         local traversedEdgeLoopMap = {}
         for edgeLoopI, edgeLoop in ipairs(edgeLoopList) do
             edgeLoopContainedEdgeLoopListMap[edgeLoop] = edgeLoopContainedEdgeLoopListMap[edgeLoop] or {}
+            
+            if MEOW then
+                local dbggroup = DBGLVL:CreateGeometryGroup(dbglabelmap[edgeLoop], {r=255,g=0,b=255,a=255})
+                for edgeI, edge in ipairs(edgeLoop) do
+                    DBGLVL:Add(edge)
+                    DBGLVL:SetGeometryGroup(edge, dbggroup)
+                end
+            end
             
             for otherEdgeLoopI, otherEdgeLoop in ipairs(edgeLoopList) do
                 
@@ -509,7 +524,11 @@ do luametry.Space = concept{
         if MEOW then
             MEOW = false
         end
-        assert(inCount <= 2, "?!?")
+        if inCount > 2 then
+            DBGERR(unpack(table.arrayflatten(edgeLoopSequence, 1)))
+            DBGERR(self:VertexOf(point))
+            error"?!?"
+        end
         return (inCount == 1), closestDistToPoint
     end
     
@@ -596,7 +615,7 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
             local a, b = ...
             assert(a[class.space], "Vertex 1 not in same space as edge")
             assert(b[class.space], "Vertex 2 not in same space as edge")
-            assert(a ~= b, "Vertices must not be equal")
+            if a == b then DBGERR(a) error("Vertices must not be equal") end
             obj.vertexMap = {
                 [a] = {},
                 [b] = {},
@@ -633,10 +652,12 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local p1, p2, p3, p4 = v1a.p, v1b.p, v2a.p, v2b.p
         local p13, p43 = p1-p3, p4-p3
         if p43:GetAbs():GetIsEqualToZero() then
+            DBGERR(otherEdge)
             error"non-sensical edge"
         end
         local p21 = p2-p1
         if p21:GetAbs():GetIsEqualToZero() then
+            DBGERR(self)
             error"non-sensical edge"
         end
         local d1343 = p13:GetDotProduct(p43)
@@ -646,7 +667,14 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local d2121 = p21:GetDotProduct(p21)
         local denom = d2121 * d4343 - d4321 * d4321
         if denom:GetIsEqualToZero() then
-            local dist, r, t = self:GetShortestDistanceToPoint(p3, true)
+            local dist, r, t
+            local dist1, r1, t1 = self:GetShortestDistanceToPoint(p3, false)
+            local dist2, r2, t2 = self:GetShortestDistanceToPoint(p4, false)
+            if dist1 < dist2 then
+                dist, r, t = dist1, r1, t1
+            else
+                dist, r, t = dist2, r2, t2
+            end
             return dist, self.space.vertexType(r), v2a, t, 0
         end
         local numer = d1343 * d4321 - d1321 * d4343
@@ -766,6 +794,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             for edgeI, edge in ipairs(obj.edgeList) do
                 assert(edge[class.space], "Polygon edge must be in same space")
                 if obj.edgeMap[edge] then
+                    DBGERR(edge)
                     error"cannot have same edge twice"
                 end
                 obj.edgeMap[edge] = {}
@@ -1071,7 +1100,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                 local edgeVA, edgeVB = edge:GetVertices()
                 local subEdgesToCheckOwnerMap = nil
                 local cutList = edgeCutSortedListMap[edge]
-                print("----")
+                -- print("----")
                 if cutList ~= nil and #cutList > 0 then
                     subEdgesToCheckList = table.new(#cutList, 0)
                     local currentVertex = edgeVA
@@ -1079,7 +1108,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                     table.insert(cutList, { 1, edgeVB, nil, "END"})
                     for i = 1, #cutList do
                         local currentCut = cutList[i]
-                        print("CUT", currentCut[1], currentCut[2] and currentCut[2].p or nil, currentCut[3], currentCut[4])
+                        -- print("CUT", currentCut[1], currentCut[2] and currentCut[2].p or nil, currentCut[3], currentCut[4])
                         if currentCut[1] == true then
                             currentSegmentSharedForeignEdge = currentCut[3]
                         else
@@ -1091,7 +1120,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                                     subEdge.loldbg = true
                                     if edgeCheckFunc(localPolygon, foreignPolygon, true, subEdge, edge, currentSegmentSharedForeignEdge) then
                                         table.insert(newEdgeList, subEdge)
-                                        dbgedge("SH", subEdge)
+                                        -- dbgedge("SH", subEdge)
                                     end
                                 end
                             else
@@ -1110,7 +1139,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                     if edgeCheckFunc(localPolygon, foreignPolygon, false, subEdge, subEdge, nil) then
                         subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)
-                        dbgedge("CH", subEdge)
+                        -- dbgedge("CH", subEdge)
                     else
                         -- table.insert(newEdgeList, subEdge)
                     end
@@ -1118,7 +1147,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             end
         end
         
-        if false then
+        if true then
             return newEdgeList
         end
         

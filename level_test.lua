@@ -11,6 +11,13 @@ local space = (luametry.Space%{ coordinateType = luametry.Vec3cf })()
 
 local level = (axiom.Level%{ space = space })()
 _G.DBGLVL = level
+function DBGERR(...)
+    for objectI = 1, select('#', ...) do
+        local object = select(objectI, ...)
+        DBGLVL:Add(object)
+        DBGLVL:SetGeometryGroup(object, DBGLVL:CreateGeometryGroup("ERROR", {r=255,g=0,b=0,a=255}))
+    end
+end
 
 -- do
     -- local normal = V(0, 1, 0)
@@ -174,8 +181,8 @@ end
 local err
 xpcall(function()
     local defaultGroup = level:CreateGeometryGroup("Default", {r=255,g=255,b=255,a=255}, false)
-    local inputGroup = level:CreateGeometryGroup("Input", {r=255,g=0,b=0,a=255}, false)
-    local resultGroup = level:CreateGeometryGroup("Result", {r=0,g=0,b=255,a=255}, false)
+    local inputGroup = level:CreateGeometryGroup("Input", {r=0,g=100,b=0,a=100}, false)
+    local resultGroup = level:CreateGeometryGroup("Result", {r=100,g=0,b=255,a=255}, false)
     level:SetDefaultGeometryGroup(defaultGroup)
     for i = 1, 7 do
         for j = 1, 7 do
@@ -183,7 +190,6 @@ xpcall(function()
                 local seed = i+j*999, 9187, math.floor(math.random()*9999)
                 print(i, j, seed)
                 local function stuff(offset, showInput, showResult)
-                    MEOW = showInput
                     local inputList = {
                         {facetemp6(offset+V(0,0,0), seed)},
                         {facetemp7(offset+V(0.4,0,0), seed+12)},
@@ -197,6 +203,7 @@ xpcall(function()
                         end
                     end
                     if showResult and #inputList >= 2 then
+                        MEOW = true
                         local p1, p2 = inputList[1][1], inputList[2][1]
                         local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
                         for thingI, thing in ipairs(result) do
@@ -209,6 +216,7 @@ xpcall(function()
                                 level:SetGeometryGroup(fr, resultGroup)
                             end
                         end
+                        MEOW = false
                     end
                 end
                 local o = V((i-1)*5.1, 0, (j-1)*4.1)
