@@ -89,7 +89,6 @@ function facetemp2(offset, seed)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
-
 function facetemp3(offset, seed)
     math.randomseed(seed) for i = 1, 10 do math.random() end
     local vertexList = {}
@@ -103,16 +102,85 @@ function facetemp3(offset, seed)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
+function facetemp4(offset, seed)
+    local vertexList = {}
+    local count, rad = 64, 2--32, 1.4
+    for i = 1, count do
+        local a = 2*math.pi/count*(i-1)
+        local r = rad
+        table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
+    end
+    local p = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+function facetemp5(offset, seed)
+    local edgeList = space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(0.00, 0.00, 0.25)),
+        space:VertexOf(offset+V(0.25, 0.00, 0.25)),
+        space:VertexOf(offset+V(0.25, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 0.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 1.00)),
+        space:VertexOf(offset+V(0.00, 0.00, 1.00)),
+    }
+    for i = 1, 20 do
+        local holesPerRow = 5
+        local holeOffset = V(0.25+0.15*((i-1)%holesPerRow), 0, 0.35+0.15*math.floor((i-1)/holesPerRow))
+        edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf{
+            space:VertexOf(offset+holeOffset+V(0.0, 0, 0.0)),
+            space:VertexOf(offset+holeOffset+V(0.1, 0, 0.0)),
+            space:VertexOf(offset+holeOffset+V(0.1, 0, 0.1)),
+            space:VertexOf(offset+holeOffset+V(0.0, 0, 0.1)),
+        })
+    end
+    local p = space:PolygonOf(edgeList)
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+function facetemp6(offset, seed)
+    local edgeList = space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(-3, 0.00, -0.25)),
+        space:VertexOf(offset+V( 3, 0.00, -0.25)),
+        space:VertexOf(offset+V( 3, 0.00,  0.25)),
+        space:VertexOf(offset+V(-3, 0.00,  0.25)),
+    }
+    edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(-1.15, 0.00, -0.15)),
+        space:VertexOf(offset+V(-0.85, 0.00, -0.15)),
+        space:VertexOf(offset+V(-0.85, 0.00,  0.15)),
+        space:VertexOf(offset+V(-1.15, 0.00,  0.15)),
+    })
+    local p = space:PolygonOf(edgeList)
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
+function facetemp7(offset, seed)
+    local edgeList = space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(-2, 0.00, -2)),
+        space:VertexOf(offset+V( 2, 0.00, -2)),
+        space:VertexOf(offset+V( 2, 0.00,  2)),
+        space:VertexOf(offset+V(-2, 0.00,  2)),
+    }
+    edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf{
+        space:VertexOf(offset+V(-1, 0.00, -1)),
+        space:VertexOf(offset+V( 1, 0.00, -1)),
+        space:VertexOf(offset+V( 1, 0.00,  1)),
+        space:VertexOf(offset+V(-1, 0.00,  1)),
+    })
+    local p = space:PolygonOf(edgeList)
+    local f = space:FaceOf(p, normal_up)
+    return p, f
+end
 
 for i = 1, 7 do
     for j = 1, 7 do
-        if true or (i == 1 and j == 1) then
+        if false or (i == 1 and j == 1) then
             local seed = i+j*999, 9187, math.floor(math.random()*9999)
             print(i, j, seed)
             local function stuff(offset, showInput, showResult)
                 
-                local p1, f1 = facetemp3(offset+V(0.0,0,0), seed)
-                local p2, f2 = facetemp3(offset+V(1.0,0,0), seed+12)
+                local p1, f1 = facetemp7(offset+V(0,-4,0), seed)
+                local p2, f2 = facetemp7(offset+V(0.0,0,0), seed+12)
                 local p3, f3-- = facetemp3(offset+V(0.0,0,0), seed+12)
                 if showInput then
                     level:AddFace(f1, true)
@@ -131,7 +199,7 @@ for i = 1, 7 do
                     end
                 end
             end
-            local o = V(i*5.1, 0, j*4.1)
+            local o = V((i-1)*5.1, 0, (j-1)*4.1)
             stuff(o+V( 0.00,-0.06, 0.00), true, false)
             stuff(o+V( 0.00, 0.00, 0.00), false, true)
         end

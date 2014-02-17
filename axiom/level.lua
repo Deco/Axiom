@@ -9,6 +9,7 @@ local levelformat = require"axiom.levelformat"
 
 axiom.Level = concept{
     --space = luametry.Space(),
+    ignoreDuplicatesCompletely = true,
 }
 
 function axiom.Level.__declare(class)
@@ -34,7 +35,7 @@ function axiom.Level:AddVertex(vertex, acceptDuplicates)
     if not vertexInfo then
         local vertexInfo = {}
         self.vertexMap[vertex] = vertexInfo
-    elseif not acceptDuplicates then
+    elseif not acceptDuplicates and not self.ignoreDuplicatesCompletely then
         error"Duplicate vertex"
     end
 end
@@ -49,12 +50,12 @@ function axiom.Level:AddEdge(edge, acceptDuplicates) -- automatically includes r
         local va, vb = edge:GetVertices()
         self:AddVertex(va, true)
         self:AddVertex(vb, true)
-    elseif not acceptDuplicates then
+    elseif not acceptDuplicates and not self.ignoreDuplicatesCompletely then
         error"Duplicate edge"
     end
 end
 
-function axiom.Level:AddFace(face, acceptDuplicates) -- automatically includes required edges and vertices
+function axiom.Level:AddFace(face, acceptDuplicates) -- automatically includes required polygon, edges and vertices
     assert(face:isa(luametry.Face), "Level:AddFace expects a face")
     assert(face.space == self.space, "face.space ~= Level.space")
     
@@ -65,12 +66,18 @@ function axiom.Level:AddFace(face, acceptDuplicates) -- automatically includes r
         for edge, edgeData in pairs(face:GetEdgeMap()) do
             self:AddEdge(edge, true)
         end
-    elseif not acceptDuplicates then
+    elseif not acceptDuplicates and not self.ignoreDuplicatesCompletely then
         error"Duplicate face"
     end
 end
 
-function axiom.Level:AddVolume(volume, acceptDuplicates) -- automatically includes required faces, edges and vertices
+function axiom.Level:AddPolyhedron(polyhedron, acceptDuplicates) -- automatically includes required polygons, edges and vertices
+    assert(polyhedron:isa(luametry.Polyhedron), "Level:AddPolyhedron expects a volume")
+    assert(polyhedron.space == self.space, "polyhedron.space ~= Level.space")
+    error"NYI"
+end
+
+function axiom.Level:AddVolume(volume, acceptDuplicates) -- automatically includes required faces, polygons, edges and vertices
     assert(volume:isa(luametry.Volume), "Level:AddVolume expects a volume")
     assert(volume.space == self.space, "volume.space ~= Level.space")
     error"NYI"
@@ -124,27 +131,30 @@ function axiom.Level:GetChunk()
             }
         }
         
-        local faceEdgeLoopSequence = face:GetCounterClockwiseEdgeLoopSequence()
+        local faceEdgeLoopSequence = face:GetClockwiseEdgeLoopSequence()
+        -- print("##POLY")
         for edgeLoopI, edgeLoop in ipairs(faceEdgeLoopSequence) do
+            -- print("####LOOP", edgeLoopI)
             local edgeIdList, edgeIsFlippedList, shouldInverseIsFlippedState, edgeStartI, edgeEndI, edgeDeltaI
-            if edgeLoopI%2 == 1 then
+            if edgeLoopI == 1 then
                 edgeIdList, edgeIsFlippedList = rawFace.borderedgeidlist, rawFace.borderedgeisflippedlist
-                -- shouldInverseIsFlippedState = false
-                -- edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
-                shouldInverseIsFlippedState = true
-                edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
+                -- border loop is clockwise
+                shouldInverseIsFlippedState = false
+                edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
             else
                 edgeIdList, edgeIsFlippedList = {}, {}
                 table.insert(rawFace.edgeidlistlist, edgeIdList)
                 table.insert(rawFace.edgeisflippedlistlist, edgeIsFlippedList)
-                -- shouldInverseIsFlippedState = true
-                -- edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
-                shouldInverseIsFlippedState = false
-                edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
+                -- hole loops are anticlockwise
+                -- shouldInverseIsFlippedState = false
+                -- edgeStartI, edgeEndI, edgeDeltaI = 1, #edgeLoop, 1
+                shouldInverseIsFlippedState = true
+                edgeStartI, edgeEndI, edgeDeltaI = #edgeLoop, 1, -1
             end
             for currEdgeI = edgeStartI, edgeEndI, edgeDeltaI do
                 local currEdge = edgeLoop[currEdgeI]
                 local currEdgeIsFlipped = nil
+                -- local nextEdge = edgeLoop[(currEdgeI-1+edgeDeltaI)%#edgeLoop+1]
                 local nextEdge = edgeLoop[(currEdgeI%#edgeLoop)+1]
                 local currEdgeVA, currEdgeVB = currEdge:GetVertices()
                 local nextEdgeVA, nextEdgeVB = nextEdge:GetVertices()
@@ -154,6 +164,9 @@ function axiom.Level:GetChunk()
                 elseif currEdgeVB == nextEdgeVA or currEdgeVB == nextEdgeVB then
                     currEdgeIsFlipped = false
                 else error("no common vertex between edges?!?") end
+                -- print("######EDGE")
+                -- print("######", currEdgeVA.p)
+                -- print("######", currEdgeVB.p)
                 table.insert(edgeIdList, (assert(edgeRawIdMap[currEdge], "edge not present")))
                 table.insert(edgeIsFlippedList, xor(shouldInverseIsFlippedState, currEdgeIsFlipped))
             end

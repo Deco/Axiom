@@ -22,6 +22,9 @@ math.round = function(x, digit, base)
     local mul = (base or 10)^(-(digit or 0))
     return math.floor(x*mul+0.5)/mul
 end
+math.wrap = math.wrap or function(val, min, max)
+    error"NYI"
+end
 math.randrange = math.randrange or function(min, max)
     return min+math.random()*(max-min)
 end
