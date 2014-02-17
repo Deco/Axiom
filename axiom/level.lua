@@ -5,7 +5,7 @@ local concept = require"concept"
 local lualgebra = require"lualgebra"
 local luametry = require"luametry"
 
-local levelformat = require"axiom.levelformat"
+local levelformat_axiom = require"axiom.levelformat"
 
 axiom.Level = concept{
     --space = luametry.Space(),
@@ -20,11 +20,15 @@ end
 
 function axiom.Level.__init(class, existingObj, ...)
     local obj = existingObj or {}
+    
     obj.vertexMap = {}
     obj.edgeMap = {}
     obj.faceMap = {}
     obj.volumeMap = {}
-    obj.objectlist = obj.objectlist or {}
+    
+    obj.groupMap = {}
+    obj.defaultGroup = nil
+    
     return setmetatable(obj, class)
 end
 
@@ -39,7 +43,6 @@ function axiom.Level:AddVertex(vertex, acceptDuplicates)
         error"Duplicate vertex"
     end
 end
-
 function axiom.Level:AddEdge(edge, acceptDuplicates) -- automatically includes required vertices
     assert(edge:isa(luametry.Edge), "Level:AddEdge expects an edge")
     assert(edge.space == self.space, "edge.space ~= Level.space")
@@ -54,7 +57,6 @@ function axiom.Level:AddEdge(edge, acceptDuplicates) -- automatically includes r
         error"Duplicate edge"
     end
 end
-
 function axiom.Level:AddFace(face, acceptDuplicates) -- automatically includes required polygon, edges and vertices
     assert(face:isa(luametry.Face), "Level:AddFace expects a face")
     assert(face.space == self.space, "face.space ~= Level.space")
@@ -70,19 +72,49 @@ function axiom.Level:AddFace(face, acceptDuplicates) -- automatically includes r
         error"Duplicate face"
     end
 end
-
 function axiom.Level:AddPolyhedron(polyhedron, acceptDuplicates) -- automatically includes required polygons, edges and vertices
     assert(polyhedron:isa(luametry.Polyhedron), "Level:AddPolyhedron expects a volume")
     assert(polyhedron.space == self.space, "polyhedron.space ~= Level.space")
     error"NYI"
 end
-
 function axiom.Level:AddVolume(volume, acceptDuplicates) -- automatically includes required faces, polygons, edges and vertices
     assert(volume:isa(luametry.Volume), "Level:AddVolume expects a volume")
     assert(volume.space == self.space, "volume.space ~= Level.space")
     error"NYI"
 end
 
+function axiom.Level:CreateGeometryGroup(groupName, groupColor, groupIsHidden)
+    local group = {}
+    group.name = groupName
+    group.color = groupColor
+    group.isHidden = groupIsHidden
+    self.groupMap[group] = group
+    return group
+end
+function axiom.Level:SetGeometryGroup(object, group)
+    local objectData
+    if object:isa(luametry.Vertex) then
+        objectData = assert(self.vertexMap[object], "cannot assign group to vertex not in level")
+    elseif object:isa(luametry.Edge) then
+        objectData = assert(self.edgeMap[object], "cannot assign group to edge not in level")
+        local vertexA, vertexB = object:GetVertices()
+        self:SetGeometryGroup(vertexA, group)
+        self:SetGeometryGroup(vertexB, group)
+    elseif object:isa(luametry.Face) then
+        objectData = assert(self.faceMap[object], "cannot assign group to face not in level")
+        for edge, edgeData in pairs(object:GetEdgeMap()) do
+            self:SetGeometryGroup(edge, group)
+        end
+    else
+        error"NYI"
+    end
+    objectData.group = group
+end
+function axiom.Level:SetDefaultGeometryGroup(group)
+    self.defaultGroup = group
+end
+
+local towstring = levelformat_axiom.levelformat.towstring
 function axiom.Level:GetChunk()
     local rawVertexList = {}
     local rawEdgeList = {}
@@ -91,6 +123,32 @@ function axiom.Level:GetChunk()
     local vertexRawIdMap = {}
     local edgeRawIdMap = {}
     local faceRawIdMap = {}
+    
+    local groupDataList = {}
+    local groupRawIdMap = {}
+    local function getGroupData(group)
+        group = group or self.defaultGroup
+        local groupData
+        local groupRawId = groupRawIdMap[group]
+        if groupRawId then
+            groupData = groupDataList[groupRawId+1]
+        else
+            groupRawId = #groupDataList
+            groupRawIdMap[group] = groupRawId
+            groupData = {
+                name = towstring(group.name),
+                isvisible = (not group.isHidden),
+                color = group.color,
+                id = groupRawId,
+                
+                rawVertexIdList = {},
+                rawEdgeIdList = {},
+                rawFaceIdList = {},
+            }
+            groupDataList[groupRawId+1] = groupData
+        end
+        return groupData
+    end
     
     for vertex, vertexInfo in pairs(self.vertexMap) do
         local rawVertexId = #rawVertexList
@@ -101,6 +159,10 @@ function axiom.Level:GetChunk()
             z = vertex.p.z:ToFloat64(),
         }
         rawVertexList[rawVertexId+1] = rawVertex
+        
+        if vertexInfo.group or self.defaultGroup then
+            table.insert(getGroupData(vertexInfo.group).rawVertexIdList, rawVertexId)
+        end
     end
     for edge, edgeInfo in pairs(self.edgeMap) do
         local rawEdgeId = #rawEdgeList
@@ -112,11 +174,15 @@ function axiom.Level:GetChunk()
             issmoothed = edge.loldbg and true or false,
         }
         rawEdgeList[rawEdgeId+1] = rawEdge
+        
+        if edgeInfo.group or self.defaultGroup then
+            table.insert(getGroupData(edgeInfo.group).rawEdgeIdList, rawEdgeId)
+        end
     end
     for face, faceInfo in pairs(self.faceMap) do
         local rawFaceId = #rawFaceList
         faceRawIdMap[face] = rawFaceId
-            
+        
         local rawFace = {
             edgeidlistlist = {},
             edgeisflippedlistlist = {},
@@ -172,7 +238,28 @@ function axiom.Level:GetChunk()
             end
         end
         rawFaceList[rawFaceId+1] = rawFace
+        
+        if faceInfo.group or self.defaultGroup then
+            table.insert(getGroupData(faceInfo.group).rawFaceIdList, rawFaceId)
+        end
+        
         table.insert(rawFaceLayersList, { haslayers=false })
+    end
+    
+    local rawVertexGroupList = {}
+    local rawEdgeGroupList = {}
+    local rawFaceGroupList = {}
+    
+    for groupI, group in ipairs(groupDataList) do
+        local rawVertexIdList = group.rawVertexIdList
+        rawVertexIdList.id = group.id
+        table.insert(rawVertexGroupList, rawVertexIdList)
+        local rawEdgeIdList = group.rawEdgeIdList
+        rawEdgeIdList.id = group.id
+        table.insert(rawEdgeGroupList, rawEdgeIdList)
+        local rawFaceIdList = group.rawFaceIdList
+        rawFaceIdList.id = group.id
+        table.insert(rawFaceGroupList, rawFaceIdList)
     end
     
     local levelChunk = {
@@ -199,14 +286,17 @@ function axiom.Level:GetChunk()
                         vertexlist = rawVertexList,
                     }},
                     GeometryGroups = {[1] = {
-                        vertexgrouplist = {},
-                        edgegrouplist   = {},
-                        facegrouplist   = {},
+                        vertexgrouplist = rawVertexGroupList,
+                        edgegrouplist   = rawEdgeGroupList,
+                        facegrouplist   = rawFaceGroupList,
                     }},
                     MappingGroups = {[1] = {
                         mappinggrouplist = {},
                     }},
                 },
+            }},
+            Groups = {[1] = {
+                grouplist = groupDataList,
             }},
             Layers = {[1] = {
                 layerlist = {}

@@ -142,6 +142,9 @@ do luametry.Space = concept{
                     break
                 end
             end
+            if not currEdge then
+                error"repeated edge in edgeList"
+            end
             while currEdge do
                 table.insert(currEdgeLoop, currEdge)
                 traversedEdgeMap[currEdge] = true
@@ -240,38 +243,87 @@ do luametry.Space = concept{
             end
         end
         
-        local randomPointInEdgeLoopA
-        repeat
-            local randomEdgeAVA, randomEdgeAVB, randomEdgeBVA, randomEdgeBVB
-            repeat
-                local randomEdgeA, randomEdgeB = edgeLoopA[math.random(1, #edgeLoopA)], edgeLoopA[math.random(1, #edgeLoopA)]
-                randomEdgeAVA, randomEdgeAVB = randomEdgeA:GetVertices()
-                randomEdgeBVA, randomEdgeBVB = randomEdgeB:GetVertices()
-            until not (randomEdgeAVB.p-randomEdgeAVA.p):GetNormalized():GetDotProduct((randomEdgeBVA.p-randomEdgeBVB.p):GetNormalized()):GetAbs():GetIsEqualTo(1)
-            local p1 = randomEdgeAVA.p+(randomEdgeAVB.p-randomEdgeAVA.p)*math.randrange(0.1, 0.9)
-            local p2 = randomEdgeBVA.p+(randomEdgeBVB.p-randomEdgeBVA.p)*math.randrange(0.1, 0.9)
-            randomPointInEdgeLoopA = p1+(p2-p1)*math.randrange(0.1, 0.9)
-            local isPointInEdgeLoopA, pointDistToEdgeLoopA = self:GetIsPointInEdgeLoopSequence({edgeLoopA}, randomPointInEdgeLoopA)
-            if isPointInEdgeLoopA and not pointDistToEdgeLoopA:GetIsEqualToZero() then
-                local e = self:EdgeOf(
-                    self:VertexOf(randomPointInEdgeLoopA),
-                    self:VertexOf(randomPointInEdgeLoopA+self.coordinateType(0, 1, 0)*0.2)
-                )
-                e.loldbg = true
-                DBGLVL:AddEdge(e)
-                local e = self:EdgeOf(
-                    self:VertexOf(p1),
-                    self:VertexOf(p2)
-                )
-                e.loldbg = true
-                DBGLVL:AddEdge(e)
+        local orthagonalDirection = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopA)
+        local edgeLoopAOrientation = self:GetEdgeLoopOrientation(edgeLoopA, orthagonalDirection)
+        local edgeLoopBOrientation = self:GetEdgeLoopOrientation(edgeLoopB, orthagonalDirection)
+        -- print(edgeLoopAOrientation, edgeLoopBOrientation)
+        local closestPairDist, closestPairClampedCount = math.huge
+        local closestPairEdgeA, closestPairEdgeB
+        local closestPairEdgeAInDirection, closestPairEdgeBInDirection
+        local closestPairEdgeAClosestPoint, closestPairEdgeBClosestPoint
+        -- print("&&&&&&&&&&&&&&&&&")
+        for edgeAI, edgeA in ipairs(edgeLoopA) do
+            for edgeBI, edgeB in ipairs(edgeLoopB) do
+                local dist, va, vb, edgeAT, edgeBT = edgeA:GetShortestDistanceToEdge(edgeB)
+                if dist then
+                    local edgeAClamped, edgeBClamped = (edgeAT <= 0), (edgeBT >= 1)
+                    local clampedCount = (edgeAClamped and 1 or 0)+(edgeBClamped and 1 or 0)
+                    local edgeAInDirection = orthagonalDirection:GetCrossProduct(edgeA:GetDirection())*(edgeLoopAOrientation == "ccw" and 1 or 1)
+                    local edgeBInDirection = orthagonalDirection:GetCrossProduct(edgeB:GetDirection())*(edgeLoopBOrientation == "ccw" and 1 or 1)
+                    local isCloser = (
+                            (not edgeAInDirection:GetDotProduct(edgeBInDirection):GetIsEqualToZero())
+                        and (
+                                    dist < closestPairDist
+                                or  (dist:GetIsEqualTo(closestPairDist) and clampedCount < closestPairClampedCount)
+                            )
+                    )
+                    -- print("WTF", dist, closestPairDist, isCloser)
+                    if isCloser or closestPairDist == math.huge then
+                        closestPairDist, closestPairClampedCount = dist, clampedCount
+                        closestPairEdgeA, closestPairEdgeB = edgeA, edgeB
+                        closestPairEdgeAInDirection, closestPairEdgeBInDirection = edgeAInDirection, edgeBInDirection
+                        closestPairEdgeAClosestVertex, closestPairEdgeBClosestVertex = va, vb
+                    end
+                end
             end
-        until isPointInEdgeLoopA and not pointDistToEdgeLoopA:GetIsEqualToZero()
-        return self:GetIsPointInEdgeLoopSequence({edgeLoopB}, randomPointInEdgeLoopA)
+        end
+        local edgeBToEdgeADir = (closestPairEdgeAClosestVertex.p-closestPairEdgeBClosestVertex.p):GetNormalized()
+        if MEOW then
+            local e = self:EdgeOf(
+                self:VertexOf(closestPairEdgeAClosestVertex.p+self.coordinateType(0, 1, 0)*0),
+                self:VertexOf(closestPairEdgeBClosestVertex.p+self.coordinateType(0, 1, 0)*0)
+            )
+            e.loldbg = true
+            DBGLVL:AddEdge(e)
+            
+            print(closestPairEdgeAInDirection, closestPairEdgeBInDirection)
+        end
+        
+        return (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0)
+        
+        -- local randomPointInEdgeLoopA
+        -- repeat
+            -- local randomEdgeAVA, randomEdgeAVB, randomEdgeBVA, randomEdgeBVB
+            -- repeat
+                -- local randomEdgeA, randomEdgeB = edgeLoopA[math.random(1, #edgeLoopA)], edgeLoopA[math.random(1, #edgeLoopA)]
+                -- randomEdgeAVA, randomEdgeAVB = randomEdgeA:GetVertices()
+                -- randomEdgeBVA, randomEdgeBVB = randomEdgeB:GetVertices()
+            -- until not (randomEdgeAVB.p-randomEdgeAVA.p):GetNormalized():GetDotProduct((randomEdgeBVA.p-randomEdgeBVB.p):GetNormalized()):GetAbs():GetIsEqualTo(1)
+            -- local p1 = randomEdgeAVA.p+(randomEdgeAVB.p-randomEdgeAVA.p)*math.randrange(0.1, 0.9)
+            -- local p2 = randomEdgeBVA.p+(randomEdgeBVB.p-randomEdgeBVA.p)*math.randrange(0.1, 0.9)
+            -- randomPointInEdgeLoopA = p1+(p2-p1)*math.randrange(0.1, 0.9)
+            -- local isPointInEdgeLoopA, pointDistToEdgeLoopA = self:GetIsPointInEdgeLoopSequence({edgeLoopA}, randomPointInEdgeLoopA)
+            -- if isPointInEdgeLoopA and not pointDistToEdgeLoopA:GetIsEqualToZero() then
+                -- local e = self:EdgeOf(
+                    -- self:VertexOf(randomPointInEdgeLoopA),
+                    -- self:VertexOf(randomPointInEdgeLoopA+self.coordinateType(0, 1, 0)*0.2)
+                -- )
+                -- e.loldbg = true
+                -- DBGLVL:AddEdge(e)
+                -- local e = self:EdgeOf(
+                    -- self:VertexOf(p1),
+                    -- self:VertexOf(p2)
+                -- )
+                -- e.loldbg = true
+                -- DBGLVL:AddEdge(e)
+            -- end
+        -- until isPointInEdgeLoopA and not pointDistToEdgeLoopA:GetIsEqualToZero()
+        -- return self:GetIsPointInEdgeLoopSequence({edgeLoopB}, randomPointInEdgeLoopA)
     end
     local function recurseEdgeLoopHierachy(edgeLoopSequenceList, edgeLoopContainedEdgeLoopListMap, edgeLoop, depth)
         local containedEdgeLoopList = edgeLoopContainedEdgeLoopListMap[edgeLoop]
         if depth%2 == 0 then -- even depth means we're dealing with a major loop, and expecting minor loops inside of it
+            -- print("got major, expecting minor", edgeLoop[1]:GetVertices().p)
             local edgeLoopSequence = { edgeLoop }
             table.insert(edgeLoopSequenceList, edgeLoopSequence)
             for minorEdgeLoopI, minorEdgeLoop in ipairs(containedEdgeLoopList) do
@@ -279,6 +331,7 @@ do luametry.Space = concept{
                 recurseEdgeLoopHierachy(edgeLoopSequenceList, edgeLoopContainedEdgeLoopListMap, minorEdgeLoop, depth+1)
             end
         else -- even depth means we're dealing with a minor loop, and expecting major loops inside of it
+            -- print("got minor, expecting major", edgeLoop[1]:GetVertices().p)
             for majorEdgeLoopI, majorEdgeLoop in ipairs(containedEdgeLoopList) do
                 recurseEdgeLoopHierachy(edgeLoopSequenceList, edgeLoopContainedEdgeLoopListMap, majorEdgeLoop, depth+1)
             end
@@ -302,8 +355,10 @@ do luametry.Space = concept{
             for otherEdgeLoopI, otherEdgeLoop in ipairs(edgeLoopList) do
                 
                 if edgeLoop ~= otherEdgeLoop then
+                    print("###")
                     local res = self:GetIsEdgeLoopInEdgeLoop(otherEdgeLoop, edgeLoop, true)
                     print(res, otherEdgeLoop[1]:GetVertices().p, "in", edgeLoop[1]:GetVertices().p)
+                    print("###")
                     if res then
                         edgeLoopIsContainedMap[otherEdgeLoop] = true
                         table.insert(edgeLoopContainedEdgeLoopListMap[edgeLoop], otherEdgeLoop)
@@ -319,6 +374,7 @@ do luametry.Space = concept{
         
         return edgeLoopSequenceList
     end
+    
     local function edgeLoopIterator(edgeLoop, currEdgeI)
         currEdgeI = currEdgeI+1
         if currEdgeI > #edgeLoop then return nil end
@@ -573,14 +629,15 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         self:VerifyEdgeCompatibility(otherEdge)
         local v1a, v1b = self:GetVertices()
         local v2a, v2b = otherEdge:GetVertices()
+        -- horrible variable name choice, but not worth fixing :|
         local p1, p2, p3, p4 = v1a.p, v1b.p, v2a.p, v2b.p
         local p13, p43 = p1-p3, p4-p3
         if p43:GetAbs():GetIsEqualToZero() then
-            return nil
+            error"non-sensical edge"
         end
         local p21 = p2-p1
         if p21:GetAbs():GetIsEqualToZero() then
-            return nil
+            error"non-sensical edge"
         end
         local d1343 = p13:GetDotProduct(p43)
         local d4321 = p43:GetDotProduct(p21)
@@ -589,12 +646,14 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local d2121 = p21:GetDotProduct(p21)
         local denom = d2121 * d4343 - d4321 * d4321
         if denom:GetIsEqualToZero() then
-            return nil
+            local dist, r, t = self:GetShortestDistanceToPoint(p3, true)
+            return dist, self.space.vertexType(r), v2a, t, 0
         end
         local numer = d1343 * d4321 - d1321 * d4343
         local mua = numer/denom
         local mub = (d1343 + d4321 * mua) / d4343
         if not dontClamp then
+            -- TODO: Fix luametry.Edge:GetShortestDistanceToEdge using math.min and math.max
             mua = math.min(math.max(mua, 0), 1)
             mub = math.min(math.max(mub, 0), 1)
         end
@@ -649,12 +708,12 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local dP = w+(rayT*u)-(edgeT*v)
         return dP:GetMagnitude(), rayT, edgeT
     end
-    function luametry.Edge:GetShortestDistanceToPoint(point)
+    function luametry.Edge:GetShortestDistanceToPoint(point, dontClamp)
         local a, b = self:GetVertices()
         local v, w = b.p-a.p, point-a.p
         local c1, c2 = w:GetDotProduct(v), v:GetDotProduct(v)
-        if c1 <= 0  then return (a.p-point):GetMagnitude(), a.p, 0 end
-        if c2 <= c1 then return (b.p-point):GetMagnitude(), b.p, 1 end
+        if c1 <= 0  and not dontClamp then return (a.p-point):GetMagnitude(), a.p, 0 end
+        if c2 <= c1 and not dontClamp then return (b.p-point):GetMagnitude(), b.p, 1 end
         local t = c1/c2
         local r = a.p+t*v
         return (r-point):GetMagnitude(), r, t
@@ -746,7 +805,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local edgeLoopList = self.space:GetEdgeLoopListFromEdgeList(self.edgeList)
         assert(#edgeLoopList >= 1, "WAT?!? Polygon with no edge loops that passed initial vertex map test")
         local edgeLoopSequenceList = self.space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
-        assert(#edgeLoopSequenceList == 1, "Polygon with disjoint edge loops")
+        -- assert(#edgeLoopSequenceList == 1, "Polygon with disjoint edge loops")
         self.edgeLoopSequence = edgeLoopSequenceList[1]
         local orthagonalDirection = self:GetOrthagonalDirection()
         for edgeLoopI, edgeLoop in ipairs(self.edgeLoopSequence) do
@@ -901,23 +960,23 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
     end
     function luametry.Polygon:GetIntersectionWith(other) -- returns a list of geometric objects (polygons only atm)
         assert(self:GetIsCoplanerWith(other), "Polygons must be coplanar")
-        local edgeCutSortedListMap = {} -- [edge] = { time in owning edge, intersection vertex, is a shared edge segment, foreign edge }
+        local edgeCutSortedListMap = {} -- [edge] = { time in owning edge, intersection vertex, foreign edge shared with, comment }
         
-        local edgeCheckFunc = function(localPolygon, foreignPolygon, isShared, localEdge, foreignEdge)
+        local edgeCheckFunc = function(localPolygon, foreignPolygon, isShared, localSubEdge, localParentEdge, foreignEdge)
             local op = "union"
             if op == "intersection" then
                 if isShared then
                     return true
                 end
-                return foreignPolygon:GetIsPointInPolygon(localEdge:GetCentrePoint())
+                return foreignPolygon:GetIsPointInPolygon(localSubEdge:GetCentrePoint())
             elseif op == "union" then
                 if isShared then
-                    local localEdgeInDirection = localPolygon:GetEdgeInDirection(localEdge)
+                    local localEdgeInDirection = localPolygon:GetEdgeInDirection(localParentEdge)
                     local foreignEdgeInDirection = foreignPolygon:GetEdgeInDirection(foreignEdge)
-                    print("SHARED", localEdgeInDirection, foreignEdgeInDirection)
+                    -- print("SHARED", localEdgeInDirection, foreignEdgeInDirection)
                     return (localEdgeInDirection:GetDotProduct(foreignEdgeInDirection):GetIsEqualTo(1))
                 end
-                return not foreignPolygon:GetIsPointInPolygon(localEdge:GetCentrePoint())
+                return not foreignPolygon:GetIsPointInPolygon(localSubEdge:GetCentrePoint())
             end
         end
         
@@ -963,14 +1022,14 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                             edgeCutSortedListMap[edge] = edgeCutSortedListMap[edge] or {}
                             if foreignEdgeVA == edgeVA or foreignEdgeVAT <= 0 then
                                 -- the first segment of this edge is shared, mark it with a sentinel value (time = true)
-                                table.bininsert(edgeCutSortedListMap[edge], { true          , nil          , true , "A-START", foreignEdge  }, sortIntersectionCut)
+                                table.bininsert(edgeCutSortedListMap[edge], { true          , nil          , foreignEdge , "A-START" }, sortIntersectionCut)
                             else
-                                table.bininsert(edgeCutSortedListMap[edge], { foreignEdgeVAT, foreignEdgeVA, true , "A-MID"  , foreignEdge  }, sortIntersectionCut)
+                                table.bininsert(edgeCutSortedListMap[edge], { foreignEdgeVAT, foreignEdgeVA, foreignEdge , "A-MID"   }, sortIntersectionCut)
                             end
                             if foreignEdgeVB == edgeVB or foreignEdgeVBT >= 1 then
                                 -- no need to post-mark a segment
                             else
-                                table.bininsert(edgeCutSortedListMap[edge], { foreignEdgeVBT, foreignEdgeVB, false, "B-MID"  , foreignEdge  }, sortIntersectionCut)
+                                table.bininsert(edgeCutSortedListMap[edge], { foreignEdgeVBT, foreignEdgeVB, nil         , "B-MID"   }, sortIntersectionCut)
                             end
                         end
                     end
@@ -986,11 +1045,23 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                             local foreignEdge = (edgeI == 1 and otherEdge or selfEdge)
                             local intersectionT = (edgeI == 1 and selfEdgeIntersectionT or otherEdgeIntersectionT)
                             edgeCutSortedListMap[edge] = edgeCutSortedListMap[edge] or {}
-                            table.bininsert(edgeCutSortedListMap[edge], { intersectionT, intersectionVertex, false, "INTERSECT", foreignEdge }, sortIntersectionCut)
+                            table.bininsert(edgeCutSortedListMap[edge], { intersectionT, intersectionVertex, nil, "INTERSECT" }, sortIntersectionCut)
                         end
                     end
                 end
             end
+        end
+        
+        local blah = 0
+        local blargh = {}
+        local function dbgedge(msg, edge)
+            local char = blargh[edge]
+            if not char then
+                char = string.char(string.byte'A'+blah)
+                blargh[edge] = char
+                blah = blah+1
+            end
+            print(msg, edge, char, edge:GetVertices().p)
         end
         local newEdgeList = {}
         for polygonI = 1, 2 do
@@ -1000,32 +1071,34 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                 local edgeVA, edgeVB = edge:GetVertices()
                 local subEdgesToCheckOwnerMap = nil
                 local cutList = edgeCutSortedListMap[edge]
+                print("----")
                 if cutList ~= nil and #cutList > 0 then
                     subEdgesToCheckList = table.new(#cutList, 0)
                     local currentVertex = edgeVA
-                    local currentSegmentIsShared = false
+                    local currentSegmentSharedForeignEdge = nil
                     table.insert(cutList, { 1, edgeVB, nil, "END"})
                     for i = 1, #cutList do
                         local currentCut = cutList[i]
-                        -- print("CUT", currentCut[1], currentCut[2] and currentCut[2].p or nil, currentCut[3], currentCut[4])
+                        print("CUT", currentCut[1], currentCut[2] and currentCut[2].p or nil, currentCut[3], currentCut[4])
                         if currentCut[1] == true then
-                            currentSegmentIsShared = true
-                            cutList[i+1][5] = currentCut[5]
+                            currentSegmentSharedForeignEdge = currentCut[3]
                         else
                             local nextVertex = currentCut[2]
+                            local foreignEdge = currentCut[5]
                             local subEdge = self.space:EdgeOf(currentVertex, nextVertex)
-                            if currentSegmentIsShared then
+                            if currentSegmentSharedForeignEdge ~= nil then
                                 if polygonI == 1 then
                                     subEdge.loldbg = true
-                                    if edgeCheckFunc(localPolygon, foreignPolygon, true, subEdge, currentCut[5]) then
+                                    if edgeCheckFunc(localPolygon, foreignPolygon, true, subEdge, edge, currentSegmentSharedForeignEdge) then
                                         table.insert(newEdgeList, subEdge)
+                                        dbgedge("SH", subEdge)
                                     end
                                 end
                             else
                                 table.insert(subEdgesToCheckList, subEdge)
                             end
                             currentVertex = nextVertex
-                            currentSegmentIsShared = currentCut[3]
+                            currentSegmentSharedForeignEdge = currentCut[3]
                         end
                     end
                 else
@@ -1034,16 +1107,17 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
                 for subEdgeI, subEdge in ipairs(subEdgesToCheckList) do
                     local subEdgeVA, subEdgeVB = subEdge:GetVertices()
                     local centrePoint = (subEdgeVA.p+subEdgeVB.p)/2
-                    if edgeCheckFunc(localPolygon, foreignPolygon, false, subEdge, nil) then
+                    if edgeCheckFunc(localPolygon, foreignPolygon, false, subEdge, subEdge, nil) then
                         subEdge.loldbg = true
                         table.insert(newEdgeList, subEdge)
+                        dbgedge("CH", subEdge)
                     else
                         -- table.insert(newEdgeList, subEdge)
                     end
                 end
             end
         end
-        --
+        
         if false then
             return newEdgeList
         end
@@ -1052,7 +1126,10 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local edgeLoopSequence = {}
         MEOW = true
         local edgeLoopList = self.space:GetEdgeLoopListFromEdgeList(newEdgeList)
+        print("LOOOOP", #edgeLoopList)
         local edgeLoopSequenceList = self.space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
+        MEOW = false
+        print("SEEEEQ", #edgeLoopSequenceList)
         local geometryList = {}
         for edgeLoopSequenceI, edgeLoopSequence in ipairs(edgeLoopSequenceList) do
             local edgeList = table.arrayflatten(edgeLoopSequence)

@@ -171,38 +171,58 @@ function facetemp7(offset, seed)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
-
-for i = 1, 7 do
-    for j = 1, 7 do
-        if false or (i == 1 and j == 1) then
-            local seed = i+j*999, 9187, math.floor(math.random()*9999)
-            print(i, j, seed)
-            local function stuff(offset, showInput, showResult)
-                
-                local p1, f1 = facetemp7(offset+V(0,-4,0), seed)
-                local p2, f2 = facetemp7(offset+V(0.0,0,0), seed+12)
-                local p3, f3-- = facetemp3(offset+V(0.0,0,0), seed+12)
-                if showInput then
-                    level:AddFace(f1, true)
-                    level:AddFace(f2, true)
-                    if f3 then level:AddFace(f3, true) end
-                end
-                if showResult then
-                    local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
-                    for thingI, thing in ipairs(result) do
-                        if thing:isa(space.edgeType) then
-                            level:AddEdge(thing)
-                        else
-                            local fr = space:FaceOf(thing, normal_up)
-                            level:AddFace(fr, true)
+local err
+xpcall(function()
+    local defaultGroup = level:CreateGeometryGroup("Default", {r=255,g=255,b=255,a=255}, false)
+    local inputGroup = level:CreateGeometryGroup("Input", {r=255,g=0,b=0,a=255}, false)
+    local resultGroup = level:CreateGeometryGroup("Result", {r=0,g=0,b=255,a=255}, false)
+    level:SetDefaultGeometryGroup(defaultGroup)
+    for i = 1, 7 do
+        for j = 1, 7 do
+            if false or (i == 1 and j == 1) then
+                local seed = i+j*999, 9187, math.floor(math.random()*9999)
+                print(i, j, seed)
+                local function stuff(offset, showInput, showResult)
+                    MEOW = showInput
+                    local inputList = {
+                        {facetemp6(offset+V(0,0,0), seed)},
+                        {facetemp7(offset+V(0.4,0,0), seed+12)},
+                        -- {facetemp3(offset+V(0.0,0,0), seed+12)},
+                    }
+                    if showInput then
+                        for inputI, input in ipairs(inputList) do
+                            local face = input[2]
+                            level:AddFace(face, true)
+                            level:SetGeometryGroup(face, inputGroup)
+                        end
+                    end
+                    if showResult and #inputList >= 2 then
+                        local p1, p2 = inputList[1][1], inputList[2][1]
+                        local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
+                        for thingI, thing in ipairs(result) do
+                            if thing:isa(space.edgeType) then
+                                level:AddEdge(thing)
+                                level:SetGeometryGroup(thing, resultGroup)
+                            else
+                                local fr = space:FaceOf(thing, normal_up)
+                                level:AddFace(fr, true)
+                                level:SetGeometryGroup(fr, resultGroup)
+                            end
                         end
                     end
                 end
+                local o = V((i-1)*5.1, 0, (j-1)*4.1)
+                stuff(o+V( 0.00,-0.06, 0.00), true, false)
+                stuff(o+V( 0.00, 0.00, 0.00), false, true)
             end
-            local o = V((i-1)*5.1, 0, (j-1)*4.1)
-            stuff(o+V( 0.00,-0.06, 0.00), true, false)
-            stuff(o+V( 0.00, 0.00, 0.00), false, true)
         end
+    end
+end, function(e)
+    err = e.."\n"..debug.traceback(1)
+end)
+if err then
+    for edgeI, edge in ipairs(space.edgeList) do
+        level:AddEdge(edge)
     end
 end
 --[[do
@@ -305,3 +325,6 @@ if true then
     if shouldOpen then os.execute[[openeditor.bat obj/ns2_blah.level]] end
 end
 
+if err then
+    error(err)
+end

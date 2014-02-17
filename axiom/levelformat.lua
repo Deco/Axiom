@@ -54,6 +54,17 @@ end
 local ct_uint32_t = ffi.typeof("uint32_t")
 local ct_uint8_t = ffi.typeof("uint8_t")
 
+ffi.towstring = ffi.towstring or function(str)
+    local wlen = #str*2
+    local arr = ffi.new("char[?]", wlen)
+    for i = 0, #str-1 do
+        arr[i*2] = string.byte(string.sub(str, i+1, i+1))
+        arr[i*2+1] = 0
+    end
+    return ffi.string(arr, wlen)
+end
+levelformat.towstring = ffi.towstring
+
 local chunkidenum = enum{
     [1] = "Object",
     [2] = "Mesh",
@@ -393,7 +404,7 @@ do -- encode
 end
 
 do -- Chunk_Groups
-    --local DBG,readprimitive,readstring,readstruct,readstructptr = true,readprimitive_dbg,readstring_dbg,readstruct_dbg,readstructptr_dbg
+    -- local DBG,readprimitive,readstring,readstruct,readstructptr = true,readprimitive_dbg,readstring_dbg,readstruct_dbg,readstructptr_dbg
     cdefstruct("col4", [[
         uint8_t r, g, b, a;
     ]])
@@ -415,7 +426,7 @@ do -- Chunk_Groups
         return chunk
     end
     
-    --local DBG,writeprimitive,writestring=true,writeprimitive_dbg,writestring_dbg
+    -- local DBG,writeprimitive,writestring=true,writeprimitive_dbg,writestring_dbg
     function levelformat.writeChunk_Groups(wt, chunk)
         local size = 0
         
