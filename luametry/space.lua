@@ -434,16 +434,19 @@ do luametry.Space = concept{
         local normal
         for edgeI, edge in ipairs(edgeLoop) do
             local va, vb = edge:GetVertices()
-            if not aPos then
-                aPos = va.p
-            elseif not bPos then
-                bPos = va.p
-            elseif not cPos then
-                cPos = va.p
-                local dot = (bPos-aPos):GetNormalized():GetDotProduct((cPos-aPos):GetNormalized())
-                if not dot:GetAbs():GetIsEqualTo(1) then -- make sure they aren't colinear
-                    normal = (bPos-aPos):GetNormalized():GetCrossProduct((cPos-aPos):GetNormalized()):GetNormalized()
-                    return normal
+            for edgeVertI = 1, 2 do
+                local p = (edgeVertI == 1 and va.p or vb.p)
+                if not aPos then
+                    aPos = p
+                elseif not bPos then
+                    bPos = p
+                else
+                    cPos = p
+                    local dot = (bPos-aPos):GetNormalized():GetDotProduct((cPos-aPos):GetNormalized())
+                    if not dot:GetAbs():GetIsEqualTo(1) then -- make sure they aren't colinear
+                        normal = (bPos-aPos):GetNormalized():GetCrossProduct((cPos-aPos):GetNormalized()):GetNormalized()
+                        return normal
+                    end
                 end
             end
         end
@@ -682,18 +685,15 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             return self.edgeLoopSequence
         else
             local newEdgeLoopSequence = table.arraycopy(self.edgeLoopSequence)
-            -- print("---")
             for edgeLoopI, edgeLoop in ipairs(newEdgeLoopSequence) do
-                local edgeLoopCounterClockwiseCount = 0
+                local total = self.space.coordinateType(0, 0, 0)
                 for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self.space:IterateEdgesOfEdgeLoop(edgeLoop) do
-                    local orientationTest = normal:GetDotProduct(
-                        (commonV.p-currEdgeUniqueV.p):GetCrossProduct(nextEdgeUniqueV.p-currEdgeUniqueV.p)
-                    )
-                    local isCounterClockwise = (orientationTest:GetSign() == 1)
-                    -- print(isCounterClockwise and "ccw" or "cw")
-                    edgeLoopCounterClockwiseCount = edgeLoopCounterClockwiseCount+(isCounterClockwise and 1 or -1)
+                    local prod = currEdgeUniqueV.p:GetCrossProduct(commonV.p)
+                    total = total+prod
                 end
-                if edgeLoopCounterClockwiseCount > 0 then
+                local result = total:GetDotProduct(normal)
+                local area = (result/2)
+                if area > 0 then
                     newEdgeLoopSequence[edgeLoopI] = table.getreversed(edgeLoop)
                 end
             end
@@ -934,20 +934,21 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         end
         --
         if false then
-            local edgeLoopGroupList = {}
-            local edgeLoopSequence = {}
-            
-            local edgeLoopList = self.space:GetEdgeLoopListFromEdgeList(newEdgeList)
-            local edgeLoopSequenceList = self.space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
-            local geometryList = {}
-            for edgeLoopSequenceI, edgeLoopSequence in ipairs(edgeLoopSequenceList) do
-                local edgeList = table.arrayflatten(edgeLoopSequence)
-                local polygon = self.space:PolygonOf(edgeList)
-                table.insert(geometryList, polygon)
-            end
-            return geometryList
+            return newEdgeList
         end
-        return newEdgeList
+        
+        local edgeLoopGroupList = {}
+        local edgeLoopSequence = {}
+        
+        local edgeLoopList = self.space:GetEdgeLoopListFromEdgeList(newEdgeList)
+        local edgeLoopSequenceList = self.space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
+        local geometryList = {}
+        for edgeLoopSequenceI, edgeLoopSequence in ipairs(edgeLoopSequenceList) do
+            local edgeList = table.arrayflatten(edgeLoopSequence)
+            local polygon = self.space:PolygonOf(edgeList)
+            table.insert(geometryList, polygon)
+        end
+        return geometryList
     end
 end
 

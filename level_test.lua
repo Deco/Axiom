@@ -106,33 +106,35 @@ end
 
 for i = 1, 7 do
     for j = 1, 7 do
-        local seed = i+j*999, 9187, math.floor(math.random()*9999)
-        print(i, j, seed)
-        local function stuff(offset, showInput, showResult)
-            
-            local p1, f1 = facetemp3(offset+V(0.0,0,0), seed)
-            local p2, f2 = facetemp3(offset+V(1.0,0,0), seed+12)
-            local p3, f3-- = facetemp3(offset+V(0.0,0,0), seed+12)
-            if showInput then
-                level:AddFace(f1, true)
-                level:AddFace(f2, true)
-                if f3 then level:AddFace(f3, true) end
-            end
-            if showResult then
-                local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
-                for thingI, thing in ipairs(result) do
-                    if thing:isa(space.edgeType) then
-                        level:AddEdge(thing)
-                    else
-                        local fr = space:FaceOf(thing, normal_up)
-                        level:AddFace(fr, true)
+        if true or (i == 1 and j == 1) then
+            local seed = i+j*999, 9187, math.floor(math.random()*9999)
+            print(i, j, seed)
+            local function stuff(offset, showInput, showResult)
+                
+                local p1, f1 = facetemp3(offset+V(0.0,0,0), seed)
+                local p2, f2 = facetemp3(offset+V(1.0,0,0), seed+12)
+                local p3, f3-- = facetemp3(offset+V(0.0,0,0), seed+12)
+                if showInput then
+                    level:AddFace(f1, true)
+                    level:AddFace(f2, true)
+                    if f3 then level:AddFace(f3, true) end
+                end
+                if showResult then
+                    local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
+                    for thingI, thing in ipairs(result) do
+                        if thing:isa(space.edgeType) then
+                            level:AddEdge(thing)
+                        else
+                            local fr = space:FaceOf(thing, normal_up)
+                            level:AddFace(fr, true)
+                        end
                     end
                 end
             end
+            local o = V(i*5.1, 0, j*4.1)
+            stuff(o+V( 0.00,-0.06, 0.00), true, false)
+            stuff(o+V( 0.00, 0.00, 0.00), false, true)
         end
-        local o = V(i*5.1, 0, j*4.1)
-        stuff(o+V( 0.00,-0.06, 0.00), true, false)
-        stuff(o+V( 0.00, 0.00, 0.00), false, true)
     end
 end
 --[[do
