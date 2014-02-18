@@ -248,110 +248,199 @@ do luametry.Space = concept{
             end
         end
         
+        -- if true or MEOW then
+            dbglabelmap = dbglabelmap or debug.labelpool()
+            -- local _ = dbglabelmap[edgeLoopA], dbglabelmap[edgeLoopB]
+        -- end
+        
         -- print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         local orthagonalDirection = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopA)
         local edgeLoopAOrientation = self:GetEdgeLoopOrientation(edgeLoopA, orthagonalDirection)
         local edgeLoopBOrientation = self:GetEdgeLoopOrientation(edgeLoopB, orthagonalDirection)
         -- print(edgeLoopAOrientation, edgeLoopBOrientation)
-        local closestPairDist, closestPairClampedCount = math.huge
-        local closestPairEdgeA, closestPairEdgeB
-        local closestPairEdgeAInDirection, closestPairEdgeBInDirection
-        local closestPairEdgeAClosestPoint, closestPairEdgeBClosestPoint
+        
+        local closestDist, closestBInfoList = math.huge, {
+            --{ edgeBI = .., edgeB = .., edgeBInDirection = .., closestAVertex = .., closestBVertex = .., clampedCount = .., done = .., },
+        }
+        local dbgloopgroup = DBGLVL:CreateGeometryGroup(
+            dbglabelmap[edgeLoopA]..":"..edgeLoopAOrientation,
+            {r=100,g=100,b=100,a=255}
+        )
         for edgeAI, edgeA in ipairs(edgeLoopA) do
-            -- if MEOW and not KABLAM then
-                -- DBGLVL:AddEdge(edgeA)
-                -- DBGLVL:SetGeometryGroup(edgeA, DBGLVL:CreateGeometryGroup(edgeLoopAOrientation..":"..edgeAI.." ("..orthagonalDirection.y..")", {r=100,g=100,b=100,a=255}))
-            -- end
+            local nextEdgeA = edgeLoopA[edgeAI%#edgeLoopA+1]
+            if MEOW then
+                DBGLVL:AddEdge(edgeA)
+                DBGLVL:SetGeometryGroup(edgeA, dbgloopgroup)
+                -- DBGLVL:SetGeometryGroup(edgeA, DBGLVL:CreateGeometryGroup(
+                    -- dbglabelmap[edgeLoopA]..":"..edgeLoopAOrientation..":"..edgeAI.." ("..tostring(orthagonalDirection)..") ["..self:GetEdgeLoopOrientation(edgeLoopA, -orthagonalDirection).."]",
+                    -- {r=100,g=100,b=100,a=255}
+                -- ))
+            end
             for edgeBI, edgeB in ipairs(edgeLoopB) do
-                local dist, va, vb, edgeAT, edgeBT = edgeA:GetShortestDistanceToEdge(edgeB)
+                local nextEdgeB = edgeLoopB[edgeBI%#edgeLoopB+1]
+                local edgeBVA, edgeBVB = edgeB:GetVertices()
+                
+                local dist, closestAVertex, closestBVertex, edgeAT, edgeBT = edgeA:GetShortestDistanceToEdge(edgeB)
+                
                 if dist then
-                    local edgeAClamped, edgeBClamped = (edgeAT <= 0), (edgeBT >= 1)
-                    local clampedCount = (edgeAClamped and 1 or 0)+(edgeBClamped and 1 or 0)
-                    local edgeAInDirection = orthagonalDirection:GetCrossProduct(edgeA:GetDirection())*(edgeLoopAOrientation == "ccw" and 1 or -1)
-                    local edgeBInDirection = orthagonalDirection:GetCrossProduct(edgeB:GetDirection())*(edgeLoopBOrientation == "ccw" and 1 or -1)
-                    -- print("@@@@", edgeAInDirection, edgeBInDirection)
-                    -- print(edgeA:GetDirection(), edgeB:GetDirection(), orthagonalDirection)
-                    local isCloser = (
-                            (not edgeAInDirection:GetDotProduct(edgeBInDirection):GetIsEqualToZero())
-                        and (
-                                    dist < closestPairDist
-                                or  (dist:GetIsEqualTo(closestPairDist) and clampedCount < closestPairClampedCount)
+                    local dot = (closestAVertex.p-edgeBVA.p):GetNormalized():GetDotProduct(edgeB:GetEitherDirection())
+                    if dot:GetAbs():GetIsEqualTo(1) then
+                        -- colinear, not testable
+                    else
+                        local shouldInsert = false
+                        if dist < closestDist then
+                            closestBInfoList = {} -- If performance were a consideration, table.clear would probably be better here
+                            closestDist = dist
+                            shouldInsert = true
+                        elseif dist:GetIsEqualTo(closestDist) then
+                            shouldInsert = true
+                        end
+                        if shouldInsert then
+                            local edgeAClamped, edgeBClamped = (edgeAT <= 0 or edgeAT >= 1), (edgeBT <= 0 or edgeBT >= 1)
+                            local clampedCount = (edgeAClamped and 1 or 0)+(edgeBClamped and 1 or 0)
+                            local edgeBInDirection = (
+                                    orthagonalDirection:GetCrossProduct(edgeB:GetDirectionGivenNextEdge(nextEdgeB))
+                                *   (edgeLoopBOrientation == "ccw" and 1 or -1)
                             )
-                    )
-                    -- print("WTF", dist, closestPairDist, isCloser)
-                    if isCloser or closestPairDist == math.huge then
-                        closestPairDist, closestPairClampedCount = dist, clampedCount
-                        closestPairEdgeA, closestPairEdgeB = edgeA, edgeB
-                        closestPairEdgeAInDirection, closestPairEdgeBInDirection = edgeAInDirection, edgeBInDirection
-                        closestPairEdgeAClosestVertex, closestPairEdgeBClosestVertex = va, vb
+                            table.insert(closestBInfoList, {
+                                edgeB = edgeB, edgeBI = edgeBI,
+                                clampedCount = clampedCount, edgeBInDirection = edgeBInDirection,
+                                closestAVertex = closestAVertex, closestBVertex = closestBVertex,
+                                done = false,
+                            })
+                        end
+                    end
+                
+                    if (
+                            (dbglabelmap[edgeLoopA] == "CJ" and dbglabelmap[edgeLoopB] == "CK")
+                        or  (dbglabelmap[edgeLoopA] == "CK" and dbglabelmap[edgeLoopB] == "CJ")
+                    ) then
+                        local e = self:EdgeOf(
+                            self:VertexOf(closestAVertex.p),
+                            self:VertexOf(closestBVertex.p)
+                        ) e.loldbg = false
+                        
+                        local status = (
+                                dot:GetAbs():GetIsEqualTo(1) and "colinear"
+                            or  "?"
+                        )
+                        
+                        DBGLVL:AddEdge(e)
+                        local ggrr = DBGLVL:CreateGeometryGroup(
+                            (
+                                    "@ "..(tonumber(dist) and math.round(dist, -4) or tostring(dist))
+                                ..  "["..status.."]"
+                            ),
+                            {r=100,g=100,b=100,a=255}
+                        )
+                        DBGLVL:SetGeometryGroup(e, ggrr)
                     end
                 end
             end
         end
-        local edgeBToEdgeADir = (closestPairEdgeAClosestVertex.p-closestPairEdgeBClosestVertex.p):GetNormalized()
+        -- assert(#closestBInfoList <= 2, "?!?")
+        assert(#closestBInfoList > 0, "?!?")
+        -- print("~~~~~", dbglabelmap[edgeLoopA], "in?", dbglabelmap[edgeLoopB])
+        local dbgingroup = DBGLVL:CreateGeometryGroup(
+            dbglabelmap[edgeLoopA].." in "..dbglabelmap[edgeLoopB],
+            {r=100,g=200,b=100,a=255}
+        )
+        local isInside = true
+        local testedCount = 0
+        for closestBInfoI = 1, #closestBInfoList do
+            local infoB = closestBInfoList[closestBInfoI]
+            if not infoB.done then
+                local edgeB = infoB.edgeB
+                local edgeBVA, edgeBVB = edgeB:GetVertices()
+                local closestAVertex = infoB.closestAVertex
+                local closestBVertex = infoB.closestBVertex
+                local edgeBInDirection = infoB.edgeBInDirection
+                
+                for otherClosestBInfoI = 1, #closestBInfoList do
+                    if otherClosestBInfoI ~= closestBInfoI then
+                        local otherInfoB = closestBInfoList[otherClosestBInfoI]
+                        if otherInfoB.edgeB:DoesShareVertexWith(edgeB) then
+                            otherInfoB.done = true
+                            edgeBInDirection = (edgeBInDirection+otherInfoB.edgeBInDirection)/2
+                        end
+                    end
+                end
+                
+                local closestBVertexToclosestAVertexDir = (closestAVertex.p-closestBVertex.p):GetNormalized()
+                
+                -- print("~", closestBVertexToclosestAVertexDir)
+                -- print("~", edgeBInDirection)
+                if (
+                        (dbglabelmap[edgeLoopA] == "CJ" and dbglabelmap[edgeLoopB] == "CK")
+                    or  (dbglabelmap[edgeLoopA] == "CK" and dbglabelmap[edgeLoopB] == "CJ")
+                ) then
+                    local e = self:EdgeOf(
+                        self:VertexOf(closestAVertex.p),
+                        self:VertexOf(closestBVertex.p)
+                    ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, dbgingroup)
+                    
+                    local e = self:EdgeOf(
+                        self:VertexOf(closestBVertex.p),
+                        self:VertexOf(closestBVertex.p+edgeBInDirection*0.1)
+                    ) e.loldbg = false
+                    DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, dbgingroup)
+                end
+                
+                testedCount = testedCount+1
+                if closestBVertexToclosestAVertexDir:GetDotProduct(edgeBInDirection) < 0 then
+                    isInside = false
+                    break
+                end
+            end
+        end
+        -- print("~~~~~", isInside and "yep!" or "nope!")
+        print("~~~~~", dbglabelmap[edgeLoopA], isInside and "is in   " or "isn't in", dbglabelmap[edgeLoopB])
+        
+        assert(testedCount > 0, "?!?")
+        
         -- if MEOW then
-            -- if not KABLAM then
+            -- if (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0) then-- not KABLAM then
                 -- print("====== KABLAM")
                 -- print("===", dbglabelmap[edgeLoopA], dbglabelmap[edgeLoopB])
-                -- print("===", closestPairEdgeAInDirection, closestPairEdgeBInDirection)
+                -- print("===", closestPairEdgeAInDirection, edgeLoopAOrientation)
+                -- print("===", closestPairEdgeBInDirection, edgeLoopBOrientation)
                 -- print("===", "NOCO", closestPairEdgeAInDirection:GetDotProduct(closestPairEdgeBInDirection))
                 -- print("===", "RES", edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection))
                 -- print("===")
                 -- local e = self:EdgeOf(
                     -- self:VertexOf(closestPairEdgeAClosestVertex.p),
-                    -- self:VertexOf(closestPairEdgeAClosestVertex.p+orthagonalDirection*3)
-                -- ) e.loldbg = true DBGLVL:AddEdge(e)
+                    -- self:VertexOf(closestPairEdgeAClosestVertex.p+orthagonalDirection*0.5)
+                -- ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
                 -- local e = self:EdgeOf(
                     -- self:VertexOf(closestPairEdgeAClosestVertex.p+self.coordinateType(0, 1, 0)*0),
                     -- self:VertexOf(closestPairEdgeBClosestVertex.p+self.coordinateType(0, 1, 0)*0)
-                -- ) e.loldbg = false DBGLVL:AddEdge(e)
+                -- ) e.loldbg = false DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
                 -- local e = self:EdgeOf(
                     -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeAClosestVertex.p),
                     -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeAClosestVertex.p+closestPairEdgeAInDirection*0.1)
-                -- ) e.loldbg = true DBGLVL:AddEdge(e)
+                -- ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
                 -- local e = self:EdgeOf(
                     -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeBClosestVertex.p),
                     -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeBClosestVertex.p+closestPairEdgeBInDirection*0.1)
-                -- ) e.loldbg = true DBGLVL:AddEdge(e)
+                -- ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
                 -- KABLAM = true
             -- end
-            
-        -- end
-        return (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0)
-        
-        -- local randomPointInEdgeLoopA
-        -- repeat
-            -- local randomEdgeAVA, randomEdgeAVB, randomEdgeBVA, randomEdgeBVB
-            -- repeat
-                -- local randomEdgeA, randomEdgeB = edgeLoopA[math.random(1, #edgeLoopA)], edgeLoopA[math.random(1, #edgeLoopA)]
-                -- randomEdgeAVA, randomEdgeAVB = randomEdgeA:GetVertices()
-                -- randomEdgeBVA, randomEdgeBVB = randomEdgeB:GetVertices()
-            -- until not (randomEdgeAVB.p-randomEdgeAVA.p):GetNormalized():GetDotProduct((randomEdgeBVA.p-randomEdgeBVB.p):GetNormalized()):GetAbs():GetIsEqualTo(1)
-            -- local p1 = randomEdgeAVA.p+(randomEdgeAVB.p-randomEdgeAVA.p)*math.randrange(0.1, 0.9)
-            -- local p2 = randomEdgeBVA.p+(randomEdgeBVB.p-randomEdgeBVA.p)*math.randrange(0.1, 0.9)
-            -- randomPointInEdgeLoopA = p1+(p2-p1)*math.randrange(0.1, 0.9)
-            -- local isPointInEdgeLoopA, pointDistToEdgeLoopA = self:GetIsPointInEdgeLoopSequence({edgeLoopA}, randomPointInEdgeLoopA)
-            -- if isPointInEdgeLoopA and not pointDistToEdgeLoopA:GetIsEqualToZero() then
-                -- local e = self:EdgeOf(
-                    -- self:VertexOf(randomPointInEdgeLoopA),
-                    -- self:VertexOf(randomPointInEdgeLoopA+self.coordinateType(0, 1, 0)*0.2)
-                -- )
-                -- e.loldbg = true
-                -- DBGLVL:AddEdge(e)
-                -- local e = self:EdgeOf(
-                    -- self:VertexOf(p1),
-                    -- self:VertexOf(p2)
-                -- )
-                -- e.loldbg = true
-                -- DBGLVL:AddEdge(e)
+            -- if (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0) then
+                -- print(dbglabelmap[edgeLoopA], "is in   ", dbglabelmap[edgeLoopB])
+            -- else
+                -- print(dbglabelmap[edgeLoopA], "isn't in", dbglabelmap[edgeLoopB])
             -- end
-        -- until isPointInEdgeLoopA and not pointDistToEdgeLoopA:GetIsEqualToZero()
-        -- return self:GetIsPointInEdgeLoopSequence({edgeLoopB}, randomPointInEdgeLoopA)
+        -- end
+        
+        return isInside
     end
     local function recurseEdgeLoopHierachy(edgeLoopSequenceList, edgeLoopContainedEdgeLoopListMap, edgeLoop, depth)
         local containedEdgeLoopList = edgeLoopContainedEdgeLoopListMap[edgeLoop]
         if depth > 100 then
             DBGERR(unpack(edgeLoop))
+            for subEdgeLoopI, subEdgeLoop in ipairs(containedEdgeLoopList) do
+                DBGERR(unpack(subEdgeLoop))
+            end
             error("Infinite edge loop hierachy!")
             return
         end
@@ -371,7 +460,6 @@ do luametry.Space = concept{
         end
     end
     
-    -- dbglabelmap = debug.labelpool()
     function luametry.Space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
         -- wwwweeeeeeee
         -- right... gets a list of sequences of loops of edges.
@@ -400,6 +488,8 @@ do luametry.Space = concept{
                         if edgeLoopContainedEdgeLoopMapMap[otherEdgeLoop] and edgeLoopContainedEdgeLoopMapMap[otherEdgeLoop][edgeLoop] then
                             DBGERR(unpack(edgeLoop))
                             DBGERR(unpack(otherEdgeLoop))
+                            MEOW = true
+                            self:GetIsEdgeLoopInEdgeLoop(otherEdgeLoop, edgeLoop, true)
                             error"Infinite edge loop hierachy!"
                         end
                         
@@ -452,10 +542,99 @@ do luametry.Space = concept{
     function luametry.Space:GetIsPointInEdgeLoopSequence(edgeLoopSequence, point)
         local normal = self:CalculateOrthagonalDirectionToEdgeLoop(edgeLoopSequence[1])
         local inCount = 0
-        local closestDistToPoint = math.huge
+        local closestDistToPoint, closestPointToPoint = math.huge
         for edgeLoopI, edgeLoop in ipairs(edgeLoopSequence) do
             local edgeLoopOrientation = self:GetEdgeLoopOrientation(edgeLoop, normal)
-            local closestEdgeDist, closestEdgeIsClamped, closestEdgeI, closestEdgeV1, closestEdgeV2, closestEdgeClosestPoint = math.huge
+            
+            local closestDist, closestInfoList = math.huge, {
+                --{ edgeI = .., edge = .., edgeInDirection = .., edgeClosestPoint = .., done = false, },
+            }
+            
+            for edgeI, edge in ipairs(edgeLoop) do
+                local nextEdge = edgeLoop[edgeI%#edgeLoop+1]
+                local edgeVA, edgeVB = edge:GetVertices()
+                local dot = (point-edgeVA.p):GetNormalized():GetDotProduct(edge:GetEitherDirection())
+                if dot:GetAbs():GetIsEqualTo(1) then
+                    -- colinear, ignore
+                else
+                    local dist, edgeClosestPoint, edgeClosestT = edge:GetShortestDistanceToPoint(point)
+                    if dist then
+                        local shouldInsert = false
+                        if dist < closestDist then
+                            table.clear(closestInfoList)
+                            closestDist = dist
+                            shouldInsert = true
+                        elseif dist:GetIsEqualTo(closestDist) then
+                            shouldInsert = true
+                        end
+                        if shouldInsert then
+                            local edgeInDirection = (
+                                    normal:GetCrossProduct(edge:GetDirectionGivenNextEdge(nextEdge))
+                                *   (edgeLoopOrientation == "ccw" and 1 or -1)
+                            )
+                            table.insert(closestInfoList, {
+                                edgeI = edgeI, edge = edge,
+                                edgeInDirection = edgeInDirection,
+                                edgeClosestPoint = edgeClosestPoint,
+                                done = false,
+                            })
+                        end
+                    end
+                end
+            end
+            
+            local isInside = true
+            local testedCount = 0
+            for closestInfoI = 1, #closestInfoList do
+                local info = closestInfoList[closestInfoI]
+                if not info.done then
+                    local edge = info.edge
+                    local edgeVA, edgeVB = edge:GetVertices()
+                    local edgeClosestPoint = info.edgeClosestPoint
+                    local edgeInDirection = info.edgeInDirection
+                    for otherClosestInfoI = 1, #closestInfoList do
+                        if otherClosestInfoI ~= closestInfoI then
+                            local otherInfo = closestInfoList[otherClosestInfoI]
+                            if otherInfo.edge:DoesShareVertexWith(edge) then
+                                otherInfo.done = true
+                                edgeInDirection = (edgeInDirection+otherInfo.edgeInDirection)/2
+                            end
+                        end
+                    end
+                    
+                    local edgeClosestPointToPointDir = (point-edgeClosestPoint):GetNormalized()
+                    
+                    -- local e = self:EdgeOf(
+                        -- self:VertexOf(edgeClosestPoint),
+                        -- self:VertexOf(point)
+                    -- ) e.loldbg = (edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) >= 0)
+                    -- DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
+                    
+                    -- local e = self:EdgeOf(
+                        -- self:VertexOf(edgeClosestPoint),
+                        -- self:VertexOf(edgeClosestPoint+edgeInDirection*0.1)
+                    -- ) e.loldbg = (edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) >= 0)
+                    -- DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
+                    
+                    testedCount = testedCount+1
+                    if edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) < 0 then
+                        
+                        isInside = false
+                        break
+                    end
+                end
+            end
+            assert(testedCount > 0, "?!?")
+            if isInside then
+                inCount = inCount+1
+            end
+            if closestDist < closestDistToPoint then
+                closestDistToPoint = closestDist
+                closestPointToPoint = closestInfoList[1].edgeClosestPoint
+            end
+        end
+            
+        --[[
             for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
                 local edgeDist, edgeClosestPoint, edgeClosestT = currEdge:GetShortestDistanceToPoint(point)
                 local edgeIsClamped = (edgeClosestT:GetIsEqualTo(0) or edgeClosestT:GetIsEqualTo(1))
@@ -463,6 +642,7 @@ do luametry.Space = concept{
                 local edgeDir = (commonV.p-currEdgeUniqueV.p):GetNormalized()
                 local vertToPointDir = (point-edgeClosestPoint):GetNormalized()
                 local edgePointDot = edgeDir:GetDotProduct(vertToPointDir)
+                
                 if closestEdgeDist == math.huge then
                     edgeIsCloser = true
                 elseif edgeDist:GetIsEqualTo(closestEdgeDist) then
@@ -514,7 +694,7 @@ do luametry.Space = concept{
             if closestEdgeDist < closestDistToPoint then
                 closestDistToPoint = closestEdgeDist
             end
-        end
+        end]]
         if inCount > 2 then
             DBGERR(unpack(table.arrayflatten(edgeLoopSequence, 1)))
             DBGERR(self:VertexOf(point))
@@ -525,15 +705,15 @@ do luametry.Space = concept{
     
     function luametry.Space:GetEdgeLoopOrientation(edgeLoop, normal)
         local total = self.coordinateType(0, 0, 0)
-        -- print("ARRRREAAAA")
+        -- if MEOW then print("ARRRREAAAA") end
         for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
             local prod = currEdgeUniqueV.p:GetCrossProduct(commonV.p)
-            -- print(prod:GetDotProduct(normal))
+            -- if MEOW then print(dbglabelmap and dbglabelmap[edgeLoop], currEdgeI, prod:GetDotProduct(normal)) end
             total = total+prod
         end
         local result = total:GetDotProduct(normal)
         local area = (result/2)
-        -- print(area)
+        -- if MEOW then print("===", area) end
         --http://mathworld.wolfram.com/PolygonArea.html
         --"the area of a convex polygon is defined to be positive if the points are arranged in a counterclockwise order..
         --.., and negative if they are in clockwise order"
@@ -758,8 +938,48 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
     function luametry.Edge:GetCentrePoint()
         return (self.vertexA.p+self.vertexB.p)/2
     end
-    function luametry.Edge:GetDirection()
+    function luametry.Edge:GetEitherDirection()
+        -- this returns EITHER FORWARDS OR BACKWARDS
+        -- don't make the mistake I did, depending on it for the edge's direction in an edge loop
         return (self.vertexB.p-self.vertexA.p):GetNormalized()
+    end
+    function luametry.Edge:GetDirectionGivenNextEdge(nextEdge)
+        -- TODO: Make luametry use luametry.Edge:GetDirectionGivenNextEdge in the bajillion places it could be used
+        -- this returns EITHER FORWARDS OR BACKWARDS
+        -- don't make the mistake I did, depending on it for the edge's direction in an edge loop
+        local selfEdgeUniqueV, commonV, otherEdgeUniqueV, isFlipped = self:GetSharedVertices(nextEdge)
+        return (commonV.p-selfEdgeUniqueV.p):GetNormalized(), isFlipped
+    end
+    function luametry.Edge:GetSharedVertices(other)
+        local selfEdgeVA, selfEdgeVB = self:GetVertices()
+        local otherEdgeVA, otherEdgeVB = other:GetVertices()
+        local selfEdgeVAIsShared = (selfEdgeVA == otherEdgeVA or selfEdgeVA == otherEdgeVB)
+        local selfEdgeVBIsShared = (selfEdgeVB == otherEdgeVA or selfEdgeVB == otherEdgeVB)
+        if selfEdgeVAIsShared and selfEdgeVBIsShared then
+            DBGERR(self)
+            error"same edge"
+        elseif selfEdgeVAIsShared or selfEdgeVBIsShared then
+            local selfEdgeUniqueV    = (selfEdgeVAIsShared and selfEdgeVB or selfEdgeVA)
+            local commonV            = (selfEdgeVAIsShared and selfEdgeVA or selfEdgeVB)
+            local otherEdgeUniqueV   = ((commonV == otherEdgeVA) and otherEdgeVB or otherEdgeVA)
+            local isFlipped = (selfEdgeVAIsShared)
+            return selfEdgeUniqueV, commonV, otherEdgeUniqueV, isFlipped
+        else
+            DBGERR(self) DBGERR(other)
+            error"disjointed edges"
+        end
+    end
+    function luametry.Edge:DoesShareVertexWith(other)
+        local selfEdgeVA, selfEdgeVB = self:GetVertices()
+        local otherEdgeVA, otherEdgeVB = other:GetVertices()
+        local selfEdgeVAIsShared = (selfEdgeVA == otherEdgeVA or selfEdgeVA == otherEdgeVB)
+        local selfEdgeVBIsShared = (selfEdgeVB == otherEdgeVA or selfEdgeVB == otherEdgeVB)
+        local commonV            = (
+                selfEdgeVAIsShared and selfEdgeVA
+            or  selfEdgeVBIsShared and selfEdgeVB
+            or  nil
+        )
+        return (selfEdgeVAIsShared or selfEdgeVBIsShared), commonV
     end
 end
 
@@ -824,11 +1044,15 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             return self.edgeLoopSequence
         else
             -- print("--------")
-            local newEdgeLoopSequence = table.arraycopy(self.edgeLoopSequence)
-            for edgeLoopI, edgeLoop in ipairs(newEdgeLoopSequence) do
+            local newEdgeLoopSequence = {}
+            for edgeLoopI, edgeLoop in ipairs(self.edgeLoopSequence) do
                 local edgeLoopOrientation = self.space:GetEdgeLoopOrientation(edgeLoop, normal)
-                if edgeLoopOrientation == "ccw" then
+                if edgeLoopOrientation == "cw" then
+                    newEdgeLoopSequence[edgeLoopI] = edgeLoop
+                elseif edgeLoopOrientation == "ccw" then
                     newEdgeLoopSequence[edgeLoopI] = table.getreversed(edgeLoop)
+                else
+                    error"?!?"
                 end
             end
             
@@ -845,11 +1069,13 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         for edgeLoopI, edgeLoop in ipairs(self.edgeLoopSequence) do
             edgeLoop.orientation = self.space:GetEdgeLoopOrientation(edgeLoop, orthagonalDirection)
             for edgeI, edge in ipairs(edgeLoop) do
+                local nextEdge = edgeLoop[(edgeI%#edgeLoop)+1]
                 self.edgeMap[edge].edgeLoop = edgeLoop
                 self.edgeMap[edge].nature = (
                         edgeLoopI == 1 and "border"
                     or  "inner"
                 )
+                self.edgeMap[edge].direction, self.edgeMap[edge].isFlipped = edge:GetDirectionGivenNextEdge(nextEdge)
             end
         end
     end
@@ -977,10 +1203,14 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
     function luametry.Polygon:GetEdgeNature(edge)
         return assert(self.edgeMap[edge], "foreign edge").nature
     end
+    function luametry.Polygon:GetEdgeDirection(edge)
+        local edgeData = assert(self.edgeMap[edge], "foreign edge")
+        return edgeData.direction
+    end
     function luametry.Polygon:GetEdgeInDirection(edge)
         local edgeData = assert(self.edgeMap[edge], "foreign edge")
         local orthagonalDirection = self:GetOrthagonalDirection()
-        local edgeInDirection = orthagonalDirection:GetCrossProduct(edge:GetDirection())
+        local edgeInDirection = orthagonalDirection:GetCrossProduct(edgeData.direction)
         if xor((edgeData.edgeLoop.orientation == "ccw"), (edgeData.nature == "inner")) then
             edgeInDirection = -edgeInDirection
         end
@@ -997,7 +1227,7 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local edgeCutSortedListMap = {} -- [edge] = { time in owning edge, intersection vertex, foreign edge shared with, comment }
         
         local edgeCheckFunc = function(localPolygon, foreignPolygon, isShared, localSubEdge, localParentEdge, foreignEdge)
-            local op = "intersection"
+            local op = "union"
             if op == "intersection" then
                 if isShared then
                     return true
@@ -1086,17 +1316,10 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
             end
         end
         
-        local blah = 0
-        local blargh = {}
-        local function dbgedge(msg, edge)
-            local char = blargh[edge]
-            if not char then
-                char = string.char(string.byte'A'+blah)
-                blargh[edge] = char
-                blah = blah+1
-            end
-            print(msg, edge, char, edge:GetVertices().p)
-        end
+        --dbgedgelabelmap = debug.labelpool()
+        -- local function dbgedge(msg, edge)
+            -- print(msg, dbgedgelabelmap[edge], edge:GetVertices().p)
+        -- end
         local newEdgeList = {}
         for polygonI = 1, 2 do
             local localPolygon   = (polygonI == 1 and self or other)
@@ -1160,13 +1383,14 @@ do luametry.Polygon = concept{-- Uniplanar weakly simple polygon
         local edgeLoopSequence = {}
         -- MEOW = true
         local edgeLoopList = self.space:GetEdgeLoopListFromEdgeList(newEdgeList)
-        print("LOOOOP", #edgeLoopList)
+        -- print("LOOOOP", #edgeLoopList)
         local edgeLoopSequenceList = self.space:GetEdgeLoopSequenceListFromEdgeLoopList(edgeLoopList)
-        MEOW = false
-        print("SEEEEQ", #edgeLoopSequenceList)
+        -- MEOW = false
+        -- print("SEEEEQ", #edgeLoopSequenceList)
         local geometryList = {}
         for edgeLoopSequenceI, edgeLoopSequence in ipairs(edgeLoopSequenceList) do
             local edgeList = table.arrayflatten(edgeLoopSequence)
+            -- print("POLY OF", dbglabelmap[edgeLoopSequence[1]])
             local polygon = self.space:PolygonOf(edgeList)
             table.insert(geometryList, polygon)
         end

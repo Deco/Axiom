@@ -18,9 +18,10 @@ function DBGERR(...)
     for objectI = 1, select('#', ...) do
         local object = select(objectI, ...)
         DBGLVL:Add(object)
-        DBGLVL:SetGeometryGroup(object, errGroup)
+        DBGLVL:SetGeometryGroup(object, errGroup, true)
     end
 end
+DBGGROUP = level:CreateGeometryGroup("Debug", {r=100,g=100,b=0,a=255}, false)
 
 --[[do
     local edgeA = space:EdgeOf(
@@ -125,7 +126,7 @@ end
 function facetemp3(offset, seed)
     math.randomseed(seed) for i = 1, 10 do math.random() end
     local vertexList = {}
-    local count, rad = 16, 2--32, 1.4
+    local count, rad = 16, 1--32, 1.4
     for i = 1, count do
         local a = 2*math.pi/count*(i-1)
         local r = 0.1*rad+0.9*math.random()*rad
@@ -207,11 +208,11 @@ end
 local err
 xpcall(function()
     local defaultGroup = level:CreateGeometryGroup("Default", {r=255,g=255,b=255,a=255}, false)
-    local inputGroup = level:CreateGeometryGroup("Input", {r=0,g=100,b=0,a=100}, false)
+    local inputGroup = level:CreateGeometryGroup("Input", {r=0,g=100,b=0,a=255}, false)
     level:SetDefaultGeometryGroup(defaultGroup)
     for i = 1, 7 do
         for j = 1, 7 do
-            if true or (i == 1 and j == 1) then
+            if true or (i == 3 and j == 2) then
                 local resultGroup = level:CreateGeometryGroup("Result "..i.."x"..j, {r=100,g=0,b=255,a=255}, false)
                 local seed = i+j*999, 9187, math.floor(math.random()*9999)
                 print(i, j, seed)
@@ -227,9 +228,20 @@ xpcall(function()
                             level:AddFace(face, true)
                             level:SetGeometryGroup(face, inputGroup, true)
                         end
+                        -- for pi = 1, 100 do
+                            -- local p = offset+V(math.randrange(-1.3, 1.3), 0, math.randrange(-1.3, 1.3))
+                            -- if true or pi == 30 then
+                                -- local isInside = inputList[1][1]:GetIsPointInPolygon(p)
+                                -- local e = space:EdgeOf(space:VertexOf(p), space:VertexOf(p+V(0, isInside and 0.3 or 0.1, 0)))
+                                -- e.loldbg = isInside
+                                -- level:AddEdge(e)
+                                -- local resultGroup = level:CreateGeometryGroup("p "..pi, {r=100,g=0,b=255,a=255}, false)
+                                -- level:SetGeometryGroup(e, resultGroup, true)
+                            -- end
+                        -- end
                     end
                     if showResult and #inputList >= 2 then
-                        -- MEOW = true
+                        MEOW = true
                         local p1, p2 = inputList[1][1], inputList[2][1]
                         local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
                         for thingI, thing in ipairs(result) do
@@ -256,10 +268,11 @@ end, function(e)
 end)
 if err then
     for edgeI, edge in ipairs(space.edgeList) do
-        level:AddEdge(edge)
+        -- level:AddEdge(edge)
     end
 end
-
+--[===[
+]===]
 --[[do
     local o = V(0.5, 0, 0.5)
     local edgeLoop = space:EdgeLoopOf(

@@ -12,6 +12,13 @@ do -- utils
     pcall(require, "table.new")
     table.new = table.new or function(narray, nhash) return {} end
     
+    pcall(require, "table.clear")
+    table.clear = table.clear or function(t)
+        for k,v in pairs(t) do
+            t[k] = nil
+        end
+    end
+    
     table.reverse = table.reverse or function(t)
         local n = #t
         for i = 1, math.floor(n/2) do
@@ -167,17 +174,23 @@ do -- utils
     debug.labelpool = function()
         local mt = {
             __index = function(self, obj)
-                local objId = self.__idMap[obj]
-                if not objId then
-                    objId = self.__idCounter
+                local objLabel = self.__labelMap[obj]
+                if not objLabel then
+                    objLabel = ""
+                    local num = self.__idCounter
+                    while num > 0 do
+                        num = num-1
+                        objLabel = string.char(string.byte'A'+num%26)..objLabel
+                        num = math.floor(num/26)
+                    end
+                    -- print(self.__idCounter, "------>", objLabel)
                     self.__idCounter = self.__idCounter+1
-                    self.__idMap[obj] = objId
+                    self.__labelMap[obj] = objLabel
                 end
-                assert(objId <= 26, "alphabet too smaalll (NYI)")
-                return string.char(string.byte'A'+objId-1)
+                return objLabel
             end,
         }
-        return setmetatable({ __idMap = {}, __idCounter = 1 }, mt)
+        return setmetatable({ __labelMap = {}, __idCounter = 1 }, mt)
     end
 end
 
