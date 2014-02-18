@@ -23,20 +23,25 @@ function DBGERR(...)
 end
 DBGGROUP = level:CreateGeometryGroup("Debug", {r=100,g=100,b=0,a=255}, false)
 
---[[do
+--[=[ ] =]do
     local edgeA = space:EdgeOf(
         space:VertexOf(V(0, 0, 0)),
         space:VertexOf(V(0, 0, 0.2))
     ) edgeA.loldbg = true
     level:AddEdge(edgeA)
+    level:SetGeometryGroup(edgeA, level:CreateGeometryGroup("edgeA", {r=100,g=0,b=0,a=255}, false))
+    local outGroup = level:CreateGeometryGroup("edgeTs", {r=0,g=0,b=100,a=255}, false)
     for i = 1, 1 do
-        local vertexA = space:VertexOf(V(1, 0, -0.1))--V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
-        local vertexB = space:VertexOf(V(1, 0, 0.1))--V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
+        -- local vertexA = space:VertexOf(V(1, 0, -0.1))
+        -- local vertexB = space:VertexOf(V(1, 0,  0.1))
+        local vertexA = space:VertexOf(V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
+        local vertexB = space:VertexOf(V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
         local edgeT = space:EdgeOf(
             vertexA,
             vertexB
         ) edgeT.loldbg = true
         level:AddEdge(edgeT)
+        level:SetGeometryGroup(edgeT, outGroup)
         local dist, vrA, vrB, tA, tB = edgeA:GetShortestDistanceToEdge(edgeT)
         local edgeR = space:EdgeOf(
             vrA,
@@ -44,7 +49,7 @@ DBGGROUP = level:CreateGeometryGroup("Debug", {r=100,g=100,b=0,a=255}, false)
         )
         level:AddEdge(edgeR)
     end
-end]]
+end--[=[]=]
 
 --[[do
     local normal = V(0, 1, 0)
@@ -78,6 +83,7 @@ end]]
     end
 end]]
 
+--[===[ ]===]
 local normal_up = V(0, 1, 0)
 
 function facetemp0(offset, seed)
@@ -271,8 +277,7 @@ if err then
         -- level:AddEdge(edge)
     end
 end
---[===[
-]===]
+--[===[]===]
 --[[do
     local o = V(0.5, 0, 0.5)
     local edgeLoop = space:EdgeLoopOf(

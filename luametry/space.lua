@@ -226,7 +226,9 @@ do luametry.Space = concept{
             for vertex, vertexAttachCount in pairs(vertexAttachCountMap) do
                 if vertexAttachCount ~= 2 then
                     DBGERR(vertex)
-                    error("Bad edge loop (a vertex "..(vertexAttachCount < 1 and "attaches to only one edge" or "attaches to more than two edges")..")")
+                    DBGERR(unpack(edgeLoopA))
+                    DBGERR(unpack(edgeLoopB))
+                    error("Bad edge loop (a vertex "..(vertexAttachCount == 1 and "attaches to only one edge" or "attaches to more than two edges")..")")
                 end
                 if #threeVertexList < 2 then
                     table.insert(threeVertexList, vertex)
@@ -268,17 +270,26 @@ do luametry.Space = concept{
         )
         for edgeAI, edgeA in ipairs(edgeLoopA) do
             local nextEdgeA = edgeLoopA[edgeAI%#edgeLoopA+1]
-            if MEOW then
-                DBGLVL:AddEdge(edgeA)
-                DBGLVL:SetGeometryGroup(edgeA, dbgloopgroup)
+            -- if dbglabelmap[edgeLoopB] == BLAHB then
+                -- DBGLVL:AddEdge(edgeA)
+                -- DBGLVL:SetGeometryGroup(edgeA, dbgloopgroup)
                 -- DBGLVL:SetGeometryGroup(edgeA, DBGLVL:CreateGeometryGroup(
                     -- dbglabelmap[edgeLoopA]..":"..edgeLoopAOrientation..":"..edgeAI.." ("..tostring(orthagonalDirection)..") ["..self:GetEdgeLoopOrientation(edgeLoopA, -orthagonalDirection).."]",
                     -- {r=100,g=100,b=100,a=255}
                 -- ))
-            end
+            -- end
             for edgeBI, edgeB in ipairs(edgeLoopB) do
                 local nextEdgeB = edgeLoopB[edgeBI%#edgeLoopB+1]
                 local edgeBVA, edgeBVB = edgeB:GetVertices()
+                
+                if BLAHB and dbglabelmap[edgeLoopB] == BLAHB then
+                    print"?!"
+                    DBGLVL:AddEdge(edgeB)
+                    DBGLVL:SetGeometryGroup(edgeB, DBGLVL:CreateGeometryGroup(
+                        dbglabelmap[edgeLoopB]..":"..edgeLoopBOrientation..":"..edgeBI.." ("..tostring(orthagonalDirection)..") ["..self:GetEdgeLoopOrientation(edgeLoopB, -orthagonalDirection).."]",
+                        {r=100,g=100,b=200,a=255}
+                    ))
+                end
                 
                 local dist, closestAVertex, closestBVertex, edgeAT, edgeBT = edgeA:GetShortestDistanceToEdge(edgeB)
                 
@@ -310,10 +321,10 @@ do luametry.Space = concept{
                             })
                         end
                     end
-                
+                    
                     if (
-                            (dbglabelmap[edgeLoopA] == "CJ" and dbglabelmap[edgeLoopB] == "CK")
-                        or  (dbglabelmap[edgeLoopA] == "CK" and dbglabelmap[edgeLoopB] == "CJ")
+                            (dbglabelmap[edgeLoopA] == BLAHA and dbglabelmap[edgeLoopB] == BLAHB)
+                        or  (dbglabelmap[edgeLoopA] == BLAHB and dbglabelmap[edgeLoopB] == BLAHA)
                     ) then
                         local e = self:EdgeOf(
                             self:VertexOf(closestAVertex.p),
@@ -361,7 +372,7 @@ do luametry.Space = concept{
                         local otherInfoB = closestBInfoList[otherClosestBInfoI]
                         if otherInfoB.edgeB:DoesShareVertexWith(edgeB) then
                             otherInfoB.done = true
-                            edgeBInDirection = (edgeBInDirection+otherInfoB.edgeBInDirection)/2
+                            edgeBInDirection = ((edgeBInDirection+otherInfoB.edgeBInDirection)/2):GetNormalized()
                         end
                     end
                 end
@@ -369,10 +380,10 @@ do luametry.Space = concept{
                 local closestBVertexToclosestAVertexDir = (closestAVertex.p-closestBVertex.p):GetNormalized()
                 
                 -- print("~", closestBVertexToclosestAVertexDir)
-                -- print("~", edgeBInDirection)
+                print("WOOF!!", #closestBInfoList, edgeBInDirection)
                 if (
-                        (dbglabelmap[edgeLoopA] == "CJ" and dbglabelmap[edgeLoopB] == "CK")
-                    or  (dbglabelmap[edgeLoopA] == "CK" and dbglabelmap[edgeLoopB] == "CJ")
+                        (dbglabelmap[edgeLoopA] == BLAHA and dbglabelmap[edgeLoopB] == BLAHB)
+                    or  (dbglabelmap[edgeLoopA] == BLAHB and dbglabelmap[edgeLoopB] == BLAHA)
                 ) then
                     local e = self:EdgeOf(
                         self:VertexOf(closestAVertex.p),
@@ -397,41 +408,6 @@ do luametry.Space = concept{
         print("~~~~~", dbglabelmap[edgeLoopA], isInside and "is in   " or "isn't in", dbglabelmap[edgeLoopB])
         
         assert(testedCount > 0, "?!?")
-        
-        -- if MEOW then
-            -- if (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0) then-- not KABLAM then
-                -- print("====== KABLAM")
-                -- print("===", dbglabelmap[edgeLoopA], dbglabelmap[edgeLoopB])
-                -- print("===", closestPairEdgeAInDirection, edgeLoopAOrientation)
-                -- print("===", closestPairEdgeBInDirection, edgeLoopBOrientation)
-                -- print("===", "NOCO", closestPairEdgeAInDirection:GetDotProduct(closestPairEdgeBInDirection))
-                -- print("===", "RES", edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection))
-                -- print("===")
-                -- local e = self:EdgeOf(
-                    -- self:VertexOf(closestPairEdgeAClosestVertex.p),
-                    -- self:VertexOf(closestPairEdgeAClosestVertex.p+orthagonalDirection*0.5)
-                -- ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
-                -- local e = self:EdgeOf(
-                    -- self:VertexOf(closestPairEdgeAClosestVertex.p+self.coordinateType(0, 1, 0)*0),
-                    -- self:VertexOf(closestPairEdgeBClosestVertex.p+self.coordinateType(0, 1, 0)*0)
-                -- ) e.loldbg = false DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
-                -- local e = self:EdgeOf(
-                    -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeAClosestVertex.p),
-                    -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeAClosestVertex.p+closestPairEdgeAInDirection*0.1)
-                -- ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
-                -- local e = self:EdgeOf(
-                    -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeBClosestVertex.p),
-                    -- self:VertexOf(self.coordinateType(0, 1, 0)*0.02+closestPairEdgeBClosestVertex.p+closestPairEdgeBInDirection*0.1)
-                -- ) e.loldbg = true DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
-                -- KABLAM = true
-            -- end
-            -- if (edgeBToEdgeADir:GetDotProduct(closestPairEdgeBInDirection) > 0) then
-                -- print(dbglabelmap[edgeLoopA], "is in   ", dbglabelmap[edgeLoopB])
-            -- else
-                -- print(dbglabelmap[edgeLoopA], "isn't in", dbglabelmap[edgeLoopB])
-            -- end
-        -- end
-        
         return isInside
     end
     local function recurseEdgeLoopHierachy(edgeLoopSequenceList, edgeLoopContainedEdgeLoopListMap, edgeLoop, depth)
@@ -488,8 +464,23 @@ do luametry.Space = concept{
                         if edgeLoopContainedEdgeLoopMapMap[otherEdgeLoop] and edgeLoopContainedEdgeLoopMapMap[otherEdgeLoop][edgeLoop] then
                             DBGERR(unpack(edgeLoop))
                             DBGERR(unpack(otherEdgeLoop))
+                            BLAHA, BLAHB = dbglabelmap[otherEdgeLoop], dbglabelmap[edgeLoop]
                             MEOW = true
                             self:GetIsEdgeLoopInEdgeLoop(otherEdgeLoop, edgeLoop, true)
+                            BLAHA, BLAHB = nil, nil
+                            CAKE = true
+                            for pi = 1, 1000 do
+                                local p = edgeLoop[1]:GetVertices().p+self.coordinateType(math.randrange(-1.3, 1.3), 0, math.randrange(-1.3, 1.3))
+                                if flase or pi == 338 then
+                                    local isInside = self:GetIsPointInEdgeLoopSequence({edgeLoop}, p)
+                                    local e = self:EdgeOf(self:VertexOf(p), self:VertexOf(p+self.coordinateType(0, isInside and 0.3 or 0.1, 0)))
+                                    e.loldbg = isInside
+                                    DBGLVL:AddEdge(e)
+                                    local resultGroup = DBGLVL:CreateGeometryGroup("p "..pi, {r=100,g=0,b=255,a=255}, false)
+                                    DBGLVL:SetGeometryGroup(e, resultGroup, true)
+                                end
+                            end
+                            CAKE = false
                             error"Infinite edge loop hierachy!"
                         end
                         
@@ -595,26 +586,32 @@ do luametry.Space = concept{
                     for otherClosestInfoI = 1, #closestInfoList do
                         if otherClosestInfoI ~= closestInfoI then
                             local otherInfo = closestInfoList[otherClosestInfoI]
+                            otherInfo.done = true
                             if otherInfo.edge:DoesShareVertexWith(edge) then
-                                otherInfo.done = true
-                                edgeInDirection = (edgeInDirection+otherInfo.edgeInDirection)/2
+                                if (otherInfo.edgeClosestPoint-edgeClosestPoint):GetMagnitude():GetIsEqualToZero() then
+                                    -- get the average direction, but only if they share the same closest point
+                                    edgeInDirection = ((edgeInDirection+otherInfo.edgeInDirection)/2):GetNormalized()
+                                end
                             end
                         end
                     end
                     
                     local edgeClosestPointToPointDir = (point-edgeClosestPoint):GetNormalized()
-                    
-                    -- local e = self:EdgeOf(
-                        -- self:VertexOf(edgeClosestPoint),
-                        -- self:VertexOf(point)
-                    -- ) e.loldbg = (edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) >= 0)
-                    -- DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
-                    
-                    -- local e = self:EdgeOf(
-                        -- self:VertexOf(edgeClosestPoint),
-                        -- self:VertexOf(edgeClosestPoint+edgeInDirection*0.1)
-                    -- ) e.loldbg = (edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) >= 0)
-                    -- DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
+                    if CAKE then
+                        print("ORIENTIAL!!", edgeLoopOrientation, normal)
+                        print("MAOW!!", #closestInfoList, edgeInDirection)
+                        local e = self:EdgeOf(
+                            self:VertexOf(edgeClosestPoint),
+                            self:VertexOf(point)
+                        ) e.loldbg = (edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) >= 0)
+                        DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
+                        
+                        local e = self:EdgeOf(
+                            self:VertexOf(edgeClosestPoint),
+                            self:VertexOf(edgeClosestPoint+edgeInDirection*0.1)
+                        ) e.loldbg = (edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) >= 0)
+                        DBGLVL:AddEdge(e) DBGLVL:SetGeometryGroup(e, DBGGROUP)
+                    end
                     
                     testedCount = testedCount+1
                     if edgeClosestPointToPointDir:GetDotProduct(edgeInDirection) < 0 then
@@ -705,15 +702,15 @@ do luametry.Space = concept{
     
     function luametry.Space:GetEdgeLoopOrientation(edgeLoop, normal)
         local total = self.coordinateType(0, 0, 0)
-        -- if MEOW then print("ARRRREAAAA") end
+        if BLAHB then print("ARRRREAAAA") end
         for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
             local prod = currEdgeUniqueV.p:GetCrossProduct(commonV.p)
-            -- if MEOW then print(dbglabelmap and dbglabelmap[edgeLoop], currEdgeI, prod:GetDotProduct(normal)) end
+            if BLAHB then print(dbglabelmap and dbglabelmap[edgeLoop], currEdgeI, prod:GetDotProduct(normal)) end
             total = total+prod
         end
         local result = total:GetDotProduct(normal)
         local area = (result/2)
-        -- if MEOW then print("===", area) end
+        if BLAHB then print("===", area) end
         --http://mathworld.wolfram.com/PolygonArea.html
         --"the area of a convex polygon is defined to be positive if the points are arranged in a counterclockwise order..
         --.., and negative if they are in clockwise order"
@@ -824,57 +821,68 @@ do luametry.Edge = concept{ -- Undirected Simple Edge
         local crossResult = v1a.p:GetCrossProduct(v1b.p)
         return crossResult:GetDotProduct(v2a.p):GetIsEqualToZero() and crossResult:GetDotProduct(v2b.p):GetIsEqualToZero()
     end
-    function luametry.Edge:GetShortestDistanceToEdge(otherEdge, dontClamp)
-        -- http://paulbourke.net/geometry/pointlineplane/lineline.c
+    function luametry.Edge:GetShortestDistanceToEdge(other, dontClamp)
+        -- http://geomalgorithms.com/a07-_distance.html
         dontClamp = dontClamp or false
-        self:VerifyEdgeCompatibility(otherEdge)
+        self:VerifyEdgeCompatibility(other)
         local v1a, v1b = self:GetVertices()
-        local v2a, v2b = otherEdge:GetVertices()
-        -- horrible variable name choice, but not worth fixing :|
-        local p1, p2, p3, p4 = v1a.p, v1b.p, v2a.p, v2b.p
-        local p13, p43 = p1-p3, p4-p3
-        if p43:GetAbs():GetIsEqualToZero() then
-            DBGERR(otherEdge)
-            error"non-sensical edge"
-        end
-        local p21 = p2-p1
-        if p21:GetAbs():GetIsEqualToZero() then
-            DBGERR(self)
-            error"non-sensical edge"
-        end
-        local d1343 = p13:GetDotProduct(p43)
-        local d4321 = p43:GetDotProduct(p21)
-        local d1321 = p13:GetDotProduct(p21)
-        local d4343 = p43:GetDotProduct(p43)
-        local d2121 = p21:GetDotProduct(p21)
-        local denom = d2121 * d4343 - d4321 * d4321
-        if denom:GetIsEqualToZero() then
-            local vt = self.space.vertexType
-            local dist, rlv, rov, tl, to
-            local dist1, r1, t1 = self:GetShortestDistanceToPoint(p3)
-            if true         then dist, rlv, rov, tl, to = dist1, vt(r1), v2a, t1, 0 end
-            local dist2, r2, t2 = self:GetShortestDistanceToPoint(p4)
-            if dist2 < dist then dist, rlv, rov, tl, to = dist2, vt(r2), v2b, t2, 1 end
-            local dist3, r3, t3 = otherEdge:GetShortestDistanceToPoint(p1)
-            if dist3 < dist then dist, rlv, rov, tl, to = dist3, v1a, vt(r3), 0, t3 end
-            local dist4, r4, t4 = otherEdge:GetShortestDistanceToPoint(p2)
-            if dist4 < dist then dist, rlv, rov, tl, to = dist4, v1b, vt(r4), 1, t3 end
-            return dist, rlv, rov, tl, to
-            -- kill me :|
-        end
-        local numer = d1343 * d4321 - d1321 * d4343
-        local mua = numer/denom
-        local mub = (d1343 + d4321 * mua) / d4343
-        if not dontClamp then
-            -- TODO: Fix luametry.Edge:GetShortestDistanceToEdge using math.min and math.max
-            mua = math.min(math.max(mua, 0), 1)
-            mub = math.min(math.max(mub, 0), 1)
+        local v2a, v2b = other:GetVertices()
+        local s1p0, s1p1, s2p0, s2p1 = v1a.p, v1b.p, v2a.p, v2b.p
+        local u = s1p1-s1p0
+        local v = s2p1-s2p0
+        local w = s1p0-s2p0
+        local a = u:GetDotProduct(u)
+        local b = u:GetDotProduct(v)
+        local c = v:GetDotProduct(v)
+        local d = u:GetDotProduct(w)
+        local e = v:GetDotProduct(w)
+        local D = a*c-b*b
+        local sc, sN, sD = nil, nil, D
+        local tc, tN, tD = nil, nil, D
+        if D:GetIsEqualToZero() then
+            sN, sD = 0, 1
+            tN, tD = e, c
+        else
+            sN = b*e-c*d
+            tN = a*e-b*d
+            if sN:GetSign() == -1 then
+                sN = 0
+                tN, tD = e, c
+            elseif sN > sD then
+                sN = sD
+                tN, tD = e+b, c
+            end
         end
         
-        local v3a = self.space.vertexType(p1+mua*p21)
-        local v3b = self.space.vertexType(p3+mub*p43)
-        -- local resultEdge = self.space.edgeType(v3a, v3b)
-        return (v3b.p-v3a.p):GetMagnitude(), v3a, v3b, mua, mub
+        if tN:GetSign() == -1 then
+            tN = 0
+            if (-d):GetSign() == -1 then
+                sN = 0
+            elseif -d > a then
+                sN = sD
+            else
+                sN, sD = -d, a
+            end
+        elseif tN > tD then
+            tN = tD
+            if (-d+b):GetSign() == -1 then
+                sN = 0
+            elseif (-d+b) > a then
+                sN = sD
+            else
+                sN, sD = -d+b, a
+            end
+        end
+        local edgeAT = sN:GetIsEqualToZero() and 0 or sN/sD
+        local edgeBT = tN:GetIsEqualToZero() and 0 or tN/tD
+        
+        local edgeAClosestPoint = s1p0+u*edgeAT
+        local edgeBClosestPoint = s2p0+v*edgeBT
+        local dist = (edgeAClosestPoint-edgeBClosestPoint):GetMagnitude()
+        
+        local edgeAClosestVertex = self.space:VertexOf(edgeAClosestPoint)
+        local edgeBClosestVertex = self.space:VertexOf(edgeBClosestPoint)
+        return dist, edgeAClosestVertex, edgeBClosestVertex, edgeAT, edgeBT
     end
     function luametry.Edge:GetShortestDistanceToRay(rayOrigin, rayDir)
         -- http://www.gamedev.net/topic/589705-rayline-intersection-in-3d/#entry4742570
