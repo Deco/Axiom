@@ -19,6 +19,18 @@ do -- utils
         end
     end
     
+    local bagMeta = {
+        __newindex = function(
+    }
+    
+    table.countpairs = table.countpairs or function(t)
+        local n = 0
+        for k in pairs(t) do
+            n = n+1
+        end
+        return n
+    end
+    
     table.reverse = table.reverse or function(t)
         local n = #t
         for i = 1, math.floor(n/2) do

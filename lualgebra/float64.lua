@@ -33,9 +33,18 @@ lualgebra.Float64.pi = math.pi
 -- lualgebra.Float64.epsilon = 1.22e-15
 lualgebra.Float64.epsilon = 1.22e-13
 
+if math.log(16, 2) ~= 4 then
+    local logOrig = math.log
+    math.log = function(value, base)
+        if not tonumber(base) then return logOrig(value) end
+        return logOrig(value)/logOrig(base)
+    end
+end
+
 lualgebra.Float64.abs   = math.abs
 lualgebra.Float64.sign  = math.sign or function(x) return x>0 and 1 or x<0 and -1 or 0 end
 lualgebra.Float64.pow   = math.pow
+lualgebra.Float64.log   = math.log
 lualgebra.Float64.sqrt  = math.sqrt
 lualgebra.Float64.sin   = math.sin
 lualgebra.Float64.cos   = math.cos
@@ -55,16 +64,18 @@ lualgebra.Float64.GetCos    = lualgebra.Float64.cos
 lualgebra.Float64.GetArcCos = lualgebra.Float64.acos
 
 function lualgebra.Float64:GetIsEqualTo(other)
-    --[[print("eq", self, other,
-        math.abs(self-other) <= math.max(math.abs(self*self.epsilon), math.abs(other*self.epsilon)),
-        math.abs(self-other),
-        math.max(math.abs(self*self.epsilon), math.abs(other*self.epsilon))
-    )]]
     return math.abs(self-other) <= math.max(math.abs(self*self.epsilon), math.abs(other*self.epsilon))
 end
 
 function lualgebra.Float64:GetIsEqualToZero()
     return math.abs(self) <= self.epsilon
+end
+
+function lualgebra.Float64:GetIsLessThanOrEqualTo(other)
+    return self <= other+math.max(math.abs(self*self.epsilon), math.abs(other*self.epsilon))
+end
+function lualgebra.Float64:GetIsGreaterThanOrEqualTo(other)
+    return self >= other-math.max(math.abs(self*self.epsilon), math.abs(other*self.epsilon))
 end
 
 function lualgebra.Float64:ToFloat64()

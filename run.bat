@@ -1,1 +1,1 @@
-@luajit_bin\luajit.exe -e "io.stdout:setvbuf('no')" level_test.lua %*
+@luajit_bin\luajit.exe -jp=a,profile.log -e "io.stdout:setvbuf('no')" level_test.lua %*

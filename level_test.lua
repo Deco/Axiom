@@ -25,17 +25,20 @@ DBGGROUP = level:CreateGeometryGroup("Debug", {r=100,g=100,b=0,a=255}, false)
 
 --[=[ ] =]do
     local edgeA = space:EdgeOf(
-        space:VertexOf(V(0, 0, 0)),
+        space:VertexOf(V(0, 0, -0.2)),
         space:VertexOf(V(0, 0, 0.2))
     ) edgeA.loldbg = true
     level:AddEdge(edgeA)
     level:SetGeometryGroup(edgeA, level:CreateGeometryGroup("edgeA", {r=100,g=0,b=0,a=255}, false))
     local outGroup = level:CreateGeometryGroup("edgeTs", {r=0,g=0,b=100,a=255}, false)
-    for i = 1, 1 do
-        -- local vertexA = space:VertexOf(V(1, 0, -0.1))
-        -- local vertexB = space:VertexOf(V(1, 0,  0.1))
-        local vertexA = space:VertexOf(V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
-        local vertexB = space:VertexOf(V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
+    for i = 1, 2 do
+        local vertexA = space:VertexOf(V(1, 0, -0.1))
+        local vertexB = space:VertexOf(V(1, 0,  0.1))
+        if i == 2 then
+            vertexA, vertexB = vertexB, vertexA
+        end
+        -- local vertexA = space:VertexOf(V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
+        -- local vertexB = space:VertexOf(V(math.randrange(-2,2),math.randrange(-2,2),math.randrange(-2,2)))
         local edgeT = space:EdgeOf(
             vertexA,
             vertexB
@@ -51,7 +54,7 @@ DBGGROUP = level:CreateGeometryGroup("Debug", {r=100,g=100,b=0,a=255}, false)
     end
 end--[=[]=]
 
---[[do
+--[=[ ] =]do
     local normal = V(0, 1, 0)
     
     local p1 = space:PolygonOf(space:BuildEdgeLoopOf{
@@ -81,17 +84,18 @@ end--[=[]=]
             level:AddEdge(edge)
         end
     end
-end]]
+end--[=[ ]=]
 
 --[===[ ]===]
 local normal_up = V(0, 1, 0)
 
-function facetemp0(offset, seed)
+function facetemp0(offset, seed, size)
+    size = size or 1
     local p = space:PolygonOf(space:BuildEdgeLoopOf{
         space:VertexOf(offset+V(0.00, 0.00, 0.00)),
         space:VertexOf(offset+V(1.00, 0.00, 0.00)),
-        space:VertexOf(offset+V(1.00, 0.00, 1.00)),
-        space:VertexOf(offset+V(0.00, 0.00, 1.00)),
+        space:VertexOf(offset+V(1.00, 0.00, 1.00*size)),
+        space:VertexOf(offset+V(0.00, 0.00, 1.00*size)),
     })
     local f = space:FaceOf(p, normal_up)
     return p, f
@@ -129,12 +133,13 @@ function facetemp2(offset, seed)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
-function facetemp3(offset, seed)
+function facetemp3(offset, seed, size)
     math.randomseed(seed) for i = 1, 10 do math.random() end
     local vertexList = {}
-    local count, rad = 16, 1--32, 1.4
+    local count, rad = 16, size or 2--32, 1.4
+    local ao = math.random()*math.pi*2
     for i = 1, count do
-        local a = 2*math.pi/count*(i-1)
+        local a = 2*math.pi/count*(i-1)+ao
         local r = 0.1*rad+0.9*math.random()*rad
         table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
     end
@@ -142,15 +147,21 @@ function facetemp3(offset, seed)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
-function facetemp4(offset, seed)
-    local vertexList = {}
-    local count, rad = 64, 2--32, 1.4
-    for i = 1, count do
-        local a = 2*math.pi/count*(i-1)
-        local r = rad
-        table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
+function facetemp4(offset, seed, size, ringInset)
+    ringInset = ringInset or 0.5
+    local edgeList = {}
+    for ring = 1, 2 do
+        local vertexList = {}
+        local count, rad = 24, (ring == 1 and size or size*ringInset)--32, 1.4
+        local ao = math.random()*math.pi*2
+        for i = 1, count do
+            local a = 2*math.pi/count*(i-1)+ao
+            local r = rad
+            table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
+        end
+        edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf(vertexList))
     end
-    local p = space:PolygonOf(space:BuildEdgeLoopOf(vertexList))
+    local p = space:PolygonOf(edgeList)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
@@ -194,18 +205,19 @@ function facetemp6(offset, seed)
     local f = space:FaceOf(p, normal_up)
     return p, f
 end
-function facetemp7(offset, seed)
+function facetemp7(offset, seed, size)
+    size = size or 1
     local edgeList = space:BuildEdgeLoopOf{
-        space:VertexOf(offset+V(-2, 0.00, -2)),
-        space:VertexOf(offset+V( 2, 0.00, -2)),
-        space:VertexOf(offset+V( 2, 0.00,  2)),
-        space:VertexOf(offset+V(-2, 0.00,  2)),
+        space:VertexOf(offset+V(-1, 0.00, -1)*size),
+        space:VertexOf(offset+V( 1, 0.00, -1)*size),
+        space:VertexOf(offset+V( 1, 0.00,  1)*size),
+        space:VertexOf(offset+V(-1, 0.00,  1)*size),
     }
     edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf{
-        space:VertexOf(offset+V(-1, 0.00, -1)),
-        space:VertexOf(offset+V( 1, 0.00, -1)),
-        space:VertexOf(offset+V( 1, 0.00,  1)),
-        space:VertexOf(offset+V(-1, 0.00,  1)),
+        space:VertexOf(offset+V(-0.5, 0.00, -0.5)*size),
+        space:VertexOf(offset+V( 0.5, 0.00, -0.5)*size),
+        space:VertexOf(offset+V( 0.5, 0.00,  0.5)*size),
+        space:VertexOf(offset+V(-0.5, 0.00,  0.5)*size),
     })
     local p = space:PolygonOf(edgeList)
     local f = space:FaceOf(p, normal_up)
@@ -216,26 +228,33 @@ xpcall(function()
     local defaultGroup = level:CreateGeometryGroup("Default", {r=255,g=255,b=255,a=255}, false)
     local inputGroup = level:CreateGeometryGroup("Input", {r=0,g=100,b=0,a=255}, false)
     level:SetDefaultGeometryGroup(defaultGroup)
-    for i = 1, 7 do
-        for j = 1, 7 do
-            if true or (i == 3 and j == 2) then
+    for i = 1, 2 do
+        for j = 1, 10 do
+            if true or (i == 1 and j == 1) then
                 local resultGroup = level:CreateGeometryGroup("Result "..i.."x"..j, {r=100,g=0,b=255,a=255}, false)
                 local seed = i+j*999, 9187, math.floor(math.random()*9999)
-                print(i, j, seed)
+                print(i.."x"..j, seed)
                 local function stuff(offset, showInput, showResult)
                     local inputList = {
-                        {facetemp7(offset+V(0,0,0), seed)},
-                        {facetemp3(offset+V(0.4,0,0), seed+12)},
-                        -- {facetemp3(offset+V(0.0,0,0), seed+12)},
+                        {facetemp7(offset+V(0,0,0), seed+12, 2)},
+                        {facetemp4(offset+V(0,0,0), seed+11, 2, 0.1+0.8*j/10)},
+                        -- {facetemp3(offset+V(0,0,0), seed+19, 2)},
                     }
+                    if i == 2 then
+                        table.reverse(inputList)
+                    end
+                    -- for i = 1, 4 do
+                        -- table.insert(inputList, {facetemp3(offset+V(0,0,0), seed+i, 2)})
+                    -- end
                     if showInput then
                         for inputI, input in ipairs(inputList) do
                             local face = input[2]
                             level:AddFace(face, true)
                             level:SetGeometryGroup(face, inputGroup, true)
+                            -- level:SetGeometryGroup(face, level:CreateGeometryGroup("Input #"..inputI, {r=0,g=100,b=0,a=255}, false), true)
                         end
-                        -- for pi = 1, 100 do
-                            -- local p = offset+V(math.randrange(-1.3, 1.3), 0, math.randrange(-1.3, 1.3))
+                        -- for pi = 1, 1000 do
+                            -- local p = offset+2*V(math.randrange(-1.3, 1.3), 0, math.randrange(-1.3, 1.3))
                             -- if true or pi == 30 then
                                 -- local isInside = inputList[1][1]:GetIsPointInPolygon(p)
                                 -- local e = space:EdgeOf(space:VertexOf(p), space:VertexOf(p+V(0, isInside and 0.3 or 0.1, 0)))
@@ -248,8 +267,16 @@ xpcall(function()
                     end
                     if showResult and #inputList >= 2 then
                         MEOW = true
-                        local p1, p2 = inputList[1][1], inputList[2][1]
-                        local result = p1:GetIntersectionWith(p2)--[1]:GetIntersectionWith(p3)
+                        local p1 = inputList[1][1]
+                        local result = {p1}
+                        for inputI = 2, #inputList do
+                            local input = inputList[inputI]
+                            result = result[1]:Subtract(input[1])
+                            if #result == 0 then
+                                print("NOTHING LEFT AT", inputI)
+                                break
+                            end
+                        end
                         for thingI, thing in ipairs(result) do
                             if thing:isa(space.edgeType) then
                                 level:AddEdge(thing)
@@ -263,9 +290,10 @@ xpcall(function()
                         -- MEOW = false
                     end
                 end
-                local o = V((i-1)*5.1, 0, (j-1)*4.1)
+                local o = V((i-1)*6.4, 0, (j-1)*4.1)
                 stuff(o+V( 0.00,-0.16, 0.00), true, false)
                 stuff(o+V( 0.00, 0.00, 0.00), false, true)
+                collectgarbage()
             end
         end
     end
