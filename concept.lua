@@ -19,10 +19,6 @@ do -- utils
         end
     end
     
-    local bagMeta = {
-        __newindex = function(
-    }
-    
     table.countpairs = table.countpairs or function(t)
         local n = 0
         for k in pairs(t) do
