@@ -1188,9 +1188,9 @@ do levelformat.viewportxmlstuff = [[<?xml version="1.0" encoding="UTF-8"?>
     <show_post_processing>true</show_post_processing>
     <show_shadows>true</show_shadows>
     <camera_position>
-      <x>0.739067</x>
-      <y>1.587925</y>
-      <z>1.743316</z>
+      <x>0</x>
+      <y>1.887925</y>
+      <z>1.943316</z>
     </camera_position>
     <camera_zoom>10.000000</camera_zoom>
     <camera_yaw>3.14</camera_yaw>

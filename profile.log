@@ -1,39 +1,6 @@
 
-====== .\lualgebra\float64.lua ======
-@@ 68 @@
-      | end
-      | 
-      | function lualgebra.Float64:GetIsEqualToZero()
-   3% |     return math.abs(self) <= self.epsilon
-      | end
-      | 
-      | function lualgebra.Float64:GetIsLessThanOrEqualTo(other)
-
 ====== .\luametry\coordinate.lua ======
-@@ 259 @@
-      |                 if ffi.istype(ffiType, other) then
-      |                     error("NYI!")
-      |                 else
-   3% |                     return ffi.typeof(self)(self.x*other, self.y*other, self.z*other)
-      |                 end
-      |             elseif ffi.istype(ffiType, other) then
-      |                 if ffi.istype(ffiType, self) then
-@@ 292 @@
-      |         return "x", "y", "z"
-      |     end
-      |     function luametry.__coord3dConstantMethods.__new(ct, x, y, z)
-   4% |         return ffi.new(ct, x, y, z)
-      |     end
-      |     function luametry.__coord3dConstantMethods:NewFromAngle(ang, mag)
-      |         error"NYI"
-@@ 307 @@
-      |         return self.x, self.y, self.z
-      |     end
-      |     function luametry.__coord3dConstantMethods:GetNormalized()
-   5% |         local mag = self.v_sqrt(self.v_pow(self.x, 2) + self.v_pow(self.y, 2) + self.v_pow(self.z, 2))
-      |         return ffi.typeof(self)(self.x/mag, self.y/mag, self.z/mag)
-      |     end
-      |     function luametry.__coord3dConstantMethods:GetNormalizedSafe()
+@@ 314 @@
       |         error"NYI"
       |     end
       |     function luametry.__coord3dConstantMethods:GetMagnitude()
@@ -41,59 +8,42 @@
       |     end
       |     function luametry.__coord3dConstantMethods:GetDistSqr(other)
       |         return self.v_pow(self.x-other.x, 2) + self.v_pow(self.y-other.y, 2) + self.v_pow(self.z-other.z, 2)
-@@ 323 @@
-      |         return self.v_sqrt(self.v_pow(self.x-other.x, 2) + self.v_pow(self.y-other.y, 2) + self.v_pow(self.z-other.z, 2))
-      |     end
-      |     function luametry.__coord3dConstantMethods:GetDotProduct(other)
-   3% |         return self.x*other.x+self.y*other.y+self.z*other.z
-      |     end
-      |     function luametry.__coord3dConstantMethods:GetCrossProduct(other)
-      |         return ffi.typeof(self)(
 @@ 364 @@
       |     end
       |     luametry.__coord3dConstantMethods.__unm = luametry.__coord3dConstantMethods.GetNegative
       |     function luametry.__coord3dConstantMethods:Add(other)
-   9% |         return ffi.typeof(self)(self.x+other.x, self.y+other.y, self.z+other.z)
+   6% |         return ffi.typeof(self)(self.x+other.x, self.y+other.y, self.z+other.z)
       |     end
       |     luametry.__coord3dConstantMethods.__add = luametry.__coord3dConstantMethods.Add
       |     function luametry.__coord3dConstantMethods:Sub(other)
-  22% |         return ffi.typeof(self)(self.x-other.x, self.y-other.y, self.z-other.z)
-      |     end
-      |     luametry.__coord3dConstantMethods.__sub = luametry.__coord3dConstantMethods.Sub
-      |     
 
 ====== .\luametry\space.lua ======
-@@ 74 @@
-      |     function luametry.Space:VertexOf(pos)
-      |         -- TODO: Make luametry.Space use an octree for vertex identity
-      |         for vertexI, vertex in ipairs(self.vertexList) do
-   3% |             if vertex.p:GetDistSqr(pos) < self.vertexEqualityDistance then
-      |                 return vertex
-      |             end
-      |         end
-@@ 806 @@
-      |         -- local a, a_data = next(self.vertexMap, nil)
-      |         -- local b, b_data = next(self.vertexMap, a)
-      |         -- return a, b, a_data, b_data
-   3% |         return self.vertexA, self.vertexB, self.vertexMap[self.vertexA], self.vertexMap[self.vertexB]
-      |     end
-      |     function luametry.Edge:VerifyEdgeCompatibility(otherEdge)
-      |         assert(self.space == otherEdge.space, "Edges must share the same space")
-@@ 828 @@
-      |         local u = s1p1-s1p0
-      |         local v = s2p1-s2p0
-      |         local w = s1p0-s2p0
-   3% |         local a = u:GetDotProduct(u)
-      |         local b = u:GetDotProduct(v)
-      |         local c = v:GetDotProduct(v)
-      |         local d = u:GetDotProduct(w)
+@@ 433 @@
+      |         local edgeBInDirection = closestBVertexInDirectionMap[mostAttachedClosestBVertex]
+      |         
+      |         local closestBVertexToclosestAVertexDir = (closestAVertex.p-closestBVertex.p):GetNormalized()
+   6% |         local isInside = (closestBVertexToclosestAVertexDir:GetDotProduct(edgeBInDirection) >= 0)
+      |         
+      |         -- print("~", closestBVertexToclosestAVertexDir)
+      |         if CAKE then print("WOOF!!", #closestBInfoList, edgeBInDirection) end
+@@ 691 @@
+      |     
+      |     function luametry.Space:GetEdgeLoopOrientation(edgeLoop, normal)
+      |         local total = self.coordinateType(0, 0, 0)
+   6% |         if BLAHB then print("ARRRREAAAA") end
+      |         for currEdgeI, currEdge, nextEdgeI, nextEdge, currEdgeUniqueV, commonV, nextEdgeUniqueV in self:IterateEdgesOfEdgeLoop(edgeLoop) do
+      |             local prod = currEdgeUniqueV.p:GetCrossProduct(commonV.p)
+      |             if BLAHB then print(dbglabelmap and dbglabelmap[edgeLoop], currEdgeI, prod:GetDotProduct(normal)) end
 
 ====== level_test.lua ======
-@@ 293 @@
-      |                 local o = V((i-1)*6.4, 0, (j-1)*4.1)
-      |                 stuff(o+V( 0.00,-0.16, 0.00), true, false)
-      |                 stuff(o+V( 0.00, 0.00, 0.00), false, true)
-   3% |                 collectgarbage()
-      |             end
+@@ 406 @@
       |         end
       |     end
+      |     
+  35% |     if shouldKill then os.execute[[taskkill /IM editor.exe]] os.execute[[taskkill /F /IM editor.exe]] end
+  35% |     if shouldOpen then os.execute[[openeditor.bat obj/ns2_blah.level]] end
+      | end
+      | 
+   6% | if err then
+      |     error(err)
+      | end

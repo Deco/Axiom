@@ -148,18 +148,20 @@ function facetemp3(offset, seed, size)
     return p, f
 end
 function facetemp4(offset, seed, size, ringInset)
-    ringInset = ringInset or 0.5
+    size = size or 2
     local edgeList = {}
-    for ring = 1, 2 do
-        local vertexList = {}
-        local count, rad = 24, (ring == 1 and size or size*ringInset)--32, 1.4
-        local ao = math.random()*math.pi*2
-        for i = 1, count do
-            local a = 2*math.pi/count*(i-1)+ao
-            local r = rad
-            table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
+    for ringI = 1, 2 do
+        if ringI == 1 or ringInsert then
+            local vertexList = {}
+            local count, rad = 24, (ringI == 1 and size or size*ringInset)--32, 1.4
+            local ao = math.random()*math.pi*2
+            for i = 1, count do
+                local a = 2*math.pi/count*(i-1)+ao
+                local r = rad
+                table.insert(vertexList, space:VertexOf(offset+V(math.cos(a)*r, 0, math.sin(a)*r)))
+            end
+            edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf(vertexList))
         end
-        edgeList = table.arrayjoin(edgeList, space:BuildEdgeLoopOf(vertexList))
     end
     local p = space:PolygonOf(edgeList)
     local f = space:FaceOf(p, normal_up)
@@ -230,14 +232,14 @@ xpcall(function()
     level:SetDefaultGeometryGroup(defaultGroup)
     for i = 1, 2 do
         for j = 1, 10 do
-            if true or (i == 1 and j == 1) then
+            if false or (i == 1 and j == 1) then
                 local resultGroup = level:CreateGeometryGroup("Result "..i.."x"..j, {r=100,g=0,b=255,a=255}, false)
                 local seed = i+j*999, 9187, math.floor(math.random()*9999)
                 print(i.."x"..j, seed)
                 local function stuff(offset, showInput, showResult)
                     local inputList = {
-                        {facetemp7(offset+V(0,0,0), seed+12, 2)},
-                        {facetemp4(offset+V(0,0,0), seed+11, 2, 0.1+0.8*j/10)},
+                        {facetemp3(offset+V(0,0,0), seed+47, 2.3)},
+                        {facetemp7(offset+V(0,0,0), seed+12, 1.7)},
                         -- {facetemp3(offset+V(0,0,0), seed+19, 2)},
                     }
                     if i == 2 then
@@ -291,8 +293,9 @@ xpcall(function()
                     end
                 end
                 local o = V((i-1)*6.4, 0, (j-1)*4.1)
-                stuff(o+V( 0.00,-0.16, 0.00), true, false)
-                stuff(o+V( 0.00, 0.00, 0.00), false, true)
+                -- stuff(o+V( 0.00,-0.16, 0.00), true, false)
+                -- stuff(o+V( 0.00, 0.00, 0.00), false, true)
+                stuff(o+V( 0.00, -0.16, 0.00), false, true)
                 collectgarbage()
             end
         end
